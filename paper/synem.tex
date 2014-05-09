@@ -1,0 +1,157 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+
+\title{\textbf{Multi-Modal Symmetric Diffeomorphic Image Registration Based on the EM Algorithm}}
+\date{}
+\author{Omar Ocegueda, Eleftherios Garyfallidis, Maxime Descoteaux and Mariano Rivera}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+    We present an algorithm for Multi-Modal Symmetric Diffeomorphic Image Registration. The transfer functions between the two modalities are modeled as a set of hidden variables whose values are estimated using the Expectation Maximization (EM) algorithm. We apply the symmetric image normalization method (SyN) to maximize the image similarity defined by the transfer functions estimated in the E-step. We validate our algorithm using the publicly available IBSR database and the Brainweb synthetic template, obtaining very competitive results in both mono- and multi-modal image registration. Besides its simplicity, the EM Metric presents promising properties that can be exploited to design more sophisticated metrics.
+\end{abstract}
+
+\section{Introduction}
+
+
+\section{Extending SyN for multi-modality images}
+
+Let $I_1$, $I_2$ be two images (whose modalities are not necessarily the same) defined over the domains $\Omega_{1}$, $\Omega_{2}$, respectively. Let $G$ be the set of possible intensity values $I_1$ and $I_2$ may take (e.g. $G=\left\lbrace 0,1,...,255\right\rbrace$). Our objective is to find two diffeomorphisms $\phi_{1}:\Omega_{1}\rightarrow \Omega_{R}$, $\phi_{2}:\Omega_{2}\rightarrow \Omega_{R}$ such that the images get aligned in the reference space $\Omega_{R}$ after warping them by $\phi_1$ and $\phi_{2}$, more precisely:
+
+\begin{align}\label{eq:SyNEM_gom_ref}
+	F_{1}[I_{1}(\phi_{1}^{-1}(u))] = I_{2}(\phi_{2}^{-1}(u)) + \eta_{1}(u), u\in\Omega_{R} \\
+    \nonumber F_{2}[I_{2}(\phi_{2}^{-1}(v))] = I_{1}(\phi_{1}^{-1}(v)) + \eta_{2}(v), v\in\Omega_{R}
+\end{align}
+where $F_{1}, F_{2}:G \rightarrow G$ are (unknown) transfer functions between the two modalities and $\eta_{1}, \eta_{2}$ are random fields of independent random variables \footnote{Note that, since $\phi_{1}^{-1}$ and $\phi_{2}^{-1}$ are fully determined by $\phi_{1}$ and $\phi_{2}$, respectively, we still have two unknown diffeomorphisms to estimate, not four}.\\
+
+By defining the warped images $\tilde{I}_{1}(u) = I_{1}(\phi_{1}^{-1}(u)), u \in \Omega_{R}$ and
+$\tilde{I}_{2}(v) = I_{2}(\phi_{2}^{-1}(v)), v \in \Omega_{R}$ we obtain
+
+\begin{align}\label{eq:SyNEM_gom_warped}
+	F_{1}[\tilde{I}_{1}(u)] = \tilde{I}_{2}(u) + \eta_{1}(u), u\in\Omega_{R} \\
+    \nonumber F_{2}[\tilde{I}_{2}(v)] = \tilde{I}_{1}(v) + \eta_{2}(v), v\in\Omega_{R}
+\end{align}
+and now, both images are defined on the reference space. If we assume $\phi_{1}$ and $\phi_{2}$ are initial approximations to the true transformations aligning $I_{1}$ and $I_{2}$, we are interested in computing two update diffeomorphisms (endomorphisms) \hbox{$\psi_{1}, \psi_{2} : \Omega_{R} \rightarrow \Omega_{R}$} such that
+
+\begin{align}\label{eq:SyNEM_gom_update}
+	F_{1}[\tilde{I}_{1}(u)] = \tilde{I}_{2}(\psi_{1}(u)) + \eta_{1}(u), u\in\Omega_{R} \\
+    \nonumber F_{2}[\tilde{I}_{2}(v)] = \tilde{I}_{1}(\psi_{2}(v)) + \eta_{2}(v), v\in\Omega_{R}
+\end{align}
+
+
+
+By introducing the (unknown) sets of hidden variables $Y = \left\lbrace Y_{g}=F_{1}[g] : g\in G \right\rbrace$, $Z = \left\lbrace Z_g = F_{2}[g] : g \in G\right\rbrace$ we may apply the EM algorithm to iteratively maximize the posterior distribution $P(\Psi | \tilde{I}_{1}, \tilde{I}_{2}) = \frac{P(\tilde{I}_{1}, \tilde{I}_{2} | \Psi)P(\Psi)}{P(\tilde{I}_{1}, \tilde{I}_{2})}$ with respect to the transformations $\Psi = (\psi_{1}, \psi_{2})$. The estimated diffeomorphisms at iteration $t$, $\Psi^{t} = \left( \psi_{1}^{t}, \psi_{2}^{t}\right)$ can be obtained from those at iteration $t-1$ by maximizing, with respect to $\Psi$:
+\begin{equation}
+	Q(\Psi, \Psi^{t-1}) = E_{Y,Z}\left[\log \left( \frac{P(\tilde{I}_{1}, \tilde{I}_{2}, Y, Z|\Psi)P(\Psi)}{P(\tilde{I}_{1}, \tilde{I}_{2}, Y, Z)}\right) | \tilde{I}_{1}, \tilde{I}_{2}, \Psi^{t-1}\right].
+\end{equation}
+To evaluate this expected value, we need to integrate over all possible realizations $y, z$ of the hidden variables $Y, Z$ with respect to the posterior distribution $P(y,z| \tilde{I}_{1}, \tilde{I}_{2}, \Psi^{t-1})$:
+\begin{equation}\label{eq:expected_value}
+Q(\Psi, \Psi^{t-1}) = \int_{y,z} (U(\Psi, y, z) - K_1)dP(y,z| \tilde{I}_{1}, \tilde{I}_{2}, \Psi^{t-1})
+\end{equation}
+where $K_{1} =\log P(\tilde{I}_{1}, \tilde{I}_{2}, Y, Z)$ is a normalization constant (does not depend on $\Psi$) and
+\begin{align}\label{eq:SyNEM_objective}
+	U(\Psi, y, z) = \log P(\tilde{I}_{1}, \tilde{I}_{2}, y, z|\Psi) + \log P(\Psi)=\\
+    \nonumber\sum_{g\in G} \sum_{x : \tilde{I}_{1}(x) = g} -\frac{\left(y_g - \tilde{I_{2}}(\psi_{1}(x))\right)^{2}}{\sigma_{1}(g)^{2}} + \lambda R(\psi_{1})+\\
+    \nonumber\sum_{g\in G} \sum_{x : \tilde{I}_{2}(x) = g} -\frac{\left(z_g - \tilde{I_{1}}(\psi_{2}(x))\right)^{2}}{\sigma_{2}(g)^{2}} + \lambda R(\psi_{2}).
+\end{align}
+The regularization functional $R(\cdot)$ encode our prior knowledge about $\Psi$ by $\log P(\Psi) = \lambda \left( R(\psi_{1}) + R(\psi_{2})\right)$ where $\lambda > 0$ is a parameter controlling the amount of regularization.\\
+
+If we assume $Y$ and $Z$ are independent, and their elements $Y_g$ and $Z_g$, $g\in G$ are independent from each other, then the density function $P(y,z| I_{1}, I_{2}, \Psi^{t-1})$ can be written as the product of two separate densities
+\begin{equation}\label{eq:density_products}
+    P(y,z| I_{1}, I_{2}, \Psi^{t-1}) = h_{Y}(y)h_{Z}(z) = \prod_{g\in G}h_{Y_g}(y_g) \prod_{g\in G}h_{Z_g}(z_g),
+\end{equation}
+and the expected value (eq. \ref{eq:expected_value}) can be written as
+\begin{align}
+    -K_{1}-\int\sum_{g\in G} \sum_{x : I_{1}(x) = g} \frac{\left(y_g - \tilde{I_{2}}(\psi_{1}(x))\right)^{2}}{\sigma_{1}(g)^{2}}d h_{Y}(y)-\\
+    \nonumber\int\sum_{g\in G} \sum_{x : I_{2}(x) = g} \frac{\left(z_g - \tilde{I_{1}}(\psi_{2}(x))\right)^{2}}{\sigma_{2}(g)^{2}}d h_{Z}(z)
+\end{align}
+which can be further simplified (by using eq. \ref{eq:density_products} to split the densities $h_{Y}(y)$ and $h_{Z}(z)$ as products of individual densities for each intensity $g \in G$) as
+\begin{align}
+    -K_{1}-\sum_{g\in G} \sum_{x : I_{1}(x) = g} \int\frac{\left(r - \tilde{I_{2}}(\psi_{1}(x))\right)^{2}}{\sigma_{1}(g)^{2}}d h_{Y_g}(r)-\\
+    \nonumber\sum_{g\in G} \sum_{x : I_{2}(x) = g} \int\frac{\left(s - \tilde{I_{1}}(\psi_{2}(x))\right)^{2}}{\sigma_{2}(g)^{2}}d h_{Z_g}(s)
+\end{align}
+now let $\bar{r}(g)$ and $\bar{s}(g)$ be the expected value of $Y_g$ and $Z_g$ given $I_{1}, I_{2}, \Psi^{t-1}$ respectively, then
+\begin{align}
+    &\int\left(r - \tilde{I_{2}}(\psi_{1}(x))\right)^{2}d h_{Y_g}(r) = &\\
+    &\nonumber \int\left(r - \bar{r}(g) + \bar{r}(g) - \tilde{I_{2}}(\psi_{1}(x))\right)^{2}d h_{Y_g}(r) = &\\
+    &\nonumber \sigma^{2}_{1}(g) + \int\left(\bar{r}(g) - \tilde{I_{2}}(\psi_{1}(x))\right)^{2}d h_{Y_g}(r) = &\\
+    &\nonumber \sigma^{2}_{1}(g) + \left(\bar{r}(g) - \tilde{I_{2}}(\psi_{1}(x))\right)^{2}&
+\end{align}
+because $h_{Y_g}$ is a density function and we are integrating over its entire domain. Analogously:
+\begin{align}
+    \int\left(s - \tilde{I_{1}}(\psi_{2}(x))\right)^{2}d h_{Z_g}(s) = \sigma^{2}_{2}(g) + \left(\bar{s}(g) - \tilde{I_{1}}(\psi_{2}(x))\right)^{2}
+\end{align}
+
+Now let's denote by $\hat{\mu}_{1}(x) = \bar{r}(\tilde{I}_{1}(x))$, $\hat{\sigma}_{1}(x) = \sigma_{1}(\tilde{I}_{1}(x))$ and analogously $\hat{\mu}_{2}(x) = \bar{s}(\tilde{I}_{2}(x))$, $\hat{\sigma}_{2}(x) = \sigma_{2}(\tilde{I}_{2}(x))$, in other words, we assign to each voxel $x$ from $\tilde{I}_1$ the expected value $\bar{r}(g)$ corresponding to the intensity $g$ of $\tilde{I}_1$ at $x$ and denote it by $\hat{\mu}_{1}(x)$, assign its corresponding variance and denote it by $\hat{\sigma_1}(x)$ and proceed analogously for $\hat{\mu}_{2}(x)$ and $\hat{\sigma}_2(x)$ using $I_2$. Then, the expected value that needs to be maximized in the M-step of the EM algorithm (eq. \ref{eq:expected_value}) can be written as:
+\begin{align}\label{eq:SyNEM_objective}
+    -Q(\Psi, \Psi^{t-1}) = \sum_{x \in \Omega_{1}} \frac{(\hat{\mu}_{1}(x) - \tilde{I}_2(\psi_{1}(x)))^{2}}{\hat{\sigma}_{1}(x)} + \lambda R(\psi_{1}) + \\
+    \nonumber\sum_{x \in \Omega_{2}} \frac{(\hat{\mu}_{2}(x) - \tilde{I}_1(\psi_{2}(x)))^{2}}{\hat{\sigma}_{2}(x)} + \lambda R(\psi_{2})
+\end{align}
+
+The main difficulty of directly minimizing eq. (\ref{eq:SyNEM_objective}) is that both similarity terms depend on both diffeomorphisms $\psi_{1}$ and $\psi_{2}$ since $\tilde{I}_{2}(\psi_{1})$ depends on $\psi_{2}^{-1}$ and $\tilde{I}_{1}(\psi_{2})$ depends on $\psi_{1}^{-1}$, which implies that the objective function must be optimized with respect to both diffeomorphisms simultaneously, which is very challenging because an explicit formula for the representation of $\psi_{1}^{-1}$ and $\psi_{2}^{-1}$ in terms of the parameters of $\psi_{1}$ and $\psi_{2}$ may not be available or may be prohibitively costly to compute \footnote{Diffeomorphisms are typically parameterized by displacement fields (a displacement vector for each voxel) and the problem of inverting a displacement field has been subject of substantial research. All available methods for approximating displacement field inverses are iterative, see for example: \cite{Chen2008}\cite{Avants2009}\cite{Christensen2001}\cite{Crum2007}\cite{Yan2010}}. To overcome this difficulty, the greedy SyN algorithm proposed by Avants et al. \cite{Avants2011} uses the inverses at iteration $t-1$ to compute $\tilde{I}_{1}$ and $\tilde{I}_{2}$, then updates the direct transformations at iteration $t$ and updates the inverses at iteration $t$ by inverting $\psi_{1}^{t}$ and $\psi_{2}^{t}$ using a variation of the fixed point algorithm proposed by Chen et al.\cite{Chen2008} (see algorithm \ref{alg:SyNEM}). This scheme has the extra advantage that both similarity terms are now decoupled.\\
+
+
+
+\begin{algorithm}[h!]
+\caption{SyN-EM}\label{alg:SyNEM}
+\begin{algorithmic}[1]
+\REQUIRE Two images $I_{2}$, $I_{2}$
+\REQUIRE Maximum number of iterations $M$
+\REQUIRE Energy derivative tolerance $\tau$
+\REQUIRE Number of quantization levels $q$
+
+\medskip
+\STATE $t = 0$
+\STATE Initialize the displacement fields $\phi_{1}^{(t)}(x) = 0$, $\phi_{2}^{(t)}(x) = 0$
+\REPEAT
+    \STATE $t \leftarrow t+1$
+    \STATE Warp the input images to the reference space $\tilde{I}_{1}(\cdot) = I_{1}(\psi_{1}^{-1(t-1)}(\cdot))$, $\tilde{I}_{2}(\cdot) = I_{2}(\psi_{2}^{-1(t-1)}(\cdot))$
+    \STATE Solve for $\phi_{1}^{*}$, $\phi_{2}^{*}$
+    \STATE Compose $\psi_{i}^{t}(\cdot) = \psi_{i}^{*}(\psi_{i}^{t-1}(\cdot))$
+    \STATE Update the inverses at iteration t
+\UNTIL{$t \geq M$ \OR $\epsilon<\tau$}
+\STATE Compute the forward transform: $\psi = (\psi_{2}^{t})^{-1} \circ \psi_{1}^{t}$
+\STATE Compute the backward transform: $\psi^{-1} = (\psi_{1}^{t})^{-1} \circ \psi_{2}^{t}$
+\RETURN $\psi$, $\psi^{-1}$
+\end{algorithmic}
+\end{algorithm}
+
+
+\section{Gauss-Newton Step}
+
+\section{Demons Step}
+After modeling the transfer function from voxel intensities in the static image to voxel intensities in the moving image, we obtain the following energy function that needs to be minimized to obtain the optimal displacement filed (eq. 22 of \cite{Arce-santana2014}):
+
+\section{Experiments}
+\subsection{Mono-modal registration}
+
+In the first experiment we will follow the methodology of Rohlfing et al.\cite{Rohlfing2012}, which consists on registering all 18 T1 brains from the publicly available IBSR database against each other, resulting in 306 registrations. We evaluate the accuracy of the registration by computing the Jaccard index over 31 anatomical regions manually annotated on the T1 brain images.
+
+[Conclusion: SyNEM is very competitive, it compares favourably to FFD (one of the best performers in Klein's study \cite{Klein2009}) but still not as good as SyN with cross correlation. This may be explained by the fact that CC uses a relatively large window centered at each voxel for computing the similarity, while the EM is voxelwise, however, note that even if the images are T1 monomodal, a naive registration using SSD is not enough because of the spatial inhomogeneities and differences in the intensity spectrum of the images (show a pair of images as an example), show the result using SSD. So, a pre-processing is necessary to match the histograms (show the results using match-histogram from ANTS), but SyNEM compares favourably against SSD with some bias correction (try the bias correction algorithm by Tustison et al.). We conclude that SyNEM is able to handle differences in the intensities of monomodal images, and partly correct bias field inhomogeneities. However it is not the best option for monomodal registration (cross correlation performs better).]
+
+\subsection{Multi-modal registration}
+The analog to Klein's experiment for multi-modality data would register manually annotated images from two different modalities and use the Jaccard indices to measure registration accuracy. Unfortunately there are no available manually annotated multi-modality data, so we will perform a less realistic experiment using the Brainweb synthetic template. Being a synthetic template, it is possible to generate two perfectly registered images of different modalities (T1 and T2). The Brainweb template is not annotated into the same anatomical areas as the IBSR database, so we cannot directly measure the accuracy of registration of the IBSR images to the template, but we can measure the sensitivity of the registration methods to the change of modality. In other words, if we register one arbitrary T1 image from IBSR to the T1 image of the Brainweb template (mono-modal case) we should obtain exactly the same registration result if we register the same IBSR image to the T2 image of the Brainweb template (multi-modal case) if the registration algorithm correctly handles the multi-modality.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
+
+
+\section{Introduction}
+Introduce the topic by splitting the proble into [a] The transformation model (and cite SyN as the state of the art for registration of brain MRI), and [b] The similarity metric (and cite information-theoretic similarity metric as the most successful for multi-modal registration)
+Classical Multi-modal registration algorithms: \cite{Wells1996}\cite{Maes1997}
+
+The image intensity associated to a tissue depends on the imaging modality (T1, T2, CT) and may even depend on geometric structure and other features of the tissue (FA, MD from diffusion MRI).
+
+
+Correlation-based similarity metrics are designed for situations in which the image intensities of both images are linearly correlated and work well only for mono-modal images \cite{Roche2004}.
+
+Our algorithm presents several extensions to the algorithm proposed by Arce et al. \cite{Arce-santana2014}: (1) our resulting deformation fields are diffeomorphic, (2) we estimate both transfer functions (static to moving and moving to static), (3) we derive a demons-like step to minimize the resulting energy function, which is more efficient and easier to implement [comment: we also have the Gauss-Newton step solving the large linear system using the multi-resolution algorithm (in addition to the Gaussian pyramid), may be we can submit a version using Gauss Newton and then another one using the demons-like step].
+
+\section{The SyN algorithm}
+[briefly explain the SyN algorithm as a greedy algorithm to find the diffeomorphisms at time 0.5 and state than we are going to denote such "mid-point" diffeomorphisms as $\psi_{1}$ and $\psi_{2}$. Also explain the role of the reference domain $\Omega_R$ and state that typically it is chosen to be $\Omega{1}$, the domain of the static image.]
