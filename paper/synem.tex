@@ -6,6 +6,7 @@
 \usepackage{algorithm}
 \usepackage{relsize}
 \usepackage{fancyhdr,authblk,multicol}
+\usepackage{booktabs}
 
 \title{\textbf{Symmetric Diffeomorphic Registration with Expected Cross-Correlation for Multi-Modal MRI}}
 \date{}
@@ -289,6 +290,22 @@ not annotated into the same anatomical areas as the IBSR database, so we cannot 
 can measure the sensitivity of the registration methods to the change of modality. In other words, if we register one arbitrary T1 image from IBSR to the T1 image of the
 Brainweb template (mono-modal case) we should obtain exactly the same registration result if we register the same IBSR image to the T2 image of the Brainweb template
 (multi-modal case) if the registration algorithm correctly handles the multi-modality.
+
+\input{multimodal_results_seg}
+
+\input{multimodal_results_segTri_fill}
+
+\begin{figure}[H]
+\centering
+\label{fig:graph_seg}\includegraphics[width=1.0\linewidth]{./images/graph_seg.png}\\
+\caption{Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with CC and ECC.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\label{fig:graph_segTri_fill}\includegraphics[width=1.0\linewidth]{./images/graph_segTri_fill.png}\\
+\caption{Comparison of the registration performance (measured by the Jaccard index over Background, CSF, GM and WM)of the Greedy SyN algorithm with CC and ECC.}
+\end{figure}
 
 \bibliographystyle{plain}
 \bibliography{references}
