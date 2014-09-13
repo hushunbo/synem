@@ -1,0 +1,81 @@
+\section{Experiments}
+One of the most challenging aspects of developing image registration algorithms for brain MRI is validation. In order to rigorously evaluate the performance of non-linear
+image registration algorithms, a ground-truth consisting of true correspondences between voxels of realistic pairs of images would be required. Since such a ground-truth data is
+not currently available, researchers resort to surrogates that indirectly measure the quality of their algorithms. One of the most accepted surrogate measures is based
+on the overlap of localized anatomical areas of registered images: ideally, corresponding anatomical areas of perfectly registered images should perfectly
+overlap. Even a perfect registration algorithm is unlikely to achieve such an ambitious goal, though, since anatomical areas are usually defined manually by an expert, which is
+by no means a perfect process and the annotations may vary even between different experts. Despite this limitation, it has been shown that among the alternative surrogate measures
+usually employed, overlap scores of localized anatomical areas is the one that better distinguish reasonable from inaccurate registrations \cite{Rohlfing2012} and it has been employed
+in the most rigorous evaluations of registration algorithms \cite{Klein2009}\cite{Rohlfing2012}. We also believe that rigorous reproducibility is of utmost importance. In our
+experiments, we employ the publicly available IBSR database consisting of 18 manually annotated T1 brain MRI volumes, and made our algorithms also publicly available.
+
+\subsection{Mono-modal registration}
+Although our algorithm was designed for multi-modal image registration, it is important to first verify that the quality of the algorithm is reasonable for mono-modal registration.
+
+\input{monomodal_results_seg}
+
+\input{monomodal_results_segTri_fill}
+
+\begin{figure}[H]
+\centering
+\label{fig:graph_seg}\includegraphics[width=1.0\linewidth]{./images/mono_graph_seg.png}\\
+\caption{Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with CC and ECC.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\label{fig:graph_segTri_fill}\includegraphics[width=1.0\linewidth]{./images/mono_graph_segTri_fill.png}\\
+\caption{Comparison of the registration performance (measured by the Jaccard index over Background, CSF, GM and WM)of the Greedy SyN algorithm with CC and ECC.}
+\end{figure}
+
+[Conclusion: SyNEM is very competitive, it compares favourably to FFD (one of the best performers in Klein's study \cite{Klein2009}) but still not as good as SyN with cross
+correlation. This may be explained by the fact that CC uses a relatively large window centered at each voxel for computing the similarity, while the EM is voxelwise, however, note that even if the images are T1 monomodal, a naive registration using SSD is not enough because of the spatial inhomogeneities and differences in the intensity spectrum of the images (show a pair of images as an example), show the result using SSD. So, a pre-processing is necessary to match the histograms (show the results using match-histogram from ANTS), but SyNEM compares favourably against SSD with some bias correction (try the bias correction algorithm by Tustison et al.). We conclude that SyNEM is able to handle differences in the intensities of monomodal images, and partly correct bias field inhomogeneities. However it is not the best option for monomodal registration (cross correlation performs better).]
+
+\subsection{Multi-modal registration}
+It is a common practice within the neuroimaging community to use the cross-correlation metric to register T1 vs T2 brain MRI images. The argument in favor of using
+this metric is that these modalities are related by an ``almost linear'' transfer function. To illustrate the danger of doing this, we used the Brainweb synthetic
+template [citation needed]. Brainweb provides two perfectly aligned, realistically simulated brain MRI in T1 and T2 modalities. Ideally, a multi-modal registration method
+should return the identity transformation to register these perfectly aligned images.
+
+\begin{figure}[H]
+\centering
+\fbox{\subfloat[Brainweb T1 (left) and T2(right) overlaid using two different channels(middle). T1 is depicted in red and T2 in green.]{\label{fig:brainweb_t1_t2_input}\includegraphics[width=1.0\linewidth]{./images/brainweb_t1_t2_overlay.png}}}\\
+\fbox{\subfloat[T2 registered towards T1 using ANTS with the Cross-Correlation metric. Boundaries are clearly distorted.]{\label{fig:syncc_brainweb_t1_t2_overlay}\includegraphics[width=1.0\linewidth]{./images/syncc_brainweb_t1_t2_overlay.png}}}
+\fbox{\subfloat[T2 registered towards T1 using SyN algorithm with the Expected Cross-Correlation metric. Deformations are hard to see: ventricles are slightly dilated.]{\label{fig:syencc_brainweb_t1_t2_overlay}\includegraphics[width=1.0\linewidth]{./images/synecc_brainweb_t1_t2_overlay.png}}}
+\caption{Registration of two perfectly aligned images with different modalities.}
+\label{fig:brainweb_t1_t2}
+\end{figure}
+
+The analog to Klein's experiment for multi-modality data would register manually annotated images from two different modalities and use the Jaccard indices to measure
+registration accuracy. Unfortunately, to the best of our knowledge, there are no manually annotated multi-modality data publicly available, so we will perform a less
+realistic experiment using the Brainweb synthetic template [citation needed]. Brainweb provides two perfectly aligned, realistically simulated brain MRI in two modalities
+T1 and T2. We generated synthetic T2 images for all IBSR T1 images by first registering the Brainweb T1 image (which plays the role of moving image) towards each IBSR
+T1 image (which play the role of static image) using ANTS. Then we applied the obtained deformation field to the Brainweb T2 image and computed the transfer function
+from T1 to T2 intensities and applied the transfer function to the IBSR T1 obtaining a ``perfectly aligned'' realistic synthetic T2 image for each IBSR volume, therefore
+the annotations remain exactly the same as the T1 counterparts and we are able to execute Rholfing's experiment but this time using different modalities. Note that the number
+of registrations we need to perform is now 612 because we can use the T2 modality either as the moving or the static image.\\
+
+
+
+Being a synthetic template, it is possible to generate two perfectly registered images of different modalities
+(T1 and T2). The Brainweb template is
+not annotated into the same anatomical areas as the IBSR database, so we cannot directly measure the accuracy of registration of the IBSR images to the template, but we
+can measure the sensitivity of the registration methods to the change of modality. In other words, if we register one arbitrary T1 image from IBSR to the T1 image of the
+Brainweb template (mono-modal case) we should obtain exactly the same registration result if we register the same IBSR image to the T2 image of the Brainweb template
+(multi-modal case) if the registration algorithm correctly handles the multi-modality.
+
+\input{multimodal_results_seg}
+
+\input{multimodal_results_segTri_fill}
+
+\begin{figure}[H]
+\centering
+\label{fig:graph_seg}\includegraphics[width=1.0\linewidth]{./images/multi_graph_seg.png}\\
+\caption{Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with CC and ECC.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\label{fig:graph_segTri_fill}\includegraphics[width=1.0\linewidth]{./images/multi_graph_segTri_fill.png}\\
+\caption{Comparison of the registration performance (measured by the Jaccard index over Background, CSF, GM and WM)of the Greedy SyN algorithm with CC and ECC.}
+\end{figure}
