@@ -29,7 +29,7 @@ where $L$ is a differential operator used to promote smoothness on $\mathbf{u}$ 
 especially important for medical image registration is that the solution, although being smooth, is not guaranteed to be invertible, and the topology of the moving image is not guaranteed to
 be preserved after transforming it under $\phi$, which in some applications may be undesirable.\\
 
-To overcome the limitations of the elastic model, the large deformation proposed by  Christensen et al. \cite{Christensen2001} and further developed by Beg et al. \cite{Science2005}
+To overcome the limitations of the elastic model, the large deformation proposed by  Christensen {\it et al.} \cite{Christensen2001} and further developed by Beg {\it et al.} \cite{Science2005}
 formulates the problem in terms of a trajectory of transformations
 \hbox{$\phi:\Omega_{I} \times [0, 1] \rightarrow \Omega_{J}$} that satisfies $\frac{d \phi(x, t)}{dt} = v(\phi(x, t), t)$ and $\phi(x, 0) = x$, where $v(\cdot, \cdot)$ is
 the velocity field associated to the curve $\phi$. Beg's Large Deformation Diffeomorphic Metric Mapping (LDDMM) \cite{Science2005} formulation of the registration problem is given by:
@@ -41,9 +41,9 @@ where $\dot{\phi} = \frac{d\phi}{dt}$, $v_{t} = v(\cdot, t), t\in [0, 1]$. The f
     \phi(x, 1) = \phi(x, 0) + \int_{0}^{1}v(\phi(x, t), t) dt.
 \end{equation}
 
-Dupuis et al. \cite{Dupuis1998} showed that by enforcing sufficient smoothness
+Dupuis {\it et al.} \cite{Dupuis1998} showed that by enforcing sufficient smoothness
 in $v$, through the differential operator $L$, it can be guaranteed that $\phi(\cdot, t), t \in [0, 1]$ are diffeomorphisms. This and other formulations also based on flows of
-diffeomorphisms ensure that images are smoothly transformed and their topology is preserved, an important property for many medical applications. Avants et al. \cite{Avants2008}
+diffeomorphisms ensure that images are smoothly transformed and their topology is preserved, an important property for many medical applications. Avants {\it et al.} \cite{Avants2008}
 \cite{Avants2011} modified the standard LDDMM formulation to enforce symmetry in the sense that the registration result is the same regardless of which image we designate as $I$
 and $J$, a property that, although natural and desirable, is not ensured in standard computational methods solving the LDDMM problem. By splitting the trajectory $\phi$ into two
 trajectories with opposite direction $\phi_{1}(x, t) = \phi_{2}(y, 1-t)$, where $y = \phi(x, 1)$, with corresponding velocity fields $v_{1}, v_{2}$, the Symmetric formulation
@@ -63,10 +63,10 @@ subject to
     \end{array}
 \end{equation}
 
-Avants et al. \cite{Avants2006} proposed a numerical algorithm, called \textit{Geodesic SyN} for solving \ref{eq:syn_energy}, which deforms both images towards the mid point of
+Avants {\it et al.} \cite{Avants2006} proposed a numerical algorithm, called \textit{Geodesic SyN} for solving \ref{eq:syn_energy}, which deforms both images towards the mid point of
 the trajectory. The main drawback of directly solving eq. \ref{eq:syn_energy} is its computational cost, since it requires space and time discretization and
 it is necessary to integrate the velocity fields (eq. \ref{eq:velocity_integral}) to obtain the trajectories at each iteration. A more efficient optimization algorithm
-to approximately solve eq. \ref{eq:syn_energy}, also proposed by Avants et al. \cite{Avants2008}\cite{Avants2011}, consists in computing the gradient of the metric only at the
+to approximately solve eq. \ref{eq:syn_energy}, also proposed by Avants {\it et al.} \cite{Avants2008}\cite{Avants2011}, consists in computing the gradient of the metric only at the
 midpoint of the trajectory (as opposed to evaluating it for all time)
 
 \begin{equation}\label{eq:grad_metric}
@@ -76,7 +76,7 @@ where $\tilde{I} = I \circ \phi_{1}^{-1}(\cdot, 0.5)$, $\tilde{J} = J \circ \phi
 the gradient after smoothing with a Gaussian kernel $K_{\sigma}$ (as opposed to integrating along the full geodesic)
 
 \begin{equation}\label{eq:gsyn_update}
-    \phi_{i}(\cdot, 0.5) = \phi_{i}(\cdot, 0.5) - \left( \delta K_{\sigma} \ast \nabla_{\phi_{i}} \Pi(\tilde{I}, \tilde{J}) \right) \circ \phi_{i}(\cdot, 0.5).
+    \phi_{i}(\cdot, 0.5) = \phi_{i}(\cdot, 0.5) + \left( \delta K_{\sigma} \ast \nabla_{\phi_{i}} \Pi(\tilde{I}, \tilde{J}) \right) \circ \phi_{i}(\cdot, 0.5).
 \end{equation}
 
 Finally, the updated mid-point transformations (which, after composition with the gradient, are not ensured to be diffeomrphisms) are forced to be invertible by using an
@@ -106,16 +106,16 @@ the minimum of the metric does not coincide with what we understand by optimal i
 unlikely to correctly align the images. For mono-modal image registration, the Sum of Squared Distances (SSD) is used as a start point for studying new transformation methods due to
 its simplicity, while Normalized Cross-Correlation (CC) is known to perform well in a larger number of applications since it compares local neighborhoods (as opposed to single
 voxel values used by SSD) which allows it to implicitly compare higher level features. For multi-modal registration, there are two main approaches: 1) Use of information theoretic
-measures, and 2) reduction to a mono-modal problen ( please refer to Sotiras et al. \cite{Sotiras2013} for a comprehensive survey).\\
+measures, and 2) reduction to a mono-modal problen ( please refer to Sotiras {\it et al.} \cite{Sotiras2013} for a comprehensive survey).\\
 
-Recently, Arce-Santana et al. \cite{Arce-santana2014} modeled the transfer function between the image modalities as
+Recently, Arce-Santana {\it et al.} \cite{Arce-santana2014} modeled the transfer function between the image modalities as
 \begin{equation}\label{eq:arce_model}
     F[I(x)] = J(\phi(x)) + \eta(x), x\in \mathcal{L}
 \end{equation}
 where $F$ is the (unknown) transfer function between image modalities and $\eta(x), x\in \mathcal{L}$ are independent random variables with Gaussian distribution. To simplify
 the problem, the dynamic range $G$ of image $I$ is assumed to be discrete and relatively small ($G = \mathrm{Z}_{256}$, in \cite{Arce-santana2014}). By having a discrete
 dynamic range, the function $F: G \rightarrow G$ may be modeled as a discrete set of hidden random variables $Y_g = F(g), g\in G$ whose distribution parameters
-can be estimated using the Expectation Maximization (EM) algorithm \cite{Dempster1977}. In their work, Arce-Santana et al. \cite{Arce-santana2014} used a discretized elastic
+can be estimated using the Expectation Maximization (EM) algorithm \cite{Dempster1977}. In their work, Arce-Santana {\it et al.} \cite{Arce-santana2014} used a discretized elastic
 deformation model to behavior of their metric which, by computing the cost function for the EM algorithm, leads to the following energy minimization problem
 
 \begin{equation}\label{eq:elastic}

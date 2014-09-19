@@ -12,7 +12,7 @@ experiments, we employ the publicly available IBSR database consisting of 18 man
 \subsection{Mono-modal registration}
 Although our algorithms were designed for multi-modal image registration, it is important to first verify that the quality of the algorithms is reasonable for mono-modal registration.
 Table \ref{tab:monomodal_results_seg} and figure \ref{fig:mono_graph_seg} show the average overlap score for each of 31 manually annotated anatomical regions from the IBSR database.
-Note that the Jaccard indices obtained with the Cross Correlation metric (i.e. ANTS) are higher than reported by Rohlfing et al. \cite{Rohlfing2012}. In his experiments, he used
+Note that the Jaccard indices obtained with the Cross Correlation metric (i.e. ANTS) are higher than reported by Rohlfing {\it et al.} \cite{Rohlfing2012}. In his experiments, he used
 three resolutions with 10, 10 and 5 iterations only. Here, we used 100, 100 and 25 iterations, which stops the algorithm very close to convergence, leaving the rest of the parameters
 unchanged. We can see that SyN with the EM metric is very competitive, but still not as good as Cross Correlation. This may be explained by the fact that CC uses a relatively large
 window centered at each voxel for computing the similarity, while the EM is voxelwise. By considering neighborhoods of the same size, the Expected Cross Correlation metric performs
