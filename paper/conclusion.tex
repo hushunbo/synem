@@ -1,0 +1,14 @@
+\section{Conclusion}
+We presented two algorithms for Symmetric Diffeomorphic Registration for multi-modality images. The first algorithm was recently proposed by Arce-Santana {\it et al.}
+\cite{Arce-santana2014} under the (asymmetric) elastic registration framework and we extended it in this work to take advantage of both modalities under the
+Symmetric Diffeomorphic Registration framework developed by Avants {\it et al.}. The second algorithm is an extension of the Cross-Correlation metric for multi-modality
+images. We evaluated our algorithms using the publicly available IBSR database following the methodology of Klein {\it et al.} \cite{Klein2009}\cite{Klein2010} and
+Rohlfing \cite{Rohlfing2012} to show that both algorithms are competitive for mono-modal image registration, even though they were designed for multi-modal registration.
+To evaluate the performance of our algorithms in a realistic, controlled, multi-modal registration experiment we used the Brainweb\cite{Cocosco1997}\cite{Kwan1999} template
+to generate synthetic T2 images for each of the IBSR T1 volumes. Experiments show that the CC metric is dramatically affected by the change of modality while our algorithms'
+performance remains comparable to the mono-modal case.\\
+
+To the best of our knowledge, prior to this work, the only publicly available algorithm for Multi-Modal Symmetric Diffeomorphic Registration was driven by the Mutual Information
+metric and was provided in the ANTS software,\textcolor{red}{and we show that our algorithms compare favourably against that reference implementation (note: the results of
+MI are extremely bad, so bad that people won't believe it... I need to investigate if I am doing something wrong.)}. We made our algorithms publicly available in Dipy
+[citation needed].
