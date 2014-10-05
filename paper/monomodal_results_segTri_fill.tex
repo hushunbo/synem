@@ -2,17 +2,17 @@
 \begin{table}[htbp]
   \centering
   {\small
-    \begin{tabular}{rrrr}
+    \begin{tabular}{ccccc}
     \toprule
-    \textbf{} & \textbf{SyN-EM} & \textbf{SyN-ECC} & \textbf{SyN-CC} \\
+    \textbf{} & \textbf{SyNEM} & \textbf{SyN-ECC} & \textbf{SyN-CC} & \multicolumn{1}{c}{\textbf{SyN-MI}} \\
     \midrule
-    \textbf{Background} & 0.994 & 0.995 & \textbf{0.995} \\
-    \textbf{CSF} & 0.335 & 0.349 & \textbf{0.359} \\
-    \textbf{Gray Matter} & 0.740 & \textbf{0.765} & 0.759 \\
-    \textbf{White Matter} & 0.703 & \textbf{0.739} & 0.728 \\
+    \textbf{Background} & 0.994 & 0.995 & 0.995 & \textbf{0.996} \\
+    \textbf{CSF} & 0.335 & 0.349 & 0.359 & \textbf{0.370} \\
+    \textbf{Gray Matter} & 0.740 & \textbf{0.765} & 0.759 & 0.717 \\
+    \textbf{White Matter} & 0.703 & \textbf{0.739} & 0.728 & 0.654 \\
     \bottomrule
     \end{tabular}%
-    \caption{Comparison of the registration performance (measured by the Jaccard index over Background, CSF, GM and WM)of the Greedy SyN algorithm with EM, ECC and CC metrics. The Jaccard
-indices were averaged over 306 monomodal registrations. Top performer for each region is highlighted.}
+    \caption{Comparison of the registration performance (measured by the Jaccard index over Background, CSF, GM and WM)of the Greedy SyN algorithm with EM, ECC, CC and MI metrics.
+The Jaccard indices were averaged over 306 monomodal registrations. Top performer for each region is highlighted.}
   \label{tab:monomodal_results_segTri_fill}}%
 \end{table}%

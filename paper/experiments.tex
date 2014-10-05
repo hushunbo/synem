@@ -7,15 +7,17 @@ overlap. Even a perfect registration algorithm is unlikely to achieve such an am
 by no means a perfect process and the annotations may vary even between different experts. Despite this limitation, it has been shown that among the alternative surrogate measures
 usually employed, overlap scores of localized anatomical areas is the one that better distinguish reasonable from inaccurate registrations \cite{Rohlfing2012} and it has been employed
 in the most rigorous evaluations of registration algorithms \cite{Klein2009}\cite{Klein2010}\cite{Rohlfing2012}. We also believe that rigorous reproducibility is of utmost importance. In our
-experiments, we employ the publicly available IBSR database consisting of 18 manually annotated T1 brain MRI volumes, and made our algorithms also publicly available.
+experiments, we employ the publicly available IBSR database consisting of 18 manually annotated T1 brain MRI volumes, and our algorithms are publicly available from the Dipy
+non-linear registration module \cite{Garyfallidis2014}.
 
 \subsection{Mono-modal registration}
 Although our algorithms were designed for multi-modal image registration, it is important to first verify that the quality of the algorithms is reasonable for mono-modal registration.
 Table \ref{tab:monomodal_results_seg} and figure \ref{fig:mono_graph_seg} show the average overlap score for each of 31 manually annotated anatomical regions from the IBSR database.
 Note that the Jaccard indices obtained with the Cross Correlation metric (i.e. ANTS) are higher than reported by Rohlfing {\it et al.} \cite{Rohlfing2012}. In his experiments, he used
-three resolutions with 10, 10 and 5 iterations only. Here, we used 100, 100 and 25 iterations, which stops the algorithm very close to convergence, leaving the rest of the parameters
+three resolutions with a maximum of 10, 10 and 5 iterations only. Here, we set a maximum of 100, 100 and 25 iterations, leaving the rest of the parameters
 unchanged. We can see that SyN with the EM metric is very competitive, but still not as good as Cross Correlation. This may be explained by the fact that CC uses a relatively large
-window centered at each voxel for computing the similarity, while the EM is voxelwise. By considering neighborhoods of the same size, the Expected Cross Correlation metric performs
+window centered at each voxel for computing the similarity, while the EM is voxelwise. This behavior can also be observed from the results of SyN with Mutual Information (MI), which is also
+voxelwise and very competitve but not as good as CC. By considering neighborhoods of the same size, the Expected Cross Correlation metric performs
 nearly as good as CC. Table \ref{tab:monomodal_results_segTri_fill} and figure \ref{fig:mono_graph_segTri_fill} show the overlap scores over tissue type, instead of anatomical areas.
 
 \input{monomodal_results_seg}
@@ -23,8 +25,8 @@ nearly as good as CC. Table \ref{tab:monomodal_results_segTri_fill} and figure \
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1.0\linewidth]{./images/mono_graph_seg.png}\\
-\caption{Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with EM, ECC and CC metrics. The Jaccard
+\includegraphics[width=1.0\linewidth]{./images/mono_lines_seg.png}\\
+\caption{Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with EM, ECC, CC and MI metrics. The Jaccard
 indices were averaged over 306 monomodal registrations.}
 \label{fig:mono_graph_seg}
 \end{figure}
@@ -32,7 +34,7 @@ indices were averaged over 306 monomodal registrations.}
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\linewidth]{./images/mono_graph_segTri_fill.png}\\
-\caption{Comparison of the registration performance (measured by the Jaccard index over Background, CSF, GM and WM)of the Greedy SyN algorithm with EM, ECC and CC metrics. The Jaccard
+\caption{Comparison of the registration performance (measured by the Jaccard index over Background, CSF, GM and WM)of the Greedy SyN algorithm with EM, ECC CC and MI metrics. The Jaccard
 indices were averaged over 306 monomodal registrations.}
 \label{fig:mono_graph_segTri_fill}
 \end{figure}
@@ -41,22 +43,28 @@ indices were averaged over 306 monomodal registrations.}
 \subsection{Multi-modal registration}
 It is a common practice within the neuroimaging community to use the cross-correlation metric to register T1 vs T2 brain MRI images. The argument in favor of using
 this metric is that these modalities are related by an ``almost linear'' transfer function. To illustrate the danger of doing this, we used the Brainweb synthetic
-template \cite{Cocosco1997}\cite{Kwan1999}. Brainweb provides two perfectly aligned, realistically simulated brain MRI in T1 and T2 modalities
-(fig. \ref{fig:brainweb_t1_t2_input}). Ideally, a multi-modal registration method should return the identity transformation to register these perfectly aligned images.
-Figure \ref{fig:syncc_brainweb_t1_t2_overlay} depicts the result of registering the images using ANTS with the Cross Correlation metric. We can see that the cortex was
-(incorrectly) strongly deformed: the deformation field maximizing the cross correlation between the two multi-modal images does not coincides with the deformation field
-correctly aligning the images. Figure \ref{fig:syencc_brainweb_t1_t2_overlay} depicts the result of registering the images using the Expected Cross-Correlation metric.
-Although the deformation field is not exactly zero, the deformations are much smaller.
+template \cite{Cocosco1997}\cite{Kwan1999}. Brainweb provides two perfectly aligned, realistically simulated brain MRI in T1 and T2 modalities. Ideally, a multi-modal
+registration method should return the identity transformation to register these perfectly aligned images.
+Figure \ref{fig:t1_t2_reg_pannel} depicts the result of registering the images using the SyN algorithm with the different metrics. We can see that using the CC metric,
+the cortex was (incorrectly) strongly deformed with a maximum displacement of 11.7mm. and an average of 2.98mm.: the deformation field maximizing the cross correlation between the two multi-modal images does not coincides with the deformation field
+correctly aligning the images. Although the deformation field is not exactly zero using the ECC metric (a maximum displacement of 2.6 mm, and an average of 0.15mm.), the deformations
+are much smaller. Using MI, the moving image is left almost unchanged with a maximum displacement of 0.4mm and an average of 0.06mm.
+
+
 
 \begin{figure}[H]
 \centering
-\fbox{\subfloat[Brainweb T1 (left) and T2(right) overlaid using two different channels(middle). T1 is depicted in red and T2 in green.]{\label{fig:brainweb_t1_t2_input}\includegraphics[width=1.0\linewidth]{./images/brainweb_t1_t2_overlay.png}}}\\
-\fbox{\subfloat[T2 registered towards T1 using ANTS with the Cross-Correlation metric. Boundaries are clearly distorted.]{\label{fig:syncc_brainweb_t1_t2_overlay}\includegraphics[width=1.0\linewidth]{./images/syncc_brainweb_t1_t2_overlay.png}}}\\
-\fbox{\subfloat[T2 registered towards T1 using SyN algorithm with the Expected Cross-Correlation metric. Deformations are hard to see: ventricles are slightly dilated.]{\label{fig:syencc_brainweb_t1_t2_overlay}\includegraphics[width=1.0\linewidth]{./images/synecc_brainweb_t1_t2_overlay.png}}}\\
-\fbox{\subfloat[Norm of displacement vectors obtained with the ECC metric. The average norm was 0.26 voxels (excluding background voxels) with a maximum of 2.6 voxels. \textcolor{red}{TO-DO: correct the incorrectly excluded voxels inside the brain(it's CSF, not BG)}]{\label{fig:synecc_disp_norms}\includegraphics[width=1.0\linewidth]{./images/synecc_disp_norms.png}}}
-\caption{Registration of two perfectly aligned images with different modalities.}
-\label{fig:brainweb_t1_t2}
+\fbox{\includegraphics[width=1.0\linewidth]{./images/t1_t2_reg_pannel.png}}
+\caption{T2 registered towards T1 using the greedy SyN algorithm with different metrics. Since both images are perfectly aligned, the expected result is the identity transformation.
+Columns 1 through 5 depict: T1 Brainweb template, warped T2, norm of displacement vectors, warped T2 (green channel) overlaid over T1 (red channel), norm of displacement vectors
+(green channel) overlaid over T1 (red channel). Row 1: using the CC metric, the cortex is clearly distorted, the average displacement was 2.98 mm., with a maximum of 11.7 mm.
+Row 2: with the EM metric deformations are less visible, with an average displacement of 0.21 mm. and a maximum of 3.9 mm.
+Row 3: with the ECC metric deformations are less visible, with an average displacement of 0.15 mm. and a maximum of 2.6 mm. Row 4: the MI metric leaves the image almost unchanged
+with an average of 0.06 mm. and a maximum of 0.4 mm.}
+\label{fig:t1_t2_reg_pannel}
 \end{figure}
+
+
 
 The above experiment is hardly a compelling evidence that the ECC metric performs better than CC for multi-modal registration. Unfortunately, to the best of our knowledge,
 there are no manually annotated multi-modality data publicly available, so we will perform a less
@@ -65,7 +73,7 @@ moving image) towards each IBSR T1 image (which play the role of static image) u
 the transfer function from T1 to T2 intensities and applied the transfer function to the IBSR T1 obtaining a ``perfectly aligned'' realistic synthetic T2 image for each IBSR volume
 (fig. \ref{fig:semi_synthetic}), therefore the annotations remain exactly the same as the T1 counterparts and we are able to compute the overlap scores as before. Note that the number
 of registrations we need to perform is now 612 because we can use the T2 modality either as the moving or the static image. Table \ref{tab:multimodal_results_seg} and
-figure \ref{fig:multi_graph_seg} show the results analogous to table \ref{tab:monomodal_results_seg} and figure \ref{fig:mono_graph_seg} but this time averaged over 612
+figure \ref{fig:multi_seg} show the results analogous to table \ref{tab:monomodal_results_seg} and figure \ref{fig:mono_graph_seg} but this time averaged over 612
 multimodal registrations. Note how the performance of the CC metric strongly drops while EM and ECC are less affected by the change of modality. Table
 \ref{tab:multimodal_results_segTri_fill} and figure \ref{fig:multi_graph_segTri_fill} show the overlap scores of tissue types, where the same
 behavior can be observed.\\
@@ -83,16 +91,16 @@ the same as the corresponding T1 images.}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1.0\linewidth]{./images/multi_graph_seg.png}\\
-\caption{Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with EM, ECC and CC metrics. The Jaccard
+\includegraphics[width=1.0\linewidth]{./images/multi_lines_seg.png}\\
+\caption{Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with EM, ECC, CC and MI metrics. The Jaccard
 indices were averaged over 612 multimodal registrations.}
-\label{fig:multi_graph_seg}
+\label{fig:multi_seg}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\linewidth]{./images/multi_graph_segTri_fill.png}\\
-\caption{Comparison of the registration performance (measured by the Jaccard index over Background, CSF, GM and WM)of the Greedy SyN algorithm with EM, ECC and CC metrics. The Jaccard
+\caption{Comparison of the registration performance (measured by the Jaccard index over Background, CSF, GM and WM)of the Greedy SyN algorithm with EM, ECC, CC and MI metrics. The Jaccard
 indices were averaged over 612 multimodal registrations.}
 \label{fig:multi_graph_segTri_fill}
 \end{figure}
