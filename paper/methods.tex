@@ -5,24 +5,31 @@ associated to $I, J$, under their corresponding grid-to-space transforms $\mathc
 values these images may take (e.g. $G=\left\lbrace 0,1,...,255\right\rbrace$). We aim to find two diffeomorphisms
 $\phi_{I}:\Omega_{I}\rightarrow \Omega_{R}$, $\phi_{J}:\Omega_{J}\rightarrow \Omega_{R}$ such that the images get aligned in the reference space $\Omega_{R}$
 after warping them under $\phi_{I}^{-1}$ and $\phi_{J}^{-1}$. In other words, for each point $x \in \Omega_{R}$, $I(\phi_{I}^{-1}(x))$ is mapped to $J(\phi_{J}^{-1}(x))$
-(fig. \ref{fig:syn_overview}). To handle multi-modality images, we will model the intensity correspondence between the two images using two independent transfer functions.
+(fig. \ref{fig:syn_overview}). To handle multi-modality images, we will model the intensity correspondence between the two images using two conditionally independent transfer functions.
 More precisely:
 \begin{equation}\label{eq:SyNEM_gom_ref}
     \begin{array}{ccccc}
-        F_{J}[J(\phi_{J}^{-1}(x))] &=& I(\phi_{I}^{-1}(x)) &+& \eta_{J}(x)\\
-        F_{I}[I(\phi_{I}^{-1}(x))] &=& J(\phi_{J}^{-1}(x)) &+& \eta_{I}(x)
+        F_{J}\left[J(\phi_{J}^{-1}(x))\right] &=& I(\phi_{I}^{-1}(x)) &+& \eta_{J}(x)\\
+        F_{I}\left[I(\phi_{I}^{-1}(x))\right] &=& J(\phi_{J}^{-1}(x)) &+& \eta_{I}(x)
     \end{array}, x\in\Omega_{R},
 \end{equation}
-where $\eta_{I}, \eta_{J}$ are independent random fields of independent random variables, i.e. $\eta_{I}(x) \perp \eta_{I}(y)$,
-$\eta_{J}(x) \perp \eta_{J}(y)$ and $\eta_{I}(x) \perp \eta_{J}(y) \forall x,y\in \Omega_{R}$. This formulation differs from Arce-Santana {\it et al.} \cite{Arce-santana2014} in that
+where $\eta_{I}, \eta_{J}$ are random fields. In general, we cannot assume independence between $\eta_{I}$ and $\eta_{J}$ because there is some unknown relationship between $I$ and $J$.
+Instead, we assume conditional independence: given $F_{J}[J(\phi_{J}^{-1}(\cdot))]$, the random field $\eta_{J}$ is independent from $\eta_{I}$. Analogously, given
+$F_{I}[I(\phi_{I}^{-1}(\cdot))]$, the random field $\eta_{I}$ is independent from $\eta_{J}$. In addition, we assume independence within each random field, i.e.
+\hbox{$\eta_{I}(x) \perp \eta_{I}(y)$} and \hbox{$\eta_{J}(x) \perp \eta_{J}(y)$} \hbox{$\forall x,y\in\Omega_{R}$}. This formulation differs from Arce {\it et al.} \cite{Arce-santana2014} in that
 we are taking advantage of both modalities by estimating transfer functions in both directions. Notice that, by assuming the random variables
-$\eta_{I}(x), \eta_{J}(x), x\in\Omega_{R}$ are normally distributed, Arce-Santana {\it et al.} \cite{Arce-santana2014} are implicitly assuming that the transfer function is surjective,
-which, in general, is not true. Although this condition may seem too strong, the same formulation implicitly introduces a mechanism to alleviate the effect of having non-surjective
-transfer functions: if an intensity value $g\in G$ in the first modality maps to multiple intensities, say $h_{1}, ..., h_{k}\in G$, in the second modality, the estimated variance
-will be large, which will reduce the contribution of all those voxels having intensity $g$. By considering both transfer functions instead of arbitrarily choosing one of them, we
-are not solving the issue of non-surjective transfers, since some intensities $h_{1}, ..., h_{k}$ may map more intensities, in addition to $g$, in the first modality (e.g. if the
-first transfer is not injective), but it may be the case that some of them only map to $g$, which will then be exploited by the algorithm since their estimated variance will be small,
-thus making their contribution stronger.\\
+$\eta_{I}(x), \eta_{J}(x), x\in\Omega_{R}$ are normally distributed, Arce {\it et al.} \cite{Arce-santana2014} are implicitly assuming that there is a functional dependency
+between the two modalities, which in general is not true. However, similar studies, most notably Roche et al. \cite{Roche1998} have found that in brain image registration of several
+modalities, the assumption of a functional dependency is not critical.
+%the transfer function is surjective
+%(in other words, there is a functional dependency between the two modalities),
+%which, in general, is not true. Although this condition may seem too strong, the same formulation implicitly introduces a mechanism to alleviate the effect of having non-surjective
+%transfer functions: if an intensity value $g\in G$ in the first modality maps to multiple intensities, say $h_{1}, ..., h_{k}\in G$, in the second modality, the estimated variance
+%will be large, which will reduce the contribution of all those voxels having intensity $g$. By considering both transfer functions instead of arbitrarily choosing one of them, we
+%are not solving the issue of non-surjective transfers, since some intensities $h_{1}, ..., h_{k}$ may map more intensities, in addition to $g$, in the first modality (e.g. if the
+%first transfer is not injective), but it may be the case that some of them only map to $g$, which will then be exploited by the algorithm since their estimated variance will be small,
+%thus making their contribution stronger. In their experiments, Roche et al.\cite{Roche1998} found that in brain image registration of several modalities, the assumption of a functional dependency is not
+%critical.\\
 
 \begin{figure}[H]
 \centering
@@ -32,64 +39,71 @@ diffeomorphism is computed by composing the two partial diffeomorphisms.}
 \label{fig:syn_overview}
 \end{figure}
 
-By defining the warped images $\tilde{I}(x) = I(\phi_{I}^{-1}(x))$ and $\tilde{J}(x) = J(\phi_{J}^{-1}(x)), x \in \Omega_{R}$ we can write
-\begin{equation}\label{eq:SyNEM_gom_warped}
-    \begin{array}{ccccc}
-        F_{J}[\tilde{J}(x)] &=& \tilde{I}(x) &+& \eta_{J}(x)\\
-        F_{I}[\tilde{I}(x)] &=& \tilde{J}(x) &+& \eta_{I}(x)
-    \end{array}, x\in\Omega_{R},
-\end{equation}
-and now, both images are defined on the reference space. If we assume $\phi_{I}$ and $\phi_{J}$ are initial approximations to the true transformations
-aligning $I$ and $J$, we are interested in computing two update diffeomorphisms (endomorphisms) \hbox{$\psi_{I}, \psi_{J} : \Omega_{R} \rightarrow \Omega_{R}$} such that
-
+By defining the warped images \hbox{$\tilde{I}(x) = I(\phi_{I}^{-1}(x))$} and \hbox{$\tilde{J}(x) = J(\phi_{J}^{-1}(x))$} and the hidden random variables
+\hbox{$Y(x) = F_{J}\left[\tilde{J}(x)\right]$}, \hbox{$Z(x) = F_{I}\left[\tilde{I}(x)\right]$, $x\in\Omega_{R}$}, our observation model can be written as
 \begin{equation}\label{eq:SyNEM_gom_update}
     \begin{array}{ccccc}
-    	F_{J}[\tilde{J}(x)] &=& \tilde{I}(\psi_{I}(x)) &+& \eta_{J}(x)\\
-        F_{I}[\tilde{I}(x)] &=& \tilde{J}(\psi_{J}(x)) &+& \eta_{I}(x)
+    	Y(x) &=& \tilde{I}(x) &+& \eta_{J}(x)\\
+        Z(x) &=& \tilde{J}(x) &+& \eta_{I}(x)
     \end{array}, x\in\Omega_{R}.
 \end{equation}
-These are precisely two instances of Arce-Santana's formulation (eq. 1 of \cite{Arce-santana2014}) in the reference space, where the diffeomorphisms can be written as
-\hbox{$\psi_{I}(x) = x + \mathbf{u_{I}}(x)$}, \hbox{$\psi_{J}(x) = x + \mathbf{u_{J}}(x)$} where $\mathbf{u_{I}}$ and $\mathbf{u_{J}}$ are displacement fields. By following
-similar computations as in \cite{Arce-santana2014} we can obtain the EM cost function as:
 
+These are precisely two instances of Arce's formulation (eq. 1 of \cite{Arce-santana2014}) in the reference space, and the conditional independence of $\eta_{I}, \eta_{J}$
+given $Y, Z, \phi_{I}, \phi_{J}$ is made explicit. By performing similar computations as in \cite{Arce-santana2014} we can obtain the EM cost function as:
 \begin{equation}\label{eq:SyNEM_energy}
-    Q(\psi_{I}, \psi_{J}) = \int_{x \in \Omega_{R}} \frac{(\bar{J}(x) - \tilde{I}(\psi_{I}(x)))^{2}}{2\sigma_{J}(x)^{2}} +
-                                                     \frac{(\bar{I}(x) - \tilde{J}(\psi_{J}(x)))^{2}}{2\sigma_{I}(x)^{2}} dV +
-                                                     \lambda\left(R(\psi_{I}) + R(\psi_{J})\right),
+    Q(\phi_{I}, \phi_{J}) = \sum_{x \in \Omega_{R}} \frac{\left(\overline{Y}(x) - \tilde{I}(x)\right)^{2}}{2\sigma^{2}_{Y}(x)} +
+                                                     \frac{\left(\overline{Z}(x) - \tilde{J}(x)\right)^{2}}{2\sigma^{2}_{Z}(x)} dV +
+                                                     \lambda\left(R(\phi_{I}) + R(\phi_{J})\right),
 \end{equation}
-where $\bar{I} = E[F_{I}(\tilde{I})]$, $\bar{J} = E[F_{J}(\tilde{J})]$, $\sigma_{I}^{2} =Var[F_{I}(\tilde{I})]$ and $\sigma_{J}^{2} =Var[F_{J}(\tilde{J})]$ as in
-\cite{Arce-santana2014}. Note that this is the sum of two independent cost functions, therefore, gradient computations with respect to $\psi_{I}$ and $\psi_{J}$ may be
-performed separately. This energy function can be efficiently minimized by following Vercauteren's analysis of the \textit{diffeomorphic demons} algorithm \cite{Vercauteren2009}
-as follows. Let's choose the regularization function $R(\cdot) = ||\nabla \cdot||^{2}$ and consider the cost function given by
+where $\phi_{I}^{(0)}, \phi_{J}^{(0)}$ are initial approximations of the transformations, and
+\begin{equation}
+    \begin{array}{lll}
+        \overline{Y} &=& E\left[\left.Y \right| I, J, \phi_{I}^{(0)}, \phi_{J}^{(0)}\right]\\
+        \overline{Z} &=& E\left[\left.Z \right| I, J, \phi_{I}^{(0)}, \phi_{J}^{(0)}\right]\\
+        \sigma_{Y}^{2}(x) &=& Var\left[\left.Y(x) \right| I, J, \phi_{I}^{(0)}, \phi_{J}^{(0)}\right]\\
+        \sigma_{Z}^{2}(x) &=& Var\left[\left.Z(z) \right| I, J, \phi_{I}^{(0)}, \phi_{J}^{(0)}\right]
+    \end{array}
+\end{equation}
+
+Notice that Arce's metric \cite{Arce-santana2014}, may be regarded as a generalization of the Correlation Ratio proposed by
+Roche et al. \cite{Roche1998}: if we assume $\sigma^{2}_{Z}(x) = \sigma^{2}_{Z}$ (constant for all $x\in\Omega_{R}$) then, according to
+eq.(\ref{eq:SyNEM_gom_update}),\hbox{$\left[Z(x) - \tilde{J}(x)\right] \sim N(0, \sigma^{2}_{Z})$}, and
+\begin{equation}
+    \frac{1}{|\Omega_{R}|}\sum_{x \in \Omega_{R}} \frac{\left(\overline{Z}(x) - \tilde{J}(x)\right)^{2}}{\sigma^{2}_{Z}(x)} =
+    \frac{Var\left[Z - \tilde{J}\right]}{Var\left[Z\right]},
+\end{equation}
+the Correlation Ratio. Here, we have written simply $Var[\cdot]$ to denote the conditional sample variance given $ I, J, \phi_{I}^{(0)}, \phi_{J}^{(0)}$.\\
+
+Equation \ref{eq:SyNEM_energy} can be efficiently minimized by following Vercauteren's analysis of the \textit{diffeomorphic demons} algorithm \cite{Vercauteren2009} as follows. Let's choose the regularization function $R(\cdot) = ||\nabla \cdot||^{2}$. Given
+an initial approximation of $\phi_{J}^{-1}$, we wish to find a small update displacement field $\mathbf{u}$, which minimizes:
 \begin{equation}\label{eq:vercauteren_cost}
-    Q(\psi) = \int_{x \in \Omega_{R}} \frac{(\bar{I}(x) - \tilde{J}(\psi(x)))^{2}}{\sigma_{I}(x)^{2}} dV + \lambda ||\nabla \psi||^{2}.
+    Q(\mathbf{u}) = \sum_{x \in \Omega_{R}} \frac{\left(\overline{Z}(x) - \tilde{J}(x + \mathbf{u}(x))\right)^{2}}{\sigma^{2}_{Z}(x)} + \lambda ||\nabla \mathbf{u}||^{2}.
 \end{equation}
-Minimizing this energy can be accomplished by introducing an auxiliary deformation field $\varphi$ and a modified energy function
+
+Minimizing this energy can be accomplished by introducing an auxiliary deformation field $\mathbf{v}$ and a modified energy function
 \begin{equation}\label{eq:vercauteren_extended_cost}
-    Q(\psi, \varphi) = \int_{x \in \Omega_{R}} \frac{(\bar{I}(x) - \tilde{J}(\varphi(x)))^{2}}{\sigma_{I}(x)^{2}} dV + \frac{1}{\tau}||\psi-\varphi||^{2}+\lambda ||\nabla \psi||^{2},
+    Q(\mathbf{u}, \mathbf{v}) = \sum_{x \in \Omega_{R}} \frac{(\overline{Z}(x) - \tilde{J}(x + \mathbf{u}(x)))^{2}}{\sigma^{2}_{Z}(x)} dV + \frac{1}{\tau}||\mathbf{u}-\mathbf{v}||^{2}+\lambda ||\nabla \mathbf{v}||^{2},
 \end{equation}
-the optimization can then be accomplished by alternating two steps: in the first step we start with $\psi = Id$ and write $\varphi = Id + \mathbf{u}$, which translates to a
-minimization with respect to $\mathbf{u}$:
+the optimization can then be accomplished by alternating two steps. In the first step we optimize with respect to $\mathbf{u}$ starting with $\mathbf{v} = 0$
 \begin{equation}\label{eq:vercauteren_step1}
-    \mathbf{u}^{*} = \arg\min_{\mathbf{u}}\int_{x \in \Omega_{R}} \frac{(\bar{I}(x) - \tilde{J}(x+\mathbf{u}(x)))^{2}}{\sigma_{I}(x)^{2}} dV + \frac{1}{\tau} ||\mathbf{u}||^{2}.
+    \widehat{\mathbf{u}} = \arg\min_{\mathbf{u}}\sum_{x \in \Omega_{R}} \frac{(\overline{Z}(x) - \tilde{J}(x+\mathbf{u}(x)))^{2}}{\sigma^{2}_{Z}(x)} dV + \frac{1}{\tau} ||\mathbf{u}||^{2}.
 \end{equation}
 We can perform a point-wise minimization by using the first order approximation around the identity
 $\tilde{J}(x+\mathbf{u}(x)) \approx \tilde{J}(x) + \nabla \tilde{J}(x)^{T}\mathbf{u}(x)$ and then equating to zero the derivative with respect to $\mathbf{u}(x)$ to obtain:
 \begin{equation}\label{eq:euler_lagrange_step1}
-    \mathbf{u}^{*}(x) = \frac{\bar{I}(x) - \tilde{J}(x)}{||\nabla \tilde{J}(x)||^{2} + \frac{\sigma_{I}^{2}(x)}{\tau}}\nabla \tilde{J}(x).
+    \widehat{\mathbf{u}}(x) = \frac{\overline{Z}(x) - \tilde{J}(x)}{||\nabla \tilde{J}(x)||^{2} + \frac{\sigma_{Z}^{2}(x)}{\tau}}\nabla \tilde{J}(x).
 \end{equation}
-The interesting thing about this expression is that it corresponds to equation 4 in Vercauteren {\it et al.} \cite{Vercauteren2009}, but in their work, the factor $\sigma_{I}^{2}(x)$
-is artificially {\it approximated} by $\sigma_{I}(x)^{2} \approx |\bar{I}(x) - \tilde{J}(x)|$ to obtain the traditional {\it demons} step. However, in our case, we have an
-explicit, and natural estimation of $\sigma_{I}(x)^{2}$.\\
+This expression corresponds to equation 4 in Vercauteren {\it et al.} \cite{Vercauteren2009}, but in their work, the factor $\sigma_{Z}^{2}(x)$
+is approximated by $\sigma_{Z}(x) \approx |\overline{Z}(x) - \tilde{J}(x)|$ to obtain the traditional {\it demons} step. However, in our case as in Arce
+{\it et al.}\cite{Arce-santana2014}, we have an explicit and natural estimation of $\sigma^{2}_{Z}(x)$.\\
 
-The second step minimizes eq. \ref{eq:vercauteren_extended_cost} with respect to $\psi$ and with $\varphi$ being given by $\varphi = \varphi^{*}$ previously obtained. It can be
-shown that the solution of this second sub-problem is the convolution of the correspondence field by a Gaussian kernel\cite{Vercauteren2009}.\\
-
-To update diffeomorphisms $\phi_{I}, \phi_{J}$ we need to take into consideration that we used their inverses to map images $I, J$ to the reference space. A direct expansion of
-$\tilde{I} \circ \psi$ yields $\phi_{I}^{-1} \leftarrow \phi_{I}^{-1} \circ \psi$, taking its inverse yields $\phi_{I} \leftarrow \psi^{-1} \circ \phi_{I}$, where
-$\psi^{-1} = Id - \mathbf{u}$ for a small displacement field $\mathbf{u}$. We adopted this strategy rather than directly updating the inverses so that the resulting algorithm
-(alg. \ref{alg:SyNEM})is equivalent to the Greedy SyN algorithm previously described (alg. \ref{alg:Greedy_SyN}), which has been extensively tested by the neuroimaging
-community.
+The second step minimizes eq. \ref{eq:vercauteren_extended_cost} with respect to $\mathbf{v}$ and with $\mathbf{u}=\widehat{\mathbf{u}}$ previously obtained. It can be
+shown that the solution of this second sub-problem is the convolution of $\widehat{\mathbf{u}}$ with a Gaussian kernel\cite{Vercauteren2009}.\\
+%To update diffeomorphisms $\phi_{I}, \phi_{J}$ we need to take into consideration that we used their inverses to map images $I, J$ to the reference space. A direct expansion of
+%$\tilde{I} \circ \psi$ yields $\phi_{I}^{-1} \leftarrow \phi_{I}^{-1} \circ \psi$, taking its inverse yields $\phi_{I} \leftarrow \psi^{-1} \circ \phi_{I}$, where
+%$\psi^{-1} = Id - \mathbf{u}$ for a small displacement field $\mathbf{u}$. We adopted this strategy rather than directly updating the inverses so that the resulting algorithm
+%(alg. \ref{alg:SyNEM})is equivalent to the Greedy SyN algorithm previously described (alg. \ref{alg:Greedy_SyN}), which has been extensively tested by the neuroimaging
+%community.
 
 \begin{algorithm}[h!]
 \caption{SyN-EM}\label{alg:SyNEM}
