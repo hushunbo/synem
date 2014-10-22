@@ -1,9 +1,25 @@
 \section{Introduction}
-\textcolor{red}{We need an introduction with the right style for the journal we are submitting.}\\
 
-Our contributions are: 1) we adapted the EM framework for Multi-Modal Non-linear Registration proposed by Arce-Santana {\it et al.}\cite{Arce-santana2014} (originally
+Multi-modal image registration has traditionally been constrained to linear methods: since registration of medical images of different modalities is almost exclusively
+applied to intra-subject image registration, it is often believed that there must exist a linear transformation that correctly brings them into correspondence. However,
+certain imaging modalities present severe distortions that cannot be accommodated by a linear model. Diffusion MR Images, for instance, suffer from distortions caused by
+$B_{0}$ susceptibility and eddy-currents \cite{Tournier2011}\cite{Andersson2003}, which makes their registration to other modality images, even from the same subject,
+a non-linear problem. On the other hand, combining diffusion data to T1 MRI, for instance, has the potential of significantly improving tractography \cite{Smith2012}.\\
+
+Roche et al.\cite{Roche2004a} proposed an extension of the Demons algorithm to account for multi-modal images. They consider two types of transfer function between the two
+modalities: mono-modal (functional) dependency, and bi-modal dependency (each intensity in the first modality may correspond to two intensities in the other modality).
+For the mono-modal dependency they model the transfer function as a polynomial of fixed degree, and to account for bi-modalities, they use a mixture of two Gaussians.
+The validation was performed using the Brainweb synthetic template \cite{Cocosco1997}\cite{Kwan1999} and two real images. Quantitative evaluation was performed by comparing
+the resulting deformation fields, which only measures consistency of results across modalities but not registration accuracy.\\
+
+An important limitation of multi-modal methods based on the maximization of an information-theoretic similarity metric is precisely that the
+metric depends solely on the estimated distribution of corresponding intensities in both modalities, which is insensitive to local image
+features like edges and texture. As pointed out by Sotiras et al. \cite{Sotiras2013}, any random spatial permutation of corresponding pixels would
+result in exactly the same distribution, which results in a large number of local maxima \cite{Roche1998}, making an accurate initialization crucial.\\
+
+Our contributions are: 1) we adapted the EM framework for Multi-Modal Non-linear Registration proposed by Arce {\it et al.}\cite{Arce-santana2014} (originally
 developed under the elastic deformation framework) under the Symmetric Diffeomorphic Registration framework developed by Avants {\it et al.}\cite{Avants2008}
 \cite{Avants2011} and taking advantage of both image modalities, 2)we propose a new metric, called Expected Cross-Correlation, which extends the Cross-Correlation metric for multi-modality images by taking
 advantage of the estimated transfer functions provided by the EM framework, and 3)we propose a quantitative validation methodology for multi-modal brain MRI registration methods
 based on generating semi-synthetic images using real mono-modal brain images and a synthetic multi-modal template, to the best of our knowledge this is the first
-quantitative evaluation for multi-modal registration algorithms using real annotated brain images.
+quantitative evaluation for multi-modal registration algorithms using real annotated brain images.\\
