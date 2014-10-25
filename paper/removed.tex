@@ -1,3 +1,102 @@
+\pagebreak
+\section{Affine relation is optimal for CC}
+
+Let's assume that for every $y \in \Omega$, the relationship between intensities of images $I$ and $J$ within the window $W_y$ with center $y$, is affine:
+\begin{equation}
+    J(y) = \alpha_{y} I(y) + \beta_{y},
+\end{equation}
+for some $\alpha_{y}, \beta_{y} \in \mathbf{R}$ then the gradient of the CC metric at $x$, for any $x\in W_{y}$ is given by (eq. 4, in Avants et al.\cite{Avants2008}):
+\begin{equation}
+    \nabla_{x} CC(y; \psi) = \frac{2A_{y}}{B_{y}C_{y}}\left[ (I(x) - \mu_{y}) - \frac{A_{y}}{C_{y}}\left(J(\psi(x)) - \nu_{y}\right)\right]\nabla J(\psi(x)).
+\end{equation}
+By substituting:
+\begin{equation}
+    \begin{array}{lll}
+        A_{y} &=& \alpha B_{y}\\
+        C_{y} &=& \alpha^{2}B_{y}
+    \end{array}
+\end{equation}
+we obtain
+\begin{equation}
+    \frac{A_{y}}{C_{y}}\left(J(\psi(x)) - \nu_{y}\right) =
+    \frac{\alpha B_{y}}{\alpha^{2}B_{y}}\left(\alpha I(x) + \beta - \alpha \mu_{y} - \beta \right) = (I(x) - \mu_{y})
+\end{equation}
+which implies $\nabla_{x} CC(y; \psi) = 0$.
+
+
+
+
+
+\section{CC gradient}
+We are interested in computing the gradient of
+\begin{equation}
+    CC(\bar{I}, \bar{J}, x) = \frac{<\bar{I}, \bar{J}>^{2}}{<\bar{I}><\bar{J}>}
+\end{equation}
+where the inner product is taken over an $n^{D}$ window (eq. 4, in Avants et al.\cite{Avants2008}). Since the windows are considered discrete, a more precise notation
+for this expression is:
+\begin{equation}
+    CC(y;\phi^{-1}_{I}, \phi^{-1}_{J}) = \frac{\left[\sum_{z\in W_{y}} \left(\tilde{I}(z) - \mu_{y}\right)\left(\tilde{J}(z) - \nu_{y}\right)\right]^{2}}
+    {\left[\sum_{z \in W_{y}}\left(\tilde{I}(z) - \mu_{y}\right)^{2}\right] \left[\sum_{z \in W_{y}}\left(\tilde{J}(z) - \nu_{y}\right)^{2}\right]} = \frac{A_{y}^{2}}{B_{y}C_{y}}
+\end{equation}
+where $\tilde{I}(z) = I(\phi_{I}^{-1}(z))$, $\tilde{J}(z) = J(\phi_{J}^{-1}(z))$ and the full energy is given by
+\begin{equation}
+    CC(\phi^{-1}_{I}, \phi^{-1}_{J}) = \sum_{y\in\Omega} CC(y; \phi^{-1}_{I}, \phi^{-1}_{J})
+\end{equation}
+where $W_{y}$ is the window of side $n$ centered at voxel $y$, $|W_{y}|$ is the number of voxels in window $W_{y}$ and:
+\begin{equation}
+    \begin{array}{lll}
+        \mu_{y} &=& \frac{1}{|W_{y}|}\sum_{z \in W_{y}}\tilde{I}(z)\\
+        \nu_{y} &=& \frac{1}{|W_{y}|}\sum_{z \in W_{y}}\tilde{J}(z)\\
+    \end{array}.
+\end{equation}
+
+We wish to compute the variation of $CC(\phi^{-1}_{I}, \phi^{-1}_{J})$ along $\phi^{-1}_{I}$ and $\phi^{-1}_{I}$, which will allow us to obtain the generalized gradients,
+in a way similar to Hermosillo et al. \cite{Hermosillo2004}. We will proceed with $\phi^{-1}_{I}$, since the counterpart for $\phi^{-1}_{J}$ can be obtained analogously.
+For a fixed $\phi_{J}$, define the restricted function $H(\phi_{I}) = CC(\phi_{I}, \phi_{J})$, then by differentiating w.r.t $\epsilon$ we have:
+\begin{equation}
+    \delta_{\psi} H(\phi^{-1}_{I}) = \left.\frac{d H(\phi^{-1}_{I} + \epsilon \psi)}{d\epsilon}\right|_{\epsilon=0} =
+\end{equation}
+\begin{equation}
+    = \sum_{y\in\Omega}\frac{\left(2A_{y} B_{y}C_{y}\right)(\tilde{I} - \mu_{y})\left[\psi^{T}\nabla \tilde{J}\right] - 2\left(A_{y}^{2}B_{y}\right)(\tilde{J} - \nu_{y})\left[\psi^{T}\nabla \tilde{J}\right]}
+                                                {B_{y}^{2} C_{y}^{2}}
+\end{equation}
+thus, the gradient w.r.t $\phi^{-1}_{I}$ (a function such that its inner product with $\psi$ equals the variation $\delta_{\psi} H$ for any $\psi$\cite{Hermosillo2004}) is
+
+The set of window terms $CC(y;\phi_{I}, \phi_{J})$
+that are affected by point $x$ is precisely the set of all windows $W_{y}$ such that $y \in W_{x}$. Therefore:
+\begin{equation}
+    \nabla_{x} CC(\phi_{I}, \phi_{J}) = \sum_{y \in W_{x}} \nabla_{x} CC(y; \phi_{I}, \phi_{J})
+\end{equation}
+and
+\begin{equation}
+    \nabla_{x} CC(y; \phi_{I}, \phi_{J}) = \frac{\left(2A_{y} B_{y}C_{y}\right)\nabla_{x}A_{y} - \left(A_{y}^{2}B_{y}\right)\nabla_{x}C_{y}}
+                                                {B_{y}^{2} C_{y}^{2}}
+\end{equation}
+where
+\begin{equation}
+    \begin{array}{lll}
+    \nabla_{x}A_{y} &=& (\tilde{I}(x) - \mu_{y})\nabla \tilde{J}(x)\\
+    \nabla_{x}C_{y} &=& 2(\tilde{J}(x) - \nu_{y})\nabla \tilde{J}(x)
+    \end{array}.
+\end{equation}
+Therefore, the gradient of the full energy w.r.t $x$ is
+\begin{equation}
+    \nabla_{x} CC(\phi_{I}, \phi_{J}) = \sum_{y \in W_{x}} \frac{2A_{y}}{B_{y}C_{y}}\left[ (\tilde{I}(x) - \mu_{y}) - \frac{A_{y}}{C_{y}}\left(\tilde{J}(x) - \nu_{y}\right)\right]\nabla \tilde{J}(x)
+\end{equation}
+which can be further simplified as
+\begin{equation}
+    \nabla_{x} CC(\phi_{I}, \phi_{J}) = \left[S_{a}(x) \tilde{I}(x) - S_{b}(x)\tilde{J}(x) - S_{c}\right]\nabla \tilde{J}(x)
+\end{equation}
+where
+\begin{equation}
+    \begin{array}{lll}
+        S_{a} &=& \sum_{y \in W_{x}} \frac{2A_{y}}{B_{y}C_{y}}\\
+        S_{b} &=& \sum_{y \in W_{x}} \frac{2A_{y}^{2}}{B_{y}C_{y}^{2}}\\
+        S_{c} &=& \sum_{y \in W_{x}} \frac{2A_{y}}{B_{y}C_{y}} \left[ \mu_{y} - \frac{A_{y}}{C_{y}}\nu_{y}\right].
+    \end{array}
+\end{equation}
+
+
 %
 %If we assume $\phi_{I}$ and $\phi_{J}$ are initial approximations to the true transformations
 %aligning $I$ and $J$, we are interested in computing two update diffeomorphisms (endomorphisms) \hbox{$\psi_{I}, \psi_{J} : \Omega_{R} \rightarrow \Omega_{R}$} such that
