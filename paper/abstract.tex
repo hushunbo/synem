@@ -1,9 +1,8 @@
 \begin{abstract}
     We present an algorithm for Multi-Modal Symmetric Diffeomorphic Image Registration. The transfer functions between the two modalities are modeled as a set of
-    hidden variables whose values are estimated using the Expectation Maximization (EM) algorithm. We apply the symmetric image normalization method (SyN) to
-    maximize the image similarity defined by the transfer functions estimated in the E-step. We validate our algorithm using the publicly available IBSR database
-    and the Brainweb synthetic template, obtaining very competitive results in both mono- and multi-modal image registration. Besides its simplicity, the EM
-    Metric presents promising properties that can be exploited to design more sophisticated metrics. As a simple example, we extend the widely used Cross
-    Correlation (CC) metric, which may not be used for multi-modality images in general. We show that our extension, Expected Cross Correlation (ECC),
-    performs better than Cross Correlation in the multi-modal case, while being very competitive even in the mono-modal case.
+    hidden variables, which results in a metric that may be regarded as a generalization of the Correlation Ratio. We apply the greedy symmetric image normalization method
+    (SyN) to efficiently maximize the image similarity metric in the space of diffeomorphic transformations. We validate our algorithm using the publicly available IBSR database
+    and the Brainweb synthetic template, obtaining very competitive results in both mono- and multi-modal image registration. As a natural extension, we generalize the widely used
+    normalized Cross Correlation (CC) metric, for multi-modality images, and show that the resulting metric, Expected Cross Correlation (ECC),
+    performs better than the original Cross Correlation in the multi-modal case, without compromising performance in the mono-modal case.
 \end{abstract}
