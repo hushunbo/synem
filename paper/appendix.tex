@@ -1,82 +1,87 @@
 \appendix
-\section{EM derivation}
+\section{Computation of the E-Step}\label{ap:E_step}
 Here, we show the details to compute the E-step of the EM algorithm \cite{Dempster1977} to obtain a local maximum likelihood estimator for $\phi_{I}, \phi_{J}$
 according to the observation model in eq. (\ref{eq:SyNEM_gom_update}). We follow similar steps as in Arce et al. \cite{Arce-santana2014}.\\
 
 The E-step \cite{Dempster1977} consists in computing the conditional expectation of the log-likelihood of the (complete) data $(Y, Z, I, J)$ according to the observation model given
-in eq. \ref{eq:SyNEM_gom_update}. The conditional expectation is to be computed given initial approximations of the transformation $\phi_{I}^{(0)}, \phi_{J}^{(0)}$ and the (observed)
-data $I, J$.\\
+in eq. \ref{eq:SyNEM_gom_update}. The conditional expectation is to be computed given initial approximations of the transformations
+$\phi^{(0)} = \left(\phi_{I}^{(0)}, \phi_{J}^{(0)}\right)$ and the (observed) data $I, J$. For simplicity, we will compute the E-step corresponding to the hidden random field $Y$.
+The cost function associated to the hidden field $Z$ can be obtained analogously.\\
 
-In this section, we will compute the EM steps with respect to $Y$ and $\psi_{I}$. The corresponding steps with respect to $Z$ and $\psi_{J}$ are analogous. Our observations are
-the input images $I, J$, which take values on the set of intensities $G$. The parameters of our model, which we would like to optimize is the diffeomorphism $\psi_{I}$.
-The random field $\eta_{J}$ is a set of independent Normally-distributed random variables. More formally, if $f_{x}:\mathbf{R}\rightarrow \mathbf{R}^{+}$ is the probability density
+%In this section, we will compute the EM steps with respect to $Y$ and $\phi_{I}$. The corresponding steps with respect to $Z$ and $\phi_{J}$ are analogous. Our observations are
+%the input images $I, J$, which take values on the set of intensities $G$. The parameters of our model, which we would like to optimize is the diffeomorphism $\phi_{I}$.
+The random field $\eta_{J}$ is a set of independent Normally-distributed random variables. More precisely, if $f_{x}:\mathbf{R}\rightarrow \mathbf{R}^{+}$ is the probability density
 function of $\eta_{J}(x)$ then:
-\begin{equation}
-    f_{x}(u) = \frac{1}{\sigma_{x}\sqrt{2 \pi}}\exp\left(-\frac{u^{2}}{2\sigma_{x}^{2}}\right)
+\begin{equation}\label{eq:gaussian}
+    f_{x}(u) = \frac{1}{\sigma_{Y}(x)\sqrt{2 \pi}}\exp\left(-\frac{u^{2}}{2\sigma^{2}_{Y}(x)}\right)
 \end{equation}
-and the marginal distribution of each hidden variable $Y(x)$ given the data is a parametric function of $\psi_I$:
+and the marginal distribution of each hidden variable $Y(x)$ given the data is a function of $\phi_I$:
 \begin{equation}
-    P(Y(x) = \ell | I, J, \psi_{I}) = P(Y(x) = \ell | \tilde{I}(\psi_I(x))) = f_{x}(\ell - \tilde{I}(\psi_I(x))).
-\end{equation}
-
-The E step of the EM algorithm to maximize the likelihood of the complete data consists in computing the conditional expectation of the log-likelihood
-with respect to the above conditional distribution evaluated on an initial parameter $\psi_{I}^{(0)}$:
-\begin{equation}
-    Q(\psi_{I}; \psi_{I}^{(0)}) = \mathbbm{E}\left[ \log \left(P(I, J, Y|\psi_{I})P(\psi_{I})\right) | I, J, \psi_{I}^{(0)}\right] =
+    P(Y(x) = \ell | I, J, \phi_{I}, \phi_{J}) = f_{x}(\ell - I(\phi^{-1}_{I}(x))).
 \end{equation}
 
+The conditional expectation of the log-likelihood with respect to the above conditional distribution evaluated on an initial parameter $\phi^{(0)}$ is:
+
 \begin{equation}
-    =-R(\psi_{I}) + \int_{\mathcal{Y}}\left[\sum_{x\in\Omega_{R}} log f_{x}\left(y(x) - \tilde{I}(\psi_{I}(x))\right) \right] dP(y | I, J, \psi^{(0)}_{I}).
+    Q(\phi_{I}; \phi^{(0)}) = \mathbbm{E}\left[ \log \left(P(I, J, Y|\phi_{I})P(\phi_{I})\right) | I, J, \phi^{(0)}\right] =
 \end{equation}
 
-Where $\mathcal{Y}$ is the set of all possible configurations of the vector field $Y$. The term $R(\psi_{I}) = -\log P(\psi_{I})$ is known as the ``regularization term'' and comes out of the
-integral because it does not depend on $Y$. We will disregard this term for now and concentrate on the second term, known as the ``data term'', in which $\psi_{I}$ is the
-set of parameters we wish to optimize. By assuming a finite grid $\Omega_{R}$, we may interchange the order of summation and integration:
 \begin{equation}
-    \sum_{x\in\Omega_{R}} \int_{\mathcal{Y}} log f_{x}\left(y(x) - \tilde{I}(\psi_{I}(x))\right)  dP(y | I, J, \psi^{(0)}_{I}).
+    =-R(\phi_{I}) + \int_{\mathcal{Y}}\left[\sum_{x\in\Omega_{R}} log f_{x}\left(y(x) - I(\phi^{-1}_{I}(x))\right) \right] dP(y | I, J, \phi^{(0)}).
 \end{equation}
 
-Since all the variables $Y(x), x\in\Omega_{R}$ are independent, $P(y | I, J, \psi^{(0)}_{I}) = P(y(x)| I, J, \psi^{(0)}_{I})P(y^{C}(x) | I, J, \psi^{(0)}_{I})$, where $Y^{C}(x)$ denotes
-the subset of random variables other than $Y(x)$, and $y^{C}(x)$ is a configuration of $Y^{C}(x)$. Therefore, the above expression can be written as
+Where $\mathcal{Y}$ is the set of all possible configurations of the vector field $Y$. The term $R(\phi_{I}) = -\log P(\phi_{I})$ is known as the ``regularization term'' and comes out of the
+integral because it does not depend on $Y$. We will disregard this term for now and concentrate on the second term, known as the ``data term'', in which $\phi_{I}$ is the
+set of parameters we wish to optimize. By assuming a finite grid $\Omega_{R}$, we may interchange the order of summation and integration, which yields the data term:
+\begin{equation}\label{eq:data_term}
+    \sum_{x\in\Omega_{R}} \int_{\mathcal{Y}} log f_{x}\left(y(x) - I(\phi^{-1}_{I}(x))\right)  dP(y | I, J, \phi^{(0)}).
+\end{equation}
+
+Since all the variables $Y(x), x\in\Omega_{R}$ are independent, $P(y | I, J, \phi^{(0)}) = P(y(x)| I, J, \phi^{(0)})P(y^{C}(x) | I, J, \phi^{(0)})$, where the complement $Y^{C}(x)$
+denotes the subset of random variables other than $Y(x)$, and $y^{C}(x)$ is a configuration of $Y^{C}(x)$. Therefore, eq.(\ref{eq:data_term}) can be written as
 
 \begin{equation}
-    \sum_{x\in\Omega_{R}} \int_{\mathcal{Y}^{C}(x)} \left[\int_{\mathbf{R}} log f_{x}\left(\ell - \tilde{I}(\psi_{I}(x))\right) P(Y(x) = \ell | I, J, \psi^{(0)}_{I})d\ell\right]  dP(y^{C}(x) | I, J, \psi^{(0)}_{I})
+    \sum_{x\in\Omega_{R}} \int_{\mathcal{Y}^{C}(x)} \left[\int_{\mathbf{R}} log f_{x}\left(\ell - I(\phi^{-1}_{I}(x))\right) P(Y(x) = \ell | I, J, \phi^{(0)})d\ell\right]  dP(y^{C}(x) | I, J, \phi^{(0)})
 \end{equation}
 where $\mathcal{Y}^{C}(x)$ is the set of all possible configurations of $Y^{C}(x)$.\\
 
-Since \hbox{$\int_{\mathcal{Y}^{C}(x)}dP(y^{C}(x) | I, J, \psi^{(0)}_{I}) = 1$}, and the inner integral
+Since \hbox{$\int_{\mathcal{Y}^{C}(x)}dP(y^{C}(x) | I, J, \phi^{(0)}) = 1$}, and the inner integral
 is the expected value of the given logarithm w.r.t. the conditional distribution, we have
 \begin{equation}
-     Q(\psi_{I}; \psi_{I}^{(0)}) + R(\psi_{I}) = \sum_{\Omega_{R}} \mathbbm{E} \left[\left.\log f_{x}\left(Y(x) - \tilde{I}(\psi_{I}(x))\right) \right| I, J, \psi^{(0)}_{I}\right].
+     Q(\phi_{I}; \phi^{(0)}) + R(\phi_{I}) = \sum_{x\in\Omega_{R}} \mathbbm{E} \left[\left.\log f_{x}\left(Y(x) - I(\phi^{-1}_{I}(x))\right) \right| I, J, \phi^{(0)}\right].
 \end{equation}
-By expanding the density function and denoting by $\widehat{\mu_{x}}, \widehat{\sigma_{x}^{2}}$ the conditional mean and variance of $Y(x)$ given the data and fixed
-parameters $\psi_{I}^{(0)}$, we have
+By expanding the density function (according to eq. \ref{eq:gaussian}) and denoting by $\overline{Y}(x), \widehat{\sigma^{2}_{Y}(x)}$ the conditional mean and variance of $Y(x)$
+given the data and fixed parameters $\phi^{(0)}$, we have
 \begin{equation}
-    \mathbbm{E} \left[\left.\log \frac{1}{\sigma_{x}\sqrt{2\pi}} - \frac{(Y(x) - \tilde{I}(\psi_{I}(x)))^{2}}{2\sigma_{x}^{2}}\right|I, J, \psi^{(0)}_{I} \right] =
+    \mathbbm{E} \left[\left.\log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \frac{(Y(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\sigma^{2}_{Y}(x)}\right|I, J, \phi^{(0)} \right] =
 \end{equation}
 \begin{equation}
-    = \log \frac{1}{\sigma_{x}\sqrt{2\pi}} - \mathbbm{E} \left[\left. \frac{(Y(x) - \widehat{\mu_{x}} + \widehat{\mu_{x}} - \tilde{I}(\psi_{I}(x)))^{2}}{2\sigma_{x}^{2}}\right|I, J, \psi^{(0)}_{I} \right]=
+    = \log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \mathbbm{E} \left[\left. \frac{(Y(x) - \overline{Y}(x) + \overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\sigma^{2}_{Y}(x)}\right|I, J, \phi^{(0)} \right]=
 \end{equation}
 %\begin{equation}
-%    = \log \frac{1}{\sigma_{x}\sqrt{2\pi}} - \mathbbm{E} \left[\left. \frac{(Y(x) - \widehat{\mu_{x}})^{2}+ (\widehat{\mu_{x}} - \tilde{I}(\psi_{I}(x)))^{2} - 2(Y(x) - \widehat{\mu_{x}}) (\widehat{\mu_{x}} - \tilde{I}(\psi_{I}(x)))}{2\sigma_{x}^{2}}\right|I, J, \psi^{(0)}_{I} \right]=
+%    = \log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \mathbbm{E} \left[\left. \frac{(Y(x) - \overline{Y}(x))^{2}+ (\overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2} - 2(Y(x) - \overline{Y}(x)) (\overline{Y}(x) - I(\phi^{-1}_{I}(x)))}{2\sigma^{2}_{Y}(x)}\right|I, J, \phi^{(0)} \right]=
 %\end{equation}
 \begin{equation}
-    = \log \frac{1}{\sigma_{x}\sqrt{2\pi}} - \frac{\widehat{\sigma_{x}^{2}} + (\widehat{\mu_{x}} - \tilde{I}(\psi_{I}(x)))^{2}}{2\sigma_{x}^{2}}.
+    = \log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \frac{\widehat{\sigma^{2}_{Y}(x)} + (\overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\sigma^{2}_{Y}(x)}.
 \end{equation}
-Finally, by approximating the (unknown) parameters $\sigma_{x}$ by $\widehat{\sigma_{x}}$ we obtain the expectation of the log-likelihood to be \textbf{maximized} w.r.t $\psi_{I}$ in the M step:
+Finally, by approximating the (unknown) parameters $\sigma_{Y}(x)$ by $\widehat{\sigma_{Y}(x)}$ we obtain the expectation of the log-likelihood to be \textbf{maximized} w.r.t $\phi_{I}$ in the M step:
 \begin{equation}
-    Q(\psi_{I}; \psi_{I}^{(0)}) =  - \sum_{x\in\Omega_{x}}\frac{(\widehat{\mu_{x}} - \tilde{I}(\psi_{I}(x)))^{2}}{2\widehat{\sigma_{x}^{2}}} - R(\psi_{I}).
+    Q(\phi_{I}; \phi^{(0)}) = C_{I} - \sum_{x\in\Omega_{x}}\frac{(\overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\widehat{\sigma^{2}_{Y}(x)}} - R(\phi_{I}),
 \end{equation}
-Analogously, if $\widehat{\nu_{x}}, \widehat{\tau_{x}^{2}}$ are the mean and variance of $Z(x)$,
+where $C_{I} = -\frac{1}{2} - \log\left(\widehat{\sigma^{2}_{Y}(x)}\sqrt{2\pi}\right)$ is a constant that depends on the (known) initial transformations $\phi^{(0)}$, but not on the
+(unknown) transformation $\phi_{I}$ we wish to optimize. Image $\overline{Y}$ may be regarded as the expected image $\tilde{J}$ under the modality of $\tilde{I}$, given the data and current estimate of the
+deformations $\phi^{(0)}$, denoted $\mathbbm{E}\left[F_{J}[\tilde{J}]|I, J, \phi^{(0)}\right]$ or simply $\mathbbm{E}\left[F_{J}[\tilde{J}]\right]$, and $\widehat{\sigma^{2}_{Y}}(x)$ measures the uncertainty at each point
+$x\in \Omega_{R}$.\\
+
+Analogously, if $\overline{Z}(x), \widehat{\sigma^{2}_{Z}(x)}$ are the conditional mean and variance of $Z(x)$ given the data
+and fixed parameters $\phi^{(0)}$, the cost function associated to $Z$ is
 \begin{equation}
-    Q(\psi_{J}; \psi_{J}^{(0)}) =  - \sum_{x\in\Omega_{x}}\frac{(\widehat{\nu_{x}} - \tilde{I}(\psi_{J}(x)))^{2}}{2\widehat{\tau_{x}^{2}}} - R(\psi_{J}).
+    Q(\phi_{J}; \phi^{(0)}) = C_{J} - \sum_{x\in\Omega_{x}}\frac{(\overline{Z}(x) - J(\phi^{-1}_{J}(x)))^{2}}{2\widehat{\sigma^{2}_{Z}(x)}} - R(\phi_{J}).
 \end{equation}
-The image $\widehat{\mu_{x}}, x\in\Omega_{R}$ may be regarded as the expected image $\tilde{J}$ under the modality of $\tilde{J}$, given the data and current estimate of the
-deformation $\psi_{I}^{(0)}$, denoted $E[F_{J}[\tilde{J}]|\psi_{I}^{(0)}]$ or simply $E[F_{J}[\tilde{J}]]$, and $\widehat{\sigma_{x}^{2}}$ measures the uncertainty at each point
-$x\in \Omega_{R}$.
 
 
-\section{CC gradient}
+\pagebreak
+\section{Gradient of the CC metric}\label{ap:CC_gradient}
 We are interested in computing the gradient of
 \begin{equation}
     CC(\bar{I}, \bar{J}, x) = \frac{<\bar{I}, \bar{J}>^{2}}{<\bar{I}><\bar{J}>}
@@ -84,12 +89,12 @@ We are interested in computing the gradient of
 where the inner product is taken over an $n^{D}$ window (eq. 4, in Avants et al.\cite{Avants2008}). Since the windows are considered discrete, a more precise notation
 for this expression is:
 \begin{equation}
-    CC(y;\psi_{I}, \psi_{J}) = \frac{\left[\sum_{z\in W_{y}} \left(\tilde{I}(z) - \mu_{y}\right)\left(\tilde{J}(z) - \nu_{y}\right)\right]^{2}}
+    CC(y;\phi_{I}, \phi_{J}) = \frac{\left[\sum_{z\in W_{y}} \left(\tilde{I}(z) - \mu_{y}\right)\left(\tilde{J}(z) - \nu_{y}\right)\right]^{2}}
     {\left[\sum_{z \in W_{y}}\left(\tilde{I}(z) - \mu_{y}\right)^{2}\right] \left[\sum_{z \in W_{y}}\left(\tilde{J}(z) - \nu_{y}\right)^{2}\right]} = \frac{A_{y}^{2}}{B_{y}C_{y}}
 \end{equation}
-where $\tilde{I}(z) = I(\phi_{I}^{-1}(\psi_{I}(z)))$, $\tilde{J}(z) = J(\phi_{J}^{-1}(\psi_{J}(z)))$ and the full energy is given by
+where $\tilde{I}(z) = I(\phi_{I}^{-1}(z))$, $\tilde{J}(z) = J(\phi_{J}^{-1}(z))$ and the full energy is given by
 \begin{equation}
-    CC(\psi_{I}, \psi_{J}) = \sum_{y\in\Omega} CC(y; \psi_{I}, \psi_{J})
+    CC(\phi_{I}, \phi_{J}) = \sum_{y\in\Omega} CC(y; \phi_{I}, \phi_{J})
 \end{equation}
 where $W_{y}$ is the window of side $n$ centered at voxel $y$, $|W_{y}|$ is the number of voxels in window $W_{y}$ and:
 \begin{equation}
@@ -99,61 +104,40 @@ where $W_{y}$ is the window of side $n$ centered at voxel $y$, $|W_{y}|$ is the 
     \end{array}.
 \end{equation}
 
-We wish to compute the gradient of $CC(\psi_{I}, \psi_{J})$ with respect to one single vector $\psi_{J}(x)$ associated to voxel $x\in\Omega$ (the gradient with respect to
-$\psi_{I}(x)$ can be computed analogously). The set of windows that are affected by $\psi_{J}(x)$ is
-precisely the set of all windows $W_{y}$ such that $y \in W_{x}$. Therefore:
+We wish to compute the gradient of $CC(\phi_{I}, \phi_{J})$ with respect to $\phi^{-1}_{J}(x)$, $x\in\Omega$. The set of window terms $CC(y;\phi_{I}, \phi_{J})$
+that depend on $\phi^{-1}_{J}(x)$ is precisely the set of all windows $W_{y}$ such that $y \in W_{x}$. Therefore:
 \begin{equation}
-    \nabla_{x} CC(\psi_{I}, \psi_{J}) = \sum_{y \in W_{x}} \nabla_{x} CC(y; \psi_{I}, \psi_{J})
+    \frac{\partial CC (\phi_{I}, \phi_{J})}{\partial \phi^{-1}_{J}(x)} = \sum_{y \in W_{x}} \frac{\partial CC (y; \phi_{I}, \phi_{J})}{\partial \phi^{-1}_{J}(x)}
 \end{equation}
 and
 \begin{equation}
-    \nabla_{x} CC(y; \psi_{I}, \psi_{J}) = \frac{\left(2A_{y} B_{y}C_{y}\right)\nabla_{x}A_{y} - \left(A_{y}^{2}B_{y}\right)\nabla_{x}C_{y}}
-                                                {B_{y}^{2} C_{y}^{2}}
+    \frac{\partial CC (y; \phi_{I}, \phi_{J})}{\partial \phi^{-1}_{J}(x)} =
+        \frac{\left(2A_{y} B_{y}C_{y}\right)\frac{\partial A_{y}}{\partial \phi^{-1}_{J}(x)} - \left(A_{y}^{2}B_{y}\right)\frac{\partial C_{y}}{\partial \phi^{-1}_{J}(x)}}
+             {B_{y}^{2} C_{y}^{2}}
 \end{equation}
 where
 \begin{equation}
     \begin{array}{lll}
-    \nabla_{x}A_{y} &=& (\tilde{I}(x) - \mu_{y})\nabla \tilde{J}(x)\\
-    \nabla_{x}C_{y} &=& 2(\tilde{J}(x) - \nu_{y})\nabla \tilde{J}(x)
+        \frac{\partial A_{y}}{\partial \phi^{-1}_{J}(x)} &=& (\tilde{I}(x) - \mu_{y})\nabla \tilde{J}(x)\\
+        \frac{\partial C_{y}}{\partial \phi^{-1}_{J}(x)} &=& 2(\tilde{J}(x) - \nu_{y})\nabla \tilde{J}(x)
     \end{array}.
 \end{equation}
-Therefore, the gradient of the full energy w.r.t $\psi_{J}(x)$ is
-\begin{equation}
-    \nabla_{x} CC(\psi_{I}, \psi_{J}) = \sum_{y \in W_{x}} \frac{2A_{y}}{B_{y}C_{y}}\left[ (\tilde{I}(x) - \mu_{y}) - \frac{A_{y}}{C_{y}}\left(\tilde{J}(x) - \nu_{y}\right)\right]\nabla \tilde{J}(x)
+After simplifying, we get
+\begin{equation}\label{eq:CC_gradient}
+    \frac{\partial CC (\phi_{I}, \phi_{J})}{\partial \phi^{-1}_{J}(x)} = \sum_{y \in W_{x}}
+         \frac{2A_{y}}
+              {B_{y}C_{y}}\left[ (\tilde{I}(x) - \mu_{y}) - \frac{A_{y}}{C_{y}}\left(\tilde{J}(x) - \nu_{y}\right)\right]\nabla \tilde{J}(x).
 \end{equation}
-which can be further simplified as
-\begin{equation}
-    \nabla_{x} CC(\psi_{I}, \psi_{J}) = \left[S_{a}(x) \tilde{I}(x) - S_{b}(x)\tilde{J}(x) - S_{c}\right]\nabla \tilde{J}(x)
-\end{equation}
-where
+If we define the scalar functions
 \begin{equation}
     \begin{array}{lll}
-        S_{a} &=& \sum_{y \in W_{x}} \frac{2A_{y}}{B_{y}C_{y}}\\
-        S_{b} &=& \sum_{y \in W_{x}} \frac{2A_{y}^{2}}{B_{y}C_{y}^{2}}\\
-        S_{c} &=& \sum_{y \in W_{x}} \frac{2A_{y}}{B_{y}C_{y}} \left[ \mu_{y} - \frac{A_{y}}{C_{y}}\nu_{y}\right].
+        S_{a}(x) &=& \sum_{y \in W_{x}} \frac{2A_{y}}{B_{y}C_{y}}\\
+        S_{b}(x) &=& \sum_{y \in W_{x}} \frac{2A_{y}^{2}}{B_{y}C_{y}^{2}}\\
+        S_{c}(x) &=& \sum_{y \in W_{x}} \frac{2A_{y}}{B_{y}C_{y}} \left[ \mu_{y} - \frac{A_{y}}{C_{y}}\nu_{y}\right].
     \end{array}
 \end{equation}
+we can write the gradient of $CC$ with respect to $\phi^{-1}_{J}$ as:
 
-\section{Affine relation is optimal for CC}
-
-Let's assume that for every $y \in \Omega$, the relationship between intensities of images $I$ and $J$ within the window $W_y$ with center $y$, is affine:
 \begin{equation}
-    J(y) = \alpha_{y} I(y) + \beta_{y},
+    \psi_{J} = \nabla_{\phi^{-1}_{J}} CC(\phi_{I}, \phi_{J}) = \left[S_{a} \tilde{I} - S_{b}\tilde{J} - S_{c}\right]\nabla \tilde{J}.
 \end{equation}
-for some $\alpha_{y}, \beta_{y} \in \mathbf{R}$ then the gradient of the CC metric at $x$, for any $x\in W_{y}$ is given by (eq. 4, in Avants et al.\cite{Avants2008}):
-\begin{equation}
-    \nabla_{x} CC(y; \psi) = \frac{2A_{y}}{B_{y}C_{y}}\left[ (I(x) - \mu_{y}) - \frac{A_{y}}{C_{y}}\left(J(\psi(x)) - \nu_{y}\right)\right]\nabla J(\psi(x)).
-\end{equation}
-By substituting:
-\begin{equation}
-    \begin{array}{lll}
-        A_{y} &=& \alpha B_{y}\\
-        C_{y} &=& \alpha^{2}B_{y}
-    \end{array}
-\end{equation}
-we obtain
-\begin{equation}
-    \frac{A_{y}}{C_{y}}\left(J(\psi(x)) - \nu_{y}\right) =
-    \frac{\alpha B_{y}}{\alpha^{2}B_{y}}\left(\alpha I(x) + \beta - \alpha \mu_{y} - \beta \right) = (I(x) - \mu_{y})
-\end{equation}
-which implies $\nabla_{x} CC(y; \psi) = 0$.
