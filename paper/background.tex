@@ -76,7 +76,7 @@ where $\tilde{I} = I \circ \phi_{1}^{-1}(\cdot, 0.5)$, $\tilde{J} = J \circ \phi
 the gradient after smoothing with a Gaussian kernel $K_{\sigma}$ (as opposed to integrating along the full geodesic)
 
 \begin{equation}\label{eq:gsyn_update}
-    \phi_{i}(\cdot, 0.5) = \phi_{i}(\cdot, 0.5) + \left( \delta K_{\sigma} \ast \nabla_{\phi_{i}} \Pi(\tilde{I}, \tilde{J}) \right) \circ \phi_{i}(\cdot, 0.5).
+    \phi_{i}(\cdot, 0.5) = \phi_{i}(\cdot, 0.5) - \left( \epsilon K_{\sigma} \ast \nabla_{\phi_{i}} \Pi(\tilde{I}, \tilde{J}) \right) \circ \phi_{i}(\cdot, 0.5).
 \end{equation}
 
 Finally, the updated mid-point transformations (which, after composition with the gradient, are not ensured to be diffeomrphisms) are forced to be invertible by using an
@@ -87,14 +87,20 @@ MRI registration algorithm due to its reliability and efficiency.
 \begin{algorithm}[h!]
 \caption{Greedy SyN}\label{alg:Greedy_SyN}
 \begin{algorithmic}[1]
-\STATE Initialize: $\phi_{i}(x, 0.5) = x,  x\in\Omega, i=1, 2$
+\REQUIRE Gaussian kernel parameter $\sigma>0$
+\REQUIRE Step size $\epsilon>0$
+\REQUIRE Maximum number of iterations $T>0$
+\STATE Initialize: $\phi_{i}(\cdot, 0.5) = Id, i=1, 2$
+\STATE $t=0$
 \REPEAT
     \STATE Warp $\tilde{I}  = I \circ \phi_{1}^{-1}(\cdot, 0.5), \tilde{J} = J \circ \phi_{2}^{-1}(\cdot, 0.5)$
-    \STATE Compute the gradients $\nabla_{\phi_{i}} \Pi(\tilde{I}, \tilde{J}), i=1,2$
-    \STATE Update $\phi_{i}(\cdot, 0.5), i=1, 2$ according to eq. \ref{eq:gsyn_update}
+    \STATE Compute the gradients $\mathbf{u}_{i} = \nabla_{\phi_{i}} \Pi(\tilde{I}, \tilde{J}), i=1,2$
+%    \STATE Update $\phi_{i}(\cdot, 0.5), i=1, 2$ according to eq. \ref{eq:gsyn_update}
+    \STATE Update $\phi_{i}(\cdot, 0.5) = \phi_{i}(\cdot, 0.5) - \left( \epsilon K_{\sigma} \ast \mathbf{u}_{i} \right) \circ \phi_{i}(\cdot, 0.5)$
     \STATE Invert $\phi_{i}^{-1}(\cdot, 0.5) = invert (\phi_{i}(\cdot, 0.5)), i=1, 2$
     \STATE Invert $\phi_{i}(\cdot, 0.5) = invert (\phi_{i}^{-1}(\cdot, 0.5)), i=1, 2$
-\UNTIL{Convergence}
+    \STATE t = t + 1
+\UNTIL{$t\geq T$ or convergence}
 \RETURN $\phi_{i}(\cdot, 0.5), i=1,2$
 \end{algorithmic}
 \end{algorithm}
@@ -116,7 +122,7 @@ where $F$ is the (unknown) transfer function between image modalities and $\eta(
 the problem, the dynamic range $G$ of image $I$ is assumed to be discrete and relatively small ($G = \mathrm{Z}_{256}$, in \cite{Arce-santana2014}). By having a discrete
 dynamic range, the function $F: G \rightarrow G$ may be modeled as a discrete set of hidden random variables $Y_g = F(g), g\in G$ whose distribution parameters
 can be estimated using the Expectation Maximization (EM) algorithm \cite{Dempster1977}. In their work, Arce-Santana {\it et al.} \cite{Arce-santana2014} used a discretized elastic
-deformation model to behavior of their metric which, by computing the cost function for the EM algorithm, leads to the following energy minimization problem
+deformation model to test the behavior of their metric which, leads to the following energy minimization problem
 
 \begin{equation}\label{eq:elastic}
     \mathbf{u}^{*} = \arg \min_{\mathbf{u}} \sum_{x \in \mathcal{L}} \frac{1}{2 \sigma(x)^{2}} ( \bar{I}(x) - J(x + \mathbf{u}(x)))^{2} + \lambda \sum_{<x, y>} ||\mathbf{u}(x) - \mathbf{u}(y)||^{2},
