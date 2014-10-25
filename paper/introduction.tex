@@ -10,7 +10,7 @@ Roche et al.\cite{Roche2004a} proposed an extension of the Demons algorithm to a
 modalities: mono-modal (functional) dependency, and bi-modal dependency (each intensity in the first modality may correspond to two intensities in the other modality).
 For the mono-modal dependency they model the transfer function as a polynomial of fixed degree, and to account for bi-modalities, they use a mixture of two Gaussians.
 The validation was performed using the Brainweb synthetic template \cite{Cocosco1997}\cite{Kwan1999} and two real images. Quantitative evaluation was performed by comparing
-the resulting deformation fields, which only measures consistency of results across modalities but not registration accuracy.\\
+the resulting deformation fields, which only measures consistency across modalities but not registration accuracy.\\
 
 An important limitation of multi-modal methods based on the maximization of an information-theoretic similarity metric is precisely that the
 metric depends solely on the estimated distribution of corresponding intensities in both modalities, which is insensitive to local image
@@ -19,7 +19,8 @@ result in exactly the same distribution, which results in a large number of loca
 
 Our contributions are: 1) we adapted the EM framework for Multi-Modal Non-linear Registration proposed by Arce {\it et al.}\cite{Arce-santana2014} (originally
 developed under the elastic deformation framework) under the Symmetric Diffeomorphic Registration framework developed by Avants {\it et al.}\cite{Avants2008}
-\cite{Avants2011} and taking advantage of both image modalities, 2)we propose a new metric, called Expected Cross-Correlation, which extends the Cross-Correlation metric for multi-modality images by taking
-advantage of the estimated transfer functions provided by the EM framework, and 3)we propose a quantitative validation methodology for multi-modal brain MRI registration methods
+\cite{Avants2011} and taking advantage of both image modalities (as oposed to \cite{Arce-santana2014} where one modality is arbitrarily chosen as reference),
+2)we propose a new metric, called Expected Cross-Correlation, which extends the Cross-Correlation metric for multi-modality images by taking
+advantage of the estimated transfer functions, and 3)we propose a quantitative validation methodology for multi-modal brain MRI registration methods
 based on generating semi-synthetic images using real mono-modal brain images and a synthetic multi-modal template, to the best of our knowledge this is the first
 quantitative evaluation for multi-modal registration algorithms using real annotated brain images.\\
