@@ -49,40 +49,47 @@ By defining the warped images \hbox{$\tilde{I}(x) = I(\phi_{I}^{-1}(x))$} and \h
 \end{equation}
 
 These are precisely two instances of Arce's formulation (eq. 1 of \cite{Arce-santana2014}) in the reference space, and the conditional independence of $\eta_{I}, \eta_{J}$
-given $Y, Z, \phi_{I}, \phi_{J}$ is made explicit. By performing similar computations as in \cite{Arce-santana2014} we can obtain the EM cost function as:
+given $Y, Z, \phi_{I}, \phi_{J}$ is made explicit. By performing similar computations as in \cite{Arce-santana2014} we can obtain the EM cost function as the sum of two
+independent cost functions (see \cite{Arce-santana2014} and appendix \ref{ap:E_step} for details):
 \begin{equation}\label{eq:SyNEM_energy}
-    Q(\phi_{I}, \phi_{J}) = \sum_{x \in \Omega_{R}} \frac{\left(\overline{Y}(x) - \tilde{I}(x)\right)^{2}}{2\sigma^{2}_{Y}(x)} +
-                                                     \frac{\left(\overline{Z}(x) - \tilde{J}(x)\right)^{2}}{2\sigma^{2}_{Z}(x)} dV +
-                                                     \lambda\left(R(\phi_{I}) + R(\phi_{J})\right),
+    Q(\phi_{I}, \phi_{J}) = Q_{I}(\phi_{I}; \phi^{(0)}) + Q_{J}(\phi_{J}; \phi^{(0)})
 \end{equation}
-where $\phi_{I}^{(0)}, \phi_{J}^{(0)}$ are initial approximations of the transformations, and
-\begin{equation}
+given by:
+\begin{equation}\label{eq:SyNEM_energy_split}
     \begin{array}{lll}
-        \overline{Y} &=& E\left[\left.Y \right| I, J, \phi_{I}^{(0)}, \phi_{J}^{(0)}\right]\\
-        \overline{Z} &=& E\left[\left.Z \right| I, J, \phi_{I}^{(0)}, \phi_{J}^{(0)}\right]\\
-        \sigma_{Y}^{2}(x) &=& Var\left[\left.Y(x) \right| I, J, \phi_{I}^{(0)}, \phi_{J}^{(0)}\right]\\
-        \sigma_{Z}^{2}(x) &=& Var\left[\left.Z(z) \right| I, J, \phi_{I}^{(0)}, \phi_{J}^{(0)}\right]
+        Q_{I}(\phi_{I}; \phi^{(0)}) &=& \sum_{x \in \Omega_{R}} \frac{\left(\overline{Y}(x) - \tilde{I}(x)\right)^{2}}{2\sigma^{2}_{Y}(x)} + \lambda R(\phi_{I}) \\
+        Q_{J}(\phi_{J}; \phi^{(0)}) &=& \sum_{x \in \Omega_{R}} \frac{\left(\overline{Z}(x) - \tilde{J}(x)\right)^{2}}{2\sigma^{2}_{Z}(x)} + \lambda R(\phi_{J}) \\
     \end{array}
 \end{equation}
-
-Notice that Arce's metric \cite{Arce-santana2014}, may be regarded as a generalization of the Correlation Ratio proposed by
+where $\phi^{(0)} = (\phi_{I}^{(0)}, \phi_{J}^{(0)})$ are initial approximations of the transformations and:
+\begin{equation}\label{eq:E_Step_stats}
+    \begin{array}{lll}
+        \overline{Y} &=& \mathbbm{E}\left[\left.Y \right| I, J, \phi^{(0)}\right]\\
+        \overline{Z} &=& \mathbbm{E}\left[\left.Z \right| I, J, \phi^{(0)}\right]\\
+        \sigma_{Y}^{2}(x) &=& Var\left[\left.Y(x) \right| I, J, \phi^{(0)}\right]\\
+        \sigma_{Z}^{2}(x) &=& Var\left[\left.Z(z) \right| I, J, \phi^{(0)}\right]
+    \end{array}.
+\end{equation}
+Since $\phi^{(0)}$ are fixed initial parameters, $Q_{I}$ only depends on $\phi_{I}$ (implicitly, through $\tilde{I}$), and $Q_{J}$ only depends on $\phi_{J}$. Notice that each of
+these metrics, derived by Arce et al. \cite{Arce-santana2014}, may be regarded as a generalization of the Correlation Ratio proposed by
 Roche et al. \cite{Roche1998}: if we assume $\sigma^{2}_{Z}(x) = \sigma^{2}_{Z}$ (constant for all $x\in\Omega_{R}$) then, according to
 eq.(\ref{eq:SyNEM_gom_update}),\hbox{$\left[Z(x) - \tilde{J}(x)\right] \sim N(0, \sigma^{2}_{Z})$}, and
 \begin{equation}
     \frac{1}{|\Omega_{R}|}\sum_{x \in \Omega_{R}} \frac{\left(\overline{Z}(x) - \tilde{J}(x)\right)^{2}}{\sigma^{2}_{Z}(x)} =
     \frac{Var\left[Z - \tilde{J}\right]}{Var\left[Z\right]},
 \end{equation}
-the Correlation Ratio. Here, we have written simply $Var[\cdot]$ to denote the conditional sample variance given $ I, J, \phi_{I}^{(0)}, \phi_{J}^{(0)}$.\\
+the Correlation Ratio. Here, we have written simply $Var[\cdot]$ to denote the conditional sample variance given $ I, J, \phi^{(0)}$.\\
 
-Equation \ref{eq:SyNEM_energy} can be efficiently minimized by following Vercauteren's analysis of the \textit{diffeomorphic demons} algorithm \cite{Vercauteren2009} as follows. Let's choose the regularization function $R(\cdot) = ||\nabla \cdot||^{2}$. Given
-an initial approximation of $\phi_{J}^{-1}$, we wish to find a small update displacement field $\mathbf{u}$, which minimizes:
+Functionals $Q_{I}, Q_{J}$ can be efficiently minimized by following Vercauteren's analysis of the \textit{diffeomorphic demons} algorithm \cite{Vercauteren2009} as follows.
+Let's choose the regularization function $R(\cdot) = ||\nabla \cdot||^{2}$. Starting from the initial transform $\phi^{(0)}_{J}$ (so that
+$\tilde{J}(x) = J(\left[\phi^{(0)}\right]^{-1}(x))$) we wish to find a small update displacement field $\mathbf{u}$, which minimizes:
 \begin{equation}\label{eq:vercauteren_cost}
-    Q(\mathbf{u}) = \sum_{x \in \Omega_{R}} \frac{\left(\overline{Z}(x) - \tilde{J}(x + \mathbf{u}(x))\right)^{2}}{\sigma^{2}_{Z}(x)} + \lambda ||\nabla \mathbf{u}||^{2}.
+    \sum_{x \in \Omega_{R}} \frac{\left(\overline{Z}(x) - \tilde{J}(x + \mathbf{u}(x))\right)^{2}}{\sigma^{2}_{Z}(x)} + \lambda ||\nabla \mathbf{u}||^{2}.
 \end{equation}
 
 Minimizing this energy can be accomplished by introducing an auxiliary deformation field $\mathbf{v}$ and a modified energy function
 \begin{equation}\label{eq:vercauteren_extended_cost}
-    Q(\mathbf{u}, \mathbf{v}) = \sum_{x \in \Omega_{R}} \frac{(\overline{Z}(x) - \tilde{J}(x + \mathbf{u}(x)))^{2}}{\sigma^{2}_{Z}(x)} dV + \frac{1}{\tau}||\mathbf{u}-\mathbf{v}||^{2}+\lambda ||\nabla \mathbf{v}||^{2},
+    \sum_{x \in \Omega_{R}} \frac{(\overline{Z}(x) - \tilde{J}(x + \mathbf{u}(x)))^{2}}{\sigma^{2}_{Z}(x)} dV + \frac{1}{\tau}||\mathbf{u}-\mathbf{v}||^{2}+\lambda ||\nabla \mathbf{v}||^{2},
 \end{equation}
 the optimization can then be accomplished by alternating two steps. In the first step we optimize with respect to $\mathbf{u}$ starting with $\mathbf{v} = 0$
 \begin{equation}\label{eq:vercauteren_step1}
@@ -108,58 +115,80 @@ shown that the solution of this second sub-problem is the convolution of $\wideh
 \begin{algorithm}[h!]
 \caption{SyN-EM}\label{alg:SyNEM}
 \begin{algorithmic}[1]
+\REQUIRE Gaussian kernel parameter $\sigma>0$
+\REQUIRE Step size $\epsilon>0$
+\REQUIRE Maximum number of iterations $T>0$
 \STATE Initialize: $\phi_{I} = Id, \phi_{J} = Id$
+\STATE $t=0$
 \REPEAT
     \STATE Warp $\tilde{I}  = I \circ \phi_{I}^{-1}, \tilde{J} = J \circ \phi_{J}^{-1}$
-    \STATE E-Step: $\bar{I} = E[F_{I}(\tilde{I})]$, $\bar{J} = E[F_{J}(\tilde{J})]$ given $\phi_{I}, \phi_{J}$
-    \STATE Compute update for $\phi_{J}$: $\mathbf{u}_{I} = \frac{\bar{J}(x) - \tilde{I}(x)}{||\nabla \tilde{I}(x)||^{2} + \frac{\sigma_{J}^{2}(x)}{\tau}}\nabla \tilde{I}(x)$
-    \STATE Compute update for $\phi_{I}$: $\mathbf{u}_{J} = \frac{\bar{I}(x) - \tilde{J}(x)}{||\nabla \tilde{J}(x)||^{2} + \frac{\sigma_{I}^{2}(x)}{\tau}}\nabla \tilde{J}(x)$
-    \STATE Smooth $\mathbf{u}_{I} = K \ast \mathbf{u}_{I}$
-    \STATE Smooth $\mathbf{u}_{J} = K \ast \mathbf{u}_{J}$
-    \STATE Update $\phi_{I} = (Id - \mathbf{u}_{I}) \circ \phi_{I}$
-    \STATE Update $\phi_{J} = (Id - \mathbf{u}_{J}) \circ \phi_{J}$
+    \STATE E-Step $\overline{Y} = \mathbbm{E}\left[\left.Y\right| I, J, \phi_{I}, \phi_{J}\right]$, $\sigma^{2}_{Y}(x) = Var\left[\left.Y(x)\right| I, J, \phi_{I}, \phi_{J}\right]$
+    \STATE E-Step $\overline{Z} = \mathbbm{E}\left[\left.Z\right| I, J, \phi_{I}, \phi_{J}\right]$, $\sigma^{2}_{Z}(x) = Var\left[\left.Z(x)\right| I, J, \phi_{I}, \phi_{J}\right]$
+    \STATE M-Step $\mathbf{u}_{I} = \frac{\overline{Y}(x) - \tilde{I}(x)}{||\nabla \tilde{I}(x)||^{2} + \frac{\sigma_{Y}^{2}(x)}{\tau}}\nabla \tilde{I}(x)$
+    \STATE M-Step $\mathbf{u}_{J} = \frac{\overline{Z}(x) - \tilde{J}(x)}{||\nabla \tilde{J}(x)||^{2} + \frac{\sigma_{Z}^{2}(x)}{\tau}}\nabla \tilde{J}(x)$
+%    \STATE Smooth $\mathbf{u}_{I} = K_{\sigma} \ast \mathbf{u}_{I}$
+%    \STATE Smooth $\mathbf{u}_{J} = K_{\sigma} \ast \mathbf{u}_{J}$
+    \STATE Update $\phi_{I} = \phi_{I} - \left(\epsilon K_{\sigma} \ast \mathbf{u}_{I} \right)\circ \phi_{I}$
+    \STATE Update $\phi_{J} = \phi_{J} - \left(\epsilon K_{\sigma} \ast \mathbf{u}_{J} \right)\circ \phi_{J}$
     \STATE Invert $\phi_{I}^{-1}, \phi_{J}^{-1} = invert(\phi_{I}), invert(\phi_{J})$
     \STATE Invert $\phi_{I}, \phi_{J} = invert(\phi_{I}^{-1}), invert(\phi_{J}^{-1})$
-\UNTIL{Convergence}
+    \STATE t = t + 1
+\UNTIL{$t\geq T$ or convergence}
 \RETURN $\phi_{I}, \phi_{J}$
 \end{algorithmic}
 \end{algorithm}
 
 
 \subsection{Expected Cross-Correlation}
-The SyN-EM algorithm (alg. \ref{alg:SyNEM}) may be regarded as a counterpart of SSD for multi-modality images. The main drawback of using a point-wise metric like SSD is that
-it is unable to capture important features from the voxels' neighborhoods like gradients and texture. This makes point-wise metrics more susceptible to noise and image artifacts
-such as the bias field in MRI. By considering small windows around each voxel, the Cross Correlation metric takes advantage of this local information resulting in a more robust
-metric.\\
+The main drawback of using a point-wise metric like SSD, the EM metric previously described, or Mutual Information, is that
+they are unable to capture important features from the voxels' neighborhoods like gradients and texture. Being point-wise, any permutation of the voxels' positions results in
+exactly the same measured similarity (provided the same permutation is applied to both, the moving and static images). This makes point-wise metrics more susceptible to noise and
+image artifacts such as the bias field in MRI. By considering small windows $W_{y}$ around each voxel $y\in\Omega_{R}$, the normalized Cross Correlation metric (CC), proposed to
+be used with the SyN algorithm by Avants et al. \cite{Avants2008} takes advantage of more complex local information, resulting in a more robust metric:
+\begin{equation}
+    CC(y;\tilde{I}, \tilde{J}) = \frac{\left[\sum_{z\in W_{y}} \left(\tilde{I}(z) - \mu_{y}\right)\left(\tilde{J}(z) - \nu_{y}\right)\right]^{2}}
+    {\left[\sum_{z \in W_{y}}\left(\tilde{I}(z) - \mu_{y}\right)^{2}\right] \left[\sum_{z \in W_{y}}\left(\tilde{J}(z) - \nu_{y}\right)^{2}\right]}
+\end{equation}
+where:
+\begin{equation}
+    \begin{array}{lll}
+        \mu_{y} &=& \frac{1}{|W_{y}|}\sum_{z \in W_{y}}\tilde{I}(z)\\
+        \nu_{y} &=& \frac{1}{|W_{y}|}\sum_{z \in W_{y}}\tilde{J}(z)\\
+    \end{array}.
+\end{equation}
 
 The EM formulation belongs the class of multi-modal image registration methods that reduce the multi-modality problem to a mono-modality one\cite{Sotiras2013}. One of the
-advantages of this class of methods is that it is relatively easy to extend them to other mono-modal metrics. In particular, we can extend the SyN-EM algorithm to consider
-local neighborhoods by defining the {\it Expected Cross Correlation} metric as:
-
-\begin{equation}\label{eq:ecc_metric}
-    \Pi_{ECC}(\tilde{I}, \tilde{J} | \phi_{I}, \phi_{J}) = \frac{<\bar{I}, \tilde{J}>^{2}}{||\bar{I}||^{2}||\tilde{J}||^{2}} + \frac{<\tilde{I}, \bar{J}>^{2}}{||\tilde{I}||^{2}||\bar{J}||^{2}}
+advantages of this class of methods is that it is relatively easy to extend them to other mono-modal metrics. In particular, we can extend the CC metric for multi-modality images
+by defining the {\it Expected Cross Correlation} metric as:
+\begin{equation}
+    ECC(y;\tilde{I}, \tilde{J}) = CC(y; \overline{Y}, \tilde{I}) + CC(y; \overline{Z}, \tilde{J})
 \end{equation}
-where $\tilde{I} = I\circ \phi_{I}^{-1}$, $\tilde{J} = J\circ \phi_{J}^{-1}$, are the warped images to the reference space and
-$\bar{I} = E[F_{I}[\tilde{I}]|\phi_{I}, \phi_{J}]$, $\bar{J} = E[F_{J}[\tilde{J}]|\phi_{I}, \phi_{J}]$. The first term corresponds to the CC metric, in reference space,
-between $\tilde{J}$ and the expected value of $F_{I}[\tilde{I}]$ given $\phi_{I}, \phi_{J}$, which is the ``predicted'' image $\tilde{I}$ under the modality of $\tilde{J}$,
-assuming the $\phi_{I}, \phi_{J}$ correctly align $I$ and $J$. The second term corresponds to the CC metric in the other modality. The resulting algorithm (\ref{alg:SyNECC})
-is, therefore, a combination of the Greedy-SyN algorithm (\ref{alg:Greedy_SyN}) (computing the diffeomorphism updates) and the SyN-EM algorithm (updating our estimates
-for $E[F_{I}[\tilde{I}]]$, $E[F_{J}[\tilde{I}]]$ given new estimated diffemorphisms $\phi_{I}, \phi_{J}$).
+
+The first term measures the similarity between $\overline{Y}$ and $\tilde{I}$ (corresponding to a similarity measure in the modality of $I$), while the second term measures the
+similarity between $\overline{Z}$ and $\tilde{J}$ (corresponding to a similarity measure in the modality of $J$). The resulting algorithm (\ref{alg:SyNECC})
+is, therefore, a combination of the Greedy-SyN algorithm (\ref{alg:Greedy_SyN}) and the SyN-EM algorithm (see \cite{Avants2008} and appendix \ref{ap:CC_gradient} for details on
+computing the gradients).
 
 \begin{algorithm}[h!]
 \caption{SyN-ECC}\label{alg:SyNECC}
 \begin{algorithmic}[1]
+\REQUIRE Gaussian kernel parameter $\sigma>0$
+\REQUIRE Step size $\epsilon>0$
+\REQUIRE Maximum number of iterations $T>0$
 \STATE Initialize: $\phi_{I} = Id, \phi_{J} = Id$
+\STATE $t=0$
 \REPEAT
     \STATE Warp $\tilde{I}  = I \circ \phi_{I}^{-1}, \tilde{J} = J \circ \phi_{J}^{-1}$
-    \STATE E-Step: $\bar{I} = E[F_{I}(\tilde{I})]$, $\bar{J} = E[F_{J}(\tilde{J})]$ given $\phi_{I}, \phi_{J}$
-    \STATE Compute the gradient $\nabla_{\phi_{I}} \Pi_{ECC}(\tilde{I}, \tilde{J} | \phi_{I}, \phi_{J})$
-    \STATE Compute the gradient $\nabla_{\phi_{J}} \Pi_{ECC}(\tilde{I}, \tilde{J} | \phi_{I}, \phi_{J})$
-    \STATE Update $\phi_{I}$ according to eq. \ref{eq:gsyn_update} using $\nabla_{\phi_{I}}$
-    \STATE Update $\phi_{J}$ according to eq. \ref{eq:gsyn_update} using $\nabla_{\phi_{J}}$
+    \STATE E-Step $\overline{Y} = \mathbbm{E}\left[\left.Y\right| I, J, \phi_{I}, \phi_{J}\right]$, $\sigma^{2}_{Y}(x) = Var\left[\left.Y(x)\right| I, J, \phi_{I}, \phi_{J}\right]$
+    \STATE E-Step $\overline{Z} = \mathbbm{E}\left[\left.Z\right| I, J, \phi_{I}, \phi_{J}\right]$, $\sigma^{2}_{Z}(x) = Var\left[\left.Z(x)\right| I, J, \phi_{I}, \phi_{J}\right]$
+    \STATE M-Step $\mathbf{u}_{I} = - \nabla_{\phi^{-1}_{I}} ECC(\tilde{I}, \tilde{J} | \phi_{I}, \phi_{J})$
+    \STATE M-Step $\mathbf{u}_{J} = - \nabla_{\phi^{-1}_{J}} ECC(\tilde{I}, \tilde{J} | \phi_{I}, \phi_{J})$
+    \STATE Update $\phi_{I} = \phi_{I} - \left(\epsilon K_{\sigma} \ast \mathbf{u}_{I} \right)\circ \phi_{I}$
+    \STATE Update $\phi_{J} = \phi_{J} - \left(\epsilon K_{\sigma} \ast \mathbf{u}_{J} \right)\circ \phi_{J}$
     \STATE Invert $\phi_{I}^{-1}, \phi_{J}^{-1} = invert(\phi_{I}), invert(\phi_{J})$
     \STATE Invert $\phi_{I}, \phi_{J} = invert(\phi_{I}^{-1}), invert(\phi_{J}^{-1})$
-\UNTIL{Convergence}
+    \STATE t = t + 1
+\UNTIL{$t\geq T$ or convergence}
 \RETURN $\phi_{I}, \phi_{J}$
 \end{algorithmic}
 \end{algorithm}
