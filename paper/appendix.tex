@@ -1,11 +1,11 @@
 \appendix
 \section{Computation of the E-Step}\label{ap:E_step}
-Here, we show the details to compute the E-step of the EM algorithm \cite{Dempster1977} to obtain a local maximum likelihood estimator for $\phi_{I}, \phi_{J}$
-according to the observation model in eq. (\ref{eq:SyNEM_gom_update}). We follow similar steps as in Arce et al. \cite{Arce-santana2014}.\\
+Here, we show the details to compute the E-step of the EM algorithm \cite{Dempster1977} to obtain a local maximum likelihood estimator for $\phi_{I}, \phi_{J}$. 
+We follow similar steps as in Arce {\it et al.} \cite{Arce-santana2014}.\\
 
-The E-step \cite{Dempster1977} consists in computing the conditional expectation of the log-likelihood of the (complete) data $(Y, Z, I, J)$ according to the observation model given
-in eq. \ref{eq:SyNEM_gom_update}. The conditional expectation is to be computed given initial approximations of the transformations
-$\phi^{(0)} = \left(\phi_{I}^{(0)}, \phi_{J}^{(0)}\right)$ and the (observed) data $I, J$. For simplicity, we will compute the E-step corresponding to the hidden random field $Y$.
+The E-step \cite{Dempster1977} consists in computing the conditional expectation of the log-likelihood of the (complete) data $(Y, Z, I, J)$, according to the observation model given in eq. \eqref{eq:SyNEM_gom_update}, where $Y, Z$ are hidden random fields modeling the (unknown) transfer functions between both modalities \hbox{(eq. \eqref{eq:hidden_fields})}.
+The conditional expectation is to be computed given initial
+approximations of the transformations $\phi^{(0)} = \left(\phi_{I}^{(0)}, \phi_{J}^{(0)}\right)$ and the (observed) data $I, J$. For simplicity, we will compute the E-step corresponding to the hidden random field $Y$.
 The cost function associated to the hidden field $Z$ can be obtained analogously.\\
 
 %In this section, we will compute the EM steps with respect to $Y$ and $\phi_{I}$. The corresponding steps with respect to $Z$ and $\phi_{J}$ are analogous. Our observations are
@@ -15,7 +15,7 @@ function of $\eta_{J}(x)$ then:
 \begin{equation}\label{eq:gaussian}
     f_{x}(u) = \frac{1}{\sigma_{Y}(x)\sqrt{2 \pi}}\exp\left(-\frac{u^{2}}{2\sigma^{2}_{Y}(x)}\right)
 \end{equation}
-and the marginal distribution of each hidden variable $Y(x)$ given the data is a function of $\phi_I$:
+and, from eq. \eqref{eq:SyNEM_gom_update}, it follows that the marginal distribution of each hidden variable $Y(x)$ given the data is a function of $\phi_I$:
 \begin{equation}
     P(Y(x) = \ell | I, J, \phi_{I}, \phi_{J}) = f_{x}(\ell - I(\phi^{-1}_{I}(x))).
 \end{equation}
@@ -27,30 +27,30 @@ The conditional expectation of the log-likelihood with respect to the above cond
 \end{equation}
 
 \begin{equation}
-    =-R(\phi_{I}) + \int_{\mathcal{Y}}\left[\sum_{x\in\Omega_{R}} log f_{x}\left(y(x) - I(\phi^{-1}_{I}(x))\right) \right] dP(y | I, J, \phi^{(0)}).
+    =-R(\phi_{I}) + \int_{\mathcal{Y}}\left[\sum_{x\in\Omega_{R}} \log f_{x}\left(y(x) - I(\phi^{-1}_{I}(x))\right) \right] dP(y | I, J, \phi^{(0)}).
 \end{equation}
 
 Where $\mathcal{Y}$ is the set of all possible configurations of the vector field $Y$. The term $R(\phi_{I}) = -\log P(\phi_{I})$ is known as the ``regularization term'' and comes out of the
 integral because it does not depend on $Y$. We will disregard this term for now and concentrate on the second term, known as the ``data term'', in which $\phi_{I}$ is the
 set of parameters we wish to optimize. By assuming a finite grid $\Omega_{R}$, we may interchange the order of summation and integration, which yields the data term:
 \begin{equation}\label{eq:data_term}
-    \sum_{x\in\Omega_{R}} \int_{\mathcal{Y}} log f_{x}\left(y(x) - I(\phi^{-1}_{I}(x))\right)  dP(y | I, J, \phi^{(0)}).
+    \sum_{x\in\Omega_{R}} \int_{\mathcal{Y}} \log f_{x}\left(y(x) - I(\phi^{-1}_{I}(x))\right)  dP(y | I, J, \phi^{(0)}).
 \end{equation}
 
 Since all the variables $Y(x), x\in\Omega_{R}$ are independent, $P(y | I, J, \phi^{(0)}) = P(y(x)| I, J, \phi^{(0)})P(y^{C}(x) | I, J, \phi^{(0)})$, where the complement $Y^{C}(x)$
-denotes the subset of random variables other than $Y(x)$, and $y^{C}(x)$ is a configuration of $Y^{C}(x)$. Therefore, eq.(\ref{eq:data_term}) can be written as
+denotes the subset of random variables other than $Y(x)$, and $y^{C}(x)$ is a configuration of $Y^{C}(x)$. Therefore, eq.(\eqref{eq:data_term}) can be written as
 
 \begin{equation}
-    \sum_{x\in\Omega_{R}} \int_{\mathcal{Y}^{C}(x)} \left[\int_{\mathbf{R}} log f_{x}\left(\ell - I(\phi^{-1}_{I}(x))\right) P(Y(x) = \ell | I, J, \phi^{(0)})d\ell\right]  dP(y^{C}(x) | I, J, \phi^{(0)})
+    \sum_{x\in\Omega_{R}} \int_{\mathcal{Y}^{C}(x)} \left[\int_{\mathbf{R}} \log f_{x}\left(\ell - I(\phi^{-1}_{I}(x))\right) P(Y(x) = \ell | I, J, \phi^{(0)})d\ell\right]  dP(y^{C}(x) | I, J, \phi^{(0)})
 \end{equation}
 where $\mathcal{Y}^{C}(x)$ is the set of all possible configurations of $Y^{C}(x)$.\\
 
 Since \hbox{$\int_{\mathcal{Y}^{C}(x)}dP(y^{C}(x) | I, J, \phi^{(0)}) = 1$}, and the inner integral
-is the expected value of the given logarithm w.r.t. the conditional distribution, we have
+is an expected value w.r.t. the conditional distribution, we have
 \begin{equation}
      Q(\phi_{I}; \phi^{(0)}) + R(\phi_{I}) = \sum_{x\in\Omega_{R}} \mathbbm{E} \left[\left.\log f_{x}\left(Y(x) - I(\phi^{-1}_{I}(x))\right) \right| I, J, \phi^{(0)}\right].
 \end{equation}
-By expanding the density function (according to eq. \ref{eq:gaussian}) and denoting by $\overline{Y}(x), \widehat{\sigma^{2}_{Y}(x)}$ the conditional mean and variance of $Y(x)$
+By expanding the density function (according to eq. \eqref{eq:gaussian}) and denoting by $\overline{Y}(x), \widehat{\sigma^{2}_{Y}(x)}$ the conditional mean and variance of $Y(x)$
 given the data and fixed parameters $\phi^{(0)}$, we have
 \begin{equation}
     \mathbbm{E} \left[\left.\log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \frac{(Y(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\sigma^{2}_{Y}(x)}\right|I, J, \phi^{(0)} \right] =
@@ -86,7 +86,7 @@ We are interested in computing the gradient of
 \begin{equation}
     CC(\bar{I}, \bar{J}, x) = \frac{<\bar{I}, \bar{J}>^{2}}{<\bar{I}><\bar{J}>}
 \end{equation}
-where the inner product is taken over an $n^{D}$ window (eq. 4, in Avants et al.\cite{Avants2008}). Since the windows are considered discrete, a more precise notation
+where the inner product is taken over an $n^{D}$ window (eq. 4, in Avants {\it et al.} \cite{Avants2008}). Since the windows are considered discrete, a more precise notation
 for this expression is:
 \begin{equation}
     CC(y;\phi_{I}, \phi_{J}) = \frac{\left[\sum_{z\in W_{y}} \left(\tilde{I}(z) - \mu_{y}\right)\left(\tilde{J}(z) - \nu_{y}\right)\right]^{2}}

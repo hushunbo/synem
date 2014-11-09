@@ -1,4 +1,4 @@
-\section{Extending SyN for multi-modality images}
+\section{Extending SyN for multi-modality images}\label{sec:syn_em}
 
 Let $I$, $J$ be two images defined over $\Omega_{I}$, $\Omega_{J}$, respectively. We consider $\Omega_{I}, \Omega_{J}$ as the transformed grids $\mathcal{L}_{I}$, $\mathcal{L}_{J}$
 associated to $I, J$, under their corresponding grid-to-space transforms $\mathcal{A}_{I}$, $\mathcal{A}_{J}$ (fig. \ref{fig:syn_overview}). Let $G$ be the set of possible intensity
@@ -13,13 +13,14 @@ More precisely:
         F_{I}\left[I(\phi_{I}^{-1}(x))\right] &=& J(\phi_{J}^{-1}(x)) &+& \eta_{I}(x)
     \end{array}, x\in\Omega_{R},
 \end{equation}
+
 where $\eta_{I}, \eta_{J}$ are random fields. In general, we cannot assume independence between $\eta_{I}$ and $\eta_{J}$ because there is some unknown relationship between $I$ and $J$.
 Instead, we assume conditional independence: given $F_{J}[J(\phi_{J}^{-1}(\cdot))]$, the random field $\eta_{J}$ is independent from $\eta_{I}$. Analogously, given
 $F_{I}[I(\phi_{I}^{-1}(\cdot))]$, the random field $\eta_{I}$ is independent from $\eta_{J}$. In addition, we assume independence within each random field, i.e.
 \hbox{$\eta_{I}(x) \perp \eta_{I}(y)$} and \hbox{$\eta_{J}(x) \perp \eta_{J}(y)$} \hbox{$\forall x,y\in\Omega_{R}$}. This formulation differs from Arce {\it et al.} \cite{Arce-santana2014} in that
 we are taking advantage of both modalities by estimating transfer functions in both directions. Notice that, by assuming the random variables
 $\eta_{I}(x), \eta_{J}(x), x\in\Omega_{R}$ are normally distributed, Arce {\it et al.} \cite{Arce-santana2014} are implicitly assuming that there is a functional dependency
-between the two modalities, which in general is not true. However, similar studies, most notably Roche et al. \cite{Roche1998} have found that in brain image registration of several
+between the two modalities, which in general is not true. However, similar studies, most notably Roche {\it et al.} \cite{Roche1998} have found that in brain image registration of several
 modalities, the assumption of a functional dependency is not critical.
 %the transfer function is surjective
 %(in other words, there is a functional dependency between the two modalities),
@@ -28,7 +29,7 @@ modalities, the assumption of a functional dependency is not critical.
 %will be large, which will reduce the contribution of all those voxels having intensity $g$. By considering both transfer functions instead of arbitrarily choosing one of them, we
 %are not solving the issue of non-surjective transfers, since some intensities $h_{1}, ..., h_{k}$ may map more intensities, in addition to $g$, in the first modality (e.g. if the
 %first transfer is not injective), but it may be the case that some of them only map to $g$, which will then be exploited by the algorithm since their estimated variance will be small,
-%thus making their contribution stronger. In their experiments, Roche et al.\cite{Roche1998} found that in brain image registration of several modalities, the assumption of a functional dependency is not
+%thus making their contribution stronger. In their experiments, Roche {\it et al.} \cite{Roche1998} found that in brain image registration of several modalities, the assumption of a functional dependency is not
 %critical.\\
 
 \begin{figure}[H]
@@ -40,7 +41,13 @@ diffeomorphism is computed by composing the two partial diffeomorphisms.}
 \end{figure}
 
 By defining the warped images \hbox{$\tilde{I}(x) = I(\phi_{I}^{-1}(x))$} and \hbox{$\tilde{J}(x) = J(\phi_{J}^{-1}(x))$} and the hidden random variables
-\hbox{$Y(x) = F_{J}\left[\tilde{J}(x)\right]$}, \hbox{$Z(x) = F_{I}\left[\tilde{I}(x)\right]$, $x\in\Omega_{R}$}, our observation model can be written as
+\begin{equation}\label{eq:hidden_fields}
+    \begin{array}{ccc}
+        Y(x) &=& F_{J}\left[\tilde{J}(x)\right]\\
+        Z(x) &=& F_{I}\left[\tilde{I}(x)\right]
+    \end{array},x\in\Omega_{R},
+\end{equation}
+our observation model can be written as
 \begin{equation}\label{eq:SyNEM_gom_update}
     \begin{array}{ccccc}
     	Y(x) &=& \tilde{I}(x) &+& \eta_{J}(x)\\
@@ -48,7 +55,7 @@ By defining the warped images \hbox{$\tilde{I}(x) = I(\phi_{I}^{-1}(x))$} and \h
     \end{array}, x\in\Omega_{R}.
 \end{equation}
 
-These are precisely two instances of Arce's formulation (eq. 1 of \cite{Arce-santana2014}) in the reference space, and the conditional independence of $\eta_{I}, \eta_{J}$
+These are precisely two instances of Arce's formulation (eq. (1) of \cite{Arce-santana2014}) in the reference space, and the conditional independence of $\eta_{I}, \eta_{J}$
 given $Y, Z, \phi_{I}, \phi_{J}$ is made explicit. By performing similar computations as in \cite{Arce-santana2014} we can obtain the EM cost function as the sum of two
 independent cost functions (see \cite{Arce-santana2014} and appendix \ref{ap:E_step} for details):
 \begin{equation}\label{eq:SyNEM_energy}
@@ -71,9 +78,9 @@ where $\phi^{(0)} = (\phi_{I}^{(0)}, \phi_{J}^{(0)})$ are initial approximations
     \end{array}.
 \end{equation}
 Since $\phi^{(0)}$ are fixed initial parameters, $Q_{I}$ only depends on $\phi_{I}$ (implicitly, through $\tilde{I}$), and $Q_{J}$ only depends on $\phi_{J}$. Notice that each of
-these metrics, derived by Arce et al. \cite{Arce-santana2014}, may be regarded as a generalization of the Correlation Ratio proposed by
-Roche et al. \cite{Roche1998}: if we assume $\sigma^{2}_{Z}(x) = \sigma^{2}_{Z}$ (constant for all $x\in\Omega_{R}$) then, according to
-eq.(\ref{eq:SyNEM_gom_update}),\hbox{$\left[Z(x) - \tilde{J}(x)\right] \sim N(0, \sigma^{2}_{Z})$}, and
+these metrics, derived by Arce {\it et al.} \cite{Arce-santana2014}, may be regarded as a generalization of the Correlation Ratio proposed by
+Roche {\it et al.} \cite{Roche1998}: if we assume $\sigma^{2}_{Z}(x) = \sigma^{2}_{Z}$ (constant for all $x\in\Omega_{R}$) then, according to
+eq. \eqref{eq:SyNEM_gom_update},\hbox{$\left[Z(x) - \tilde{J}(x)\right] \sim N(0, \sigma^{2}_{Z})$}, and
 \begin{equation}
     \frac{1}{|\Omega_{R}|}\sum_{x \in \Omega_{R}} \frac{\left(\overline{Z}(x) - \tilde{J}(x)\right)^{2}}{\sigma^{2}_{Z}(x)} =
     \frac{Var\left[Z - \tilde{J}\right]}{Var\left[Z\right]},
@@ -87,11 +94,11 @@ $\tilde{J}(x) = J(\left[\phi^{(0)}\right]^{-1}(x))$) we wish to find a small upd
     \sum_{x \in \Omega_{R}} \frac{\left(\overline{Z}(x) - \tilde{J}(x + \mathbf{u}(x))\right)^{2}}{\sigma^{2}_{Z}(x)} + \lambda ||\nabla \mathbf{u}||^{2}.
 \end{equation}
 
-Minimizing this energy can be accomplished by introducing an auxiliary deformation field $\mathbf{v}$ and a modified energy function
+By introducing an auxiliary deformation field $\mathbf{v}$ and a modified energy function
 \begin{equation}\label{eq:vercauteren_extended_cost}
     \sum_{x \in \Omega_{R}} \frac{(\overline{Z}(x) - \tilde{J}(x + \mathbf{u}(x)))^{2}}{\sigma^{2}_{Z}(x)} dV + \frac{1}{\tau}||\mathbf{u}-\mathbf{v}||^{2}+\lambda ||\nabla \mathbf{v}||^{2},
 \end{equation}
-the optimization can then be accomplished by alternating two steps. In the first step we optimize with respect to $\mathbf{u}$ starting with $\mathbf{v} = 0$
+the optimization can be accomplished by alternating two steps. In the first step we optimize with respect to $\mathbf{u}$ starting with $\mathbf{v} = 0$
 \begin{equation}\label{eq:vercauteren_step1}
     \widehat{\mathbf{u}} = \arg\min_{\mathbf{u}}\sum_{x \in \Omega_{R}} \frac{(\overline{Z}(x) - \tilde{J}(x+\mathbf{u}(x)))^{2}}{\sigma^{2}_{Z}(x)} dV + \frac{1}{\tau} ||\mathbf{u}||^{2}.
 \end{equation}
@@ -100,16 +107,15 @@ $\tilde{J}(x+\mathbf{u}(x)) \approx \tilde{J}(x) + \nabla \tilde{J}(x)^{T}\mathb
 \begin{equation}\label{eq:euler_lagrange_step1}
     \widehat{\mathbf{u}}(x) = \frac{\overline{Z}(x) - \tilde{J}(x)}{||\nabla \tilde{J}(x)||^{2} + \frac{\sigma_{Z}^{2}(x)}{\tau}}\nabla \tilde{J}(x).
 \end{equation}
-This expression corresponds to equation 4 in Vercauteren {\it et al.} \cite{Vercauteren2009}, but in their work, the factor $\sigma_{Z}^{2}(x)$
+This expression corresponds to equation (4) in Vercauteren {\it et al.} \cite{Vercauteren2009}, but in their work, the factor $\sigma_{Z}^{2}(x)$
 is approximated by $\sigma_{Z}(x) \approx |\overline{Z}(x) - \tilde{J}(x)|$ to obtain the traditional {\it demons} step. However, in our case as in Arce
 {\it et al.}\cite{Arce-santana2014}, we have an explicit and natural estimation of $\sigma^{2}_{Z}(x)$.\\
 
-The second step minimizes eq. \ref{eq:vercauteren_extended_cost} with respect to $\mathbf{v}$ and with $\mathbf{u}=\widehat{\mathbf{u}}$ previously obtained. It can be
-shown that the solution of this second sub-problem is the convolution of $\widehat{\mathbf{u}}$ with a Gaussian kernel\cite{Vercauteren2009}.\\
+The second step minimizes eq. \eqref{eq:vercauteren_extended_cost} with respect to $\mathbf{v}$ and keeping fixed the previously obtained displacement field $\mathbf{u}=\widehat{\mathbf{u}}$. It can be shown that the solution of this second sub-problem is the convolution of $\widehat{\mathbf{u}}$ with a Gaussian kernel\cite{Vercauteren2009}.\\
 %To update diffeomorphisms $\phi_{I}, \phi_{J}$ we need to take into consideration that we used their inverses to map images $I, J$ to the reference space. A direct expansion of
 %$\tilde{I} \circ \psi$ yields $\phi_{I}^{-1} \leftarrow \phi_{I}^{-1} \circ \psi$, taking its inverse yields $\phi_{I} \leftarrow \psi^{-1} \circ \phi_{I}$, where
 %$\psi^{-1} = Id - \mathbf{u}$ for a small displacement field $\mathbf{u}$. We adopted this strategy rather than directly updating the inverses so that the resulting algorithm
-%(alg. \ref{alg:SyNEM})is equivalent to the Greedy SyN algorithm previously described (alg. \ref{alg:Greedy_SyN}), which has been extensively tested by the neuroimaging
+%(Alg. \ref{alg:SyNEM})is equivalent to the Greedy SyN algorithm previously described (Alg. \ref{alg:Greedy_SyN}), which has been extensively tested by the neuroimaging
 %community.
 
 \begin{algorithm}[h!]
@@ -139,12 +145,12 @@ shown that the solution of this second sub-problem is the convolution of $\wideh
 \end{algorithm}
 
 
-\subsection{Expected Cross-Correlation}
+\subsection{Expected Cross-Correlation}\label{sec:syn_ecc}
 The main drawback of using a point-wise metric like SSD, the EM metric previously described, or Mutual Information, is that
 they are unable to capture important features from the voxels' neighborhoods like gradients and texture. Being point-wise, any permutation of the voxels' positions results in
 exactly the same measured similarity (provided the same permutation is applied to both, the moving and static images). This makes point-wise metrics more susceptible to noise and
 image artifacts such as the bias field in MRI. By considering small windows $W_{y}$ around each voxel $y\in\Omega_{R}$, the normalized Cross Correlation metric (CC), proposed to
-be used with the SyN algorithm by Avants et al. \cite{Avants2008} takes advantage of more complex local information, resulting in a more robust metric:
+be used with the SyN algorithm by Avants {\it et al.} \cite{Avants2008} takes advantage of more complex local information, resulting in a more robust metric:
 \begin{equation}
     CC(y;\tilde{I}, \tilde{J}) = \frac{\left[\sum_{z\in W_{y}} \left(\tilde{I}(z) - \mu_{y}\right)\left(\tilde{J}(z) - \nu_{y}\right)\right]^{2}}
     {\left[\sum_{z \in W_{y}}\left(\tilde{I}(z) - \mu_{y}\right)^{2}\right] \left[\sum_{z \in W_{y}}\left(\tilde{J}(z) - \nu_{y}\right)^{2}\right]}

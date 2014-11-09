@@ -1,8 +1,27 @@
+def compute_ranks(T):
+    n = T.shape[0]
+    m = T.shape[1]
+    R = np.zeros_like(T, dtype=np.int32)
+    for i in range(n):
+        for j in range(m):
+            rank = 1
+            for k in range(m):
+                if(j ==k):
+                    continue
+                if T[i, k] > T[i, j]:
+                    rank += 1
+            R[i, j] = rank
+    return R
+
 #graph_title = 'Jaccard index of 31 anatomical regions averaged over 612 multi-modal registrations'
-graph_title = 'Jaccard index of 31 anatomical regions averaged over 306 mono-modal registrations'
-data_fname = 'data_mono_seg.txt'
-regions_fname = 'xlabels_mono_seg.txt'
-series_fname = 'series_mono_seg.txt'
+graph_title = ''
+#graph_title = 'Jaccard index of 31 anatomical regions averaged over 306 mono-modal registrations'
+#data_fname = 'data_mono_seg.txt'
+#regions_fname = 'xlabels_mono_seg.txt'
+#series_fname = 'series_mono_seg.txt'
+data_fname = 'data_multi_seg_NO_ECC.txt'
+regions_fname = 'xlabels_multi_seg_NO_ECC.txt'
+series_fname = 'series_multi_seg_NO_ECC.txt'
 
 
 data = np.loadtxt(data_fname)
