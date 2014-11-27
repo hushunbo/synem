@@ -19,12 +19,20 @@ graph_title = ''
 #data_fname = 'data_mono_seg.txt'
 #regions_fname = 'xlabels_mono_seg.txt'
 #series_fname = 'series_mono_seg.txt'
-data_fname = 'data_multi_seg_NO_ECC.txt'
-regions_fname = 'xlabels_multi_seg_NO_ECC.txt'
-series_fname = 'series_multi_seg_NO_ECC.txt'
+
+#data_fname = 'data_multi_seg_NO_ECC.txt'
+#regions_fname = 'xlabels_multi_seg_NO_ECC.txt'
+#series_fname = 'series_multi_seg_NO_ECC.txt'
+
+graph_title = 'LPBA40, 56 regions, 1560 registrations'
+data_fname = 'data_mono_short_t_overlap_lpba40.txt'
+regions_fname = 'xlabels_mono_short_t_overlap_lpba40.txt'
+series_fname = 'series_mono_short_t_overlap_lpba40.txt'
 
 
 data = np.loadtxt(data_fname)
+if len(data.shape)==1:
+    data = data.reshape((data.shape[0],1))
 nrows, ncols = data.shape
 
 with open(regions_fname) as input:
@@ -42,7 +50,7 @@ for s in range(ncols):
     line, = ax.plot(range(1, nrows+1), data[:,s], linestyle=linestyles[s], marker=markers[s])
     line.set_label(series[s])
 ax.legend()
-plt.xticks(np.array(range(1,32)), xlabels, rotation='vertical', horizontalalignment='left')
+plt.xticks(np.array(range(1,1+nrows)), xlabels, rotation='vertical', horizontalalignment='left')
 plt.grid()
 plt.ylim(0, 1)
 plt.tight_layout()
