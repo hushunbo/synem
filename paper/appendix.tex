@@ -1,84 +1,106 @@
 \appendix
 \section{Computation of the E-Step}\label{ap:E_step}
-Here, we show the details to compute the E-step of the EM algorithm \cite{Dempster1977} to obtain a local maximum likelihood estimator for $\phi_{I}, \phi_{J}$. 
+Here, we show the details to compute the E-step of the EM algorithm \cite{Dempster1977} to obtain a local maximum likelihood estimator for $\Phi = (\phi_{I}, \phi_{J})$.
 We follow similar steps as in Arce {\it et al.} \cite{Arce-santana2014}.\\
 
-The E-step \cite{Dempster1977} consists in computing the conditional expectation of the log-likelihood of the (complete) data $(Y, Z, I, J)$, according to the observation model given in eq. \eqref{eq:SyNEM_gom_update}, where $Y, Z$ are hidden random fields modeling the (unknown) transfer functions between both modalities \hbox{(eq. \eqref{eq:hidden_fields})}.
-The conditional expectation is to be computed given initial
-approximations of the transformations $\phi^{(0)} = \left(\phi_{I}^{(0)}, \phi_{J}^{(0)}\right)$ and the (observed) data $I, J$. For simplicity, we will compute the E-step corresponding to the hidden random field $Y$.
-The cost function associated to the hidden field $Z$ can be obtained analogously.\\
+The E-step \cite{Dempster1977} consists in computing the conditional expectation of the log-likelihood of the (complete) data $(Y, Z, \tilde{I}, \tilde{J}, \Phi)$, according to the observation model given in eq. \eqref{eq:SyNEM_gom_update}, where $Y, Z$ are hidden random fields modeling the (unknown) transfer functions between both modalities \hbox{(eq. \eqref{eq:hidden_fields})}. A consequence of the transformations $\phi_{I}, \phi_{J}$ being diffeomorphisms (in particular, invertible) is that the domains $\Omega_{I}, \Omega_{J}$ satisfy \hbox{$\phi_{I}(\Omega_{I}) = \Omega_{R} = \phi_{J}(\Omega_{J})$} (see fig. \ref{fig:syn_overview}). This implies that $\tilde{I}$ is independent from $\phi_{I}$, because the event $\left\lbrace I(\phi_{I}^{-1}(x)) : x\in \Omega_{R} \right\rbrace$ is equal to the event $\left\lbrace I(y) : y\in \Omega_{I} \right\rbrace$, therefore:
+\begin{equation}\label{eq:image_transform_independence}
+     P(\tilde{I} | \Phi) = P(I | \Phi) = P(I).
+\end{equation}
+A weaker assumption was made in \cite{Roche2000} (p. 73), to obtain a similar independence property (they only require the transformation to be injective, not necessarily invertible).\\
 
-%In this section, we will compute the EM steps with respect to $Y$ and $\phi_{I}$. The corresponding steps with respect to $Z$ and $\phi_{J}$ are analogous. Our observations are
-%the input images $I, J$, which take values on the set of intensities $G$. The parameters of our model, which we would like to optimize is the diffeomorphism $\phi_{I}$.
-The random field $\eta_{J}$ is a set of independent Normally-distributed random variables. More precisely, if $f_{x}:\mathbf{R}\rightarrow \mathbf{R}^{+}$ is the probability density
+We will assume that, when the transformations $\Phi=(\phi_{I}, \phi_{J})$ are known, the random fields $(Y, \tilde{I})$ are independent from $(Z, \tilde{J})$. In other words, once we know $\Phi$, any knowledge of $(Z, \tilde{J})$ no longer provide any additional information regarding the distribution of $(Y, \tilde{I})$, and viceversa. More precisely:
+\begin{equation}\label{eq:conditional_independence_assumption}
+    P(\tilde{I}, \tilde{J}, Y, Z | \Phi) = P(\tilde{I}, Y | \Phi)P(\tilde{J}, Z| \Phi).
+\end{equation}
+From eq. \eqref{eq:image_transform_independence}, it follows that
+\begin{equation}\label{eq:joint_to_conditional}
+    P(\tilde{I}, Y | \Phi) = P(Y | \tilde{I}, \Phi)P(\tilde{I} | \Phi) = P(Y | I, \Phi)P(I),
+\end{equation}
+similarly, $P(\tilde{J}, Z| \Phi) = P(Z| J, \Phi)P(J)$. From eqs. \eqref{eq:conditional_independence_assumption} and \eqref{eq:joint_to_conditional} we obtain
+\begin{equation}\label{eq:simplified_joint_prob}
+    P(\tilde{I}, \tilde{J}, Y, Z, \Phi) = P(Y | I, \Phi)P(Z| J, \Phi)P(\Phi)P(I)P(J).
+\end{equation}
+
+The conditional expectation of the log-likelihood (of the complete data) evaluated on an initial parameter $\Phi^{(0)}$ can be simplified using eq. \eqref{eq:simplified_joint_prob} as follows:
+\begin{displaymath}
+    Q(\Phi; \Phi^{(0)}) := \mathbbm{E}\left[\left. \log \left(P(\tilde{I}, \tilde{J}, Y, Z, \Phi)\right) \right | I, J, \Phi^{(0)}\right] =
+\end{displaymath}
+\begin{displaymath}
+    \mathbbm{E}\left[\left. \log \left(P(Y |I, \Phi)P(Z|J, \Phi)P(\Phi)P(I)P{J}\right) \right | I, J, \Phi^{(0)}\right] =
+\end{displaymath}
+\begin{equation}\label{eq:separated_expectations}
+    -R(\Phi) + C + \mathbbm{E}\left[ \log \left(P(Y|I, \Phi)\right) | I, J, \Phi^{(0)}\right] + \mathbbm{E}\left[ \log \left(P(Z|J, \Phi)\right) | I, J, \Phi^{(0)}\right]
+\end{equation}
+where $R(\Phi) = -\log P(\Phi)$ is known as the ``regularization term'', and \hbox{$C=\log \left(P(I)P(J)\right)$} is a constant that does not depend on $\Phi$. For simplicity, we will elaborate on the first expectation only, the second can be computed analogously.\\
+
+By definition, the random field $\eta_{J}$ is a set of independent, zero-mean, Normally-distributed random variables. More precisely, if $f_{x}:\mathbf{R}\rightarrow \mathbf{R}^{+}$ is the probability density
 function of $\eta_{J}(x)$ then:
 \begin{equation}\label{eq:gaussian}
     f_{x}(u) = \frac{1}{\sigma_{Y}(x)\sqrt{2 \pi}}\exp\left(-\frac{u^{2}}{2\sigma^{2}_{Y}(x)}\right)
 \end{equation}
-and, from eq. \eqref{eq:SyNEM_gom_update}, it follows that the marginal distribution of each hidden variable $Y(x)$ given the data is a function of $\phi_I$:
+and, from our observation model (eq. \eqref{eq:SyNEM_gom_update}), it follows that:
 \begin{equation}
-    P(Y(x) = \ell | I, J, \phi_{I}, \phi_{J}) = f_{x}(\ell - I(\phi^{-1}_{I}(x))).
+    P(Y(x)| I, \Phi) = P(\eta_{J}(x) = Y(x)-\tilde{I}(x)) = f_{x}(Y(x)-\tilde{I}(x)).
 \end{equation}
-
-The conditional expectation of the log-likelihood with respect to the above conditional distribution evaluated on an initial parameter $\phi^{(0)}$ is:
-
+Therefore, the joint conditional probability of $Y$ given $I, \Phi$ is the product of the above marginals:
+\begin{equation}\label{eq:Y_field_cond_indep}
+    P(Y|I, \Phi) = \prod_{x\in{\Omega_{R}}} f_{x}(Y(x) - \tilde{I}(x)),
+\end{equation}
+and the first conditional expectation of eq. \eqref{eq:separated_expectations} can be writen as:
 \begin{equation}
-    Q(\phi_{I}; \phi^{(0)}) = \mathbbm{E}\left[ \log \left(P(I, J, Y|\phi_{I})P(\phi_{I})\right) | I, J, \phi^{(0)}\right] =
+    Q_{I}(\phi_{I} ; \Phi^{(0)}) := \int_{\mathcal{Y}}\left[\sum_{x\in\Omega_{R}} \log f_{x}\left(y(x) - \tilde{I}(x)\right) \right] dP(y | I, J, \Phi^{(0)}),
 \end{equation}
-
-\begin{equation}
-    =-R(\phi_{I}) + \int_{\mathcal{Y}}\left[\sum_{x\in\Omega_{R}} \log f_{x}\left(y(x) - I(\phi^{-1}_{I}(x))\right) \right] dP(y | I, J, \phi^{(0)}).
-\end{equation}
-
-Where $\mathcal{Y}$ is the set of all possible configurations of the vector field $Y$. The term $R(\phi_{I}) = -\log P(\phi_{I})$ is known as the ``regularization term'' and comes out of the
-integral because it does not depend on $Y$. We will disregard this term for now and concentrate on the second term, known as the ``data term'', in which $\phi_{I}$ is the
-set of parameters we wish to optimize. By assuming a finite grid $\Omega_{R}$, we may interchange the order of summation and integration, which yields the data term:
+where $\mathcal{Y}$ is the set of all possible configurations of the vector field $Y$. By assuming a finite grid $\Omega_{R}$, we may interchange the order of summation and integration, which yields:
 \begin{equation}\label{eq:data_term}
-    \sum_{x\in\Omega_{R}} \int_{\mathcal{Y}} \log f_{x}\left(y(x) - I(\phi^{-1}_{I}(x))\right)  dP(y | I, J, \phi^{(0)}).
+    Q_{I}(\phi_{I} ; \Phi^{(0)}) = \sum_{x\in\Omega_{R}} \int_{\mathcal{Y}} \log f_{x}\left(y(x) - \tilde{I}(x)\right)  dP(y | I, J, \Phi^{(0)}).
 \end{equation}
 
-Since all the variables $Y(x), x\in\Omega_{R}$ are independent, $P(y | I, J, \phi^{(0)}) = P(y(x)| I, J, \phi^{(0)})P(y^{C}(x) | I, J, \phi^{(0)})$, where the complement $Y^{C}(x)$
-denotes the subset of random variables other than $Y(x)$, and $y^{C}(x)$ is a configuration of $Y^{C}(x)$. Therefore, eq.(\eqref{eq:data_term}) can be written as
+Since all the variables $Y(x), x\in\Omega_{R}$ are conditionally independent given $I, \Phi^{(0)}$ (eq. \eqref{eq:Y_field_cond_indep}), we have $P(y | I, J, \Phi^{(0)}) = P(y(x)| I, J, \Phi^{(0)})P(y^{C}(x) | I, J, \Phi^{(0)})$, where the complement $Y^{C}(x)$
+denotes the subset of random variables other than $Y(x)$, and $y^{C}(x)$ is a configuration of $Y^{C}(x)$. Therefore, the right-hand side of eq.\eqref{eq:data_term} can be written as
 
-\begin{equation}
-    \sum_{x\in\Omega_{R}} \int_{\mathcal{Y}^{C}(x)} \left[\int_{\mathbf{R}} \log f_{x}\left(\ell - I(\phi^{-1}_{I}(x))\right) P(Y(x) = \ell | I, J, \phi^{(0)})d\ell\right]  dP(y^{C}(x) | I, J, \phi^{(0)})
+\begin{equation}\label{eq:split_integral}
+    \sum_{x\in\Omega_{R}} \int_{\mathcal{Y}^{C}(x)} \left[\int_{\mathbf{R}} \log f_{x}\left(\ell - \tilde{I}(x)\right) P(Y(x) = \ell | I, J, \Phi^{(0)})d\ell\right]  dP(y^{C}(x) | I, J, \Phi^{(0)})
 \end{equation}
 where $\mathcal{Y}^{C}(x)$ is the set of all possible configurations of $Y^{C}(x)$.\\
 
-Since \hbox{$\int_{\mathcal{Y}^{C}(x)}dP(y^{C}(x) | I, J, \phi^{(0)}) = 1$}, and the inner integral
-is an expected value w.r.t. the conditional distribution, we have
+Since \hbox{$\int_{\mathcal{Y}^{C}(x)}dP(y^{C}(x) | I, J, \Phi^{(0)}) = 1$}, and the inner integral
+is an expected value w.r.t. the conditional distribution:
 \begin{equation}
-     Q(\phi_{I}; \phi^{(0)}) + R(\phi_{I}) = \sum_{x\in\Omega_{R}} \mathbbm{E} \left[\left.\log f_{x}\left(Y(x) - I(\phi^{-1}_{I}(x))\right) \right| I, J, \phi^{(0)}\right].
+     Q_{I}(\phi_{I} ; \Phi^{(0)}) = \sum_{x\in\Omega_{R}} \mathbbm{E} \left[\left.\log f_{x}\left(Y(x) - \tilde{I}(x)\right) \right| I, J, \Phi^{(0)}\right].
 \end{equation}
 By expanding the density function (according to eq. \eqref{eq:gaussian}) and denoting by $\overline{Y}(x), \widehat{\sigma^{2}_{Y}(x)}$ the conditional mean and variance of $Y(x)$
-given the data and fixed parameters $\phi^{(0)}$, we have
+given the data and fixed parameters $\Phi^{(0)}$, we have
 \begin{equation}
-    \mathbbm{E} \left[\left.\log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \frac{(Y(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\sigma^{2}_{Y}(x)}\right|I, J, \phi^{(0)} \right] =
+    \mathbbm{E} \left[\left.\log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \frac{(Y(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\sigma^{2}_{Y}(x)}\right|I, J, \Phi^{(0)} \right] =
 \end{equation}
 \begin{equation}
-    = \log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \mathbbm{E} \left[\left. \frac{(Y(x) - \overline{Y}(x) + \overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\sigma^{2}_{Y}(x)}\right|I, J, \phi^{(0)} \right]=
+    = \log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \mathbbm{E} \left[\left. \frac{(Y(x) - \overline{Y}(x) + \overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\sigma^{2}_{Y}(x)}\right|I, J, \Phi^{(0)} \right]=
 \end{equation}
 %\begin{equation}
-%    = \log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \mathbbm{E} \left[\left. \frac{(Y(x) - \overline{Y}(x))^{2}+ (\overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2} - 2(Y(x) - \overline{Y}(x)) (\overline{Y}(x) - I(\phi^{-1}_{I}(x)))}{2\sigma^{2}_{Y}(x)}\right|I, J, \phi^{(0)} \right]=
+%    = \log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \mathbbm{E} \left[\left. \frac{(Y(x) - \overline{Y}(x))^{2}+ (\overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2} - 2(Y(x) - \overline{Y}(x)) (\overline{Y}(x) - I(\phi^{-1}_{I}(x)))}{2\sigma^{2}_{Y}(x)}\right|I, J, \Phi^{(0)} \right]=
 %\end{equation}
 \begin{equation}
     = \log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \frac{\widehat{\sigma^{2}_{Y}(x)} + (\overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\sigma^{2}_{Y}(x)}.
 \end{equation}
-Finally, by approximating the (unknown) parameters $\sigma_{Y}(x)$ by $\widehat{\sigma_{Y}(x)}$ we obtain the expectation of the log-likelihood to be \textbf{maximized} w.r.t $\phi_{I}$ in the M step:
+Finally, by approximating the (unknown) parameters $\sigma_{Y}(x)$ by $\widehat{\sigma_{Y}(x)}$ we obtain:
 \begin{equation}
-    Q(\phi_{I}; \phi^{(0)}) = C_{I} - \sum_{x\in\Omega_{x}}\frac{(\overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\widehat{\sigma^{2}_{Y}(x)}} - R(\phi_{I}),
+    Q_{I}(\phi_{I} ; \Phi^{(0)}) = C_{I} - \sum_{x\in\Omega_{x}}\frac{(\overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\widehat{\sigma^{2}_{Y}(x)}},
 \end{equation}
-where $C_{I} = -\frac{1}{2} - \log\left(\widehat{\sigma^{2}_{Y}(x)}\sqrt{2\pi}\right)$ is a constant that depends on the (known) initial transformations $\phi^{(0)}$, but not on the
-(unknown) transformation $\phi_{I}$ we wish to optimize. Image $\overline{Y}$ may be regarded as the expected image $\tilde{J}$ under the modality of $\tilde{I}$, given the data and current estimate of the
-deformations $\phi^{(0)}$, denoted $\mathbbm{E}\left[F_{J}[\tilde{J}]|I, J, \phi^{(0)}\right]$ or simply $\mathbbm{E}\left[F_{J}[\tilde{J}]\right]$, and $\widehat{\sigma^{2}_{Y}}(x)$ measures the uncertainty at each point
-$x\in \Omega_{R}$.\\
+where $C_{I} = -\frac{1}{2} - \log\left(\widehat{\sigma^{2}_{Y}(x)}\sqrt{2\pi}\right)$ is a constant that depends on the (known) initial transformations $\Phi^{(0)}$, but not on the (unknown) transformation $\phi_{I}$ we wish to optimize. Image $\overline{Y}$ may be regarded as an approximation of image $\tilde{I}$, since it can be efficiently computed by assigning to $\overline{Y}(x)$ the average intensity of the iso-set $\left\lbrace \tilde{I}(y) : \tilde{J}(y) = \tilde{J}(x)\right\rbrace$ \cite{Roche1998}. The conditional variance $\widehat{\sigma^{2}_{Y}}(x)$ measures the uncertainty at each point $x\in \Omega_{R}$.\\
 
 Analogously, if $\overline{Z}(x), \widehat{\sigma^{2}_{Z}(x)}$ are the conditional mean and variance of $Z(x)$ given the data
-and fixed parameters $\phi^{(0)}$, the cost function associated to $Z$ is
-\begin{equation}
-    Q(\phi_{J}; \phi^{(0)}) = C_{J} - \sum_{x\in\Omega_{x}}\frac{(\overline{Z}(x) - J(\phi^{-1}_{J}(x)))^{2}}{2\widehat{\sigma^{2}_{Z}(x)}} - R(\phi_{J}).
-\end{equation}
+and fixed parameters $\Phi^{(0)}$, the second conditional expectation of eq. \eqref{eq:separated_expectations} can be writen as
 
+\begin{equation}
+    Q_{J}(\phi_{J}; \Phi^{(0)}) = C_{J} - \sum_{x\in\Omega_{x}}\frac{(\overline{Z}(x) - J(\phi^{-1}_{J}(x)))^{2}}{2\widehat{\sigma^{2}_{Z}(x)}}.
+\end{equation}
+If we choose a regularization function of the form $R(\Phi) = \lambda R_{I}(\phi_{I}) + \lambda R_{J}(\phi_{J})$ the final function to be \textbf{maximized} in the M step is given by
+
+\begin{equation}
+    Q(\Phi; \Phi^{(0)}) = \left[Q_{I}(\phi_{I}; \Phi^{(0)}) - \lambda R_{I}(\phi_{I})\right] + \left[Q_{J}(\phi_{J}; \Phi^{(0)}) - \lambda R_{J}(\phi_{J})\right],
+\end{equation}
+which is the sum of two independent cost functions for $\phi_{I}$ and $\phi_{J}$.
 
 \pagebreak
 \section{Gradient of the CC metric}\label{ap:CC_gradient}
@@ -88,7 +110,7 @@ We are interested in computing the gradient of
 \end{equation}
 where the inner product is taken over an $n^{D}$ window (eq. 4, in Avants {\it et al.} \cite{Avants2008}). Since the windows are considered discrete, a more precise notation
 for this expression is:
-\begin{equation}
+\begin{equation}\label{eq:CC_definition}
     CC(y;\phi_{I}, \phi_{J}) = \frac{\left[\sum_{z\in W_{y}} \left(\tilde{I}(z) - \mu_{y}\right)\left(\tilde{J}(z) - \nu_{y}\right)\right]^{2}}
     {\left[\sum_{z \in W_{y}}\left(\tilde{I}(z) - \mu_{y}\right)^{2}\right] \left[\sum_{z \in W_{y}}\left(\tilde{J}(z) - \nu_{y}\right)^{2}\right]} = \frac{A_{y}^{2}}{B_{y}C_{y}}
 \end{equation}
@@ -141,3 +163,9 @@ we can write the gradient of $CC$ with respect to $\phi^{-1}_{J}$ as:
 \begin{equation}
     \psi_{J} = \nabla_{\phi^{-1}_{J}} CC(\phi_{I}, \phi_{J}) = \left[S_{a} \tilde{I} - S_{b}\tilde{J} - S_{c}\right]\nabla \tilde{J}.
 \end{equation}
+
+It is important to notice the similarity and differences between equation \eqref{eq:CC_gradient} and the expressions derived by Hermosillo {\it et al.} \cite{Hermosillo2004}
+and Avants {\it et al.} \cite{Avants2008}. On the one hand, Hermosillo {\it et al.} considered separately the cases of local and global intensity comparisons: the global comparison corresponds to setting $W_{x} = \Omega$ (summing over the full domain). The local intensity comparison is accomplished by using a Gaussian kernel centered at each location $x\in\Omega$. The limitation of using Gaussian kernels is the computational cost, as pointed out by Hermosillo {\it et al.} \cite{Hermosillo2004},
+which makes it necessary to perform some simplifications and use parallel computing, while using rectangular windows results in a very efficient and robust implementation, as shown by Avants {\it et al.}\cite{Avants2008}. On the other hand, even though the formulation of Avants {\it et al.}\cite{Avants2008}
+is the same as eq. \eqref{eq:CC_definition}, only the central voxel contributes to the sum in eq. \eqref{eq:CC_gradient} (see Avants {\it et al.} \cite{Avants2008}, equations (6) and (7)). In practice, we have not observed significant differences between the quantitative results using eq. \eqref{eq:CC_gradient} of this appendix, and eqs. (6) and (7) from Avants {\it et al.} \cite{Avants2008}, thus we opted for using rectangular windows and the gradient computations as in \cite{Avants2008}.
+
