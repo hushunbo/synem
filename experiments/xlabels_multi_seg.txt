@@ -8,11 +8,11 @@ Left-Putamen
 Left-Cerebral-Cortex
 Right-Cerebral-Cortex
 Left-Lateral-Ventricle
-Right-Cerebral-White-Matter
-Left-Cerebral-White-Matter
+Right-Cerebral-WM
+Left-Cerebral-WM
 Right-Lateral-Ventricle
-Right-Cerebellum-White-Matter
-Left-Cerebellum-White-Matter
+Right-Cerebellum-WM
+Left-Cerebellum-WM
 Left-Caudate
 Left-VentralDC
 Right-VentralDC

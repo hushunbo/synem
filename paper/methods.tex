@@ -2,7 +2,7 @@
 
 Let $I$, $J$ be two images defined over $\Omega_{I}$, $\Omega_{J}$, respectively. We consider $\Omega_{I}, \Omega_{J}$ as the transformed grids $\mathcal{L}_{I}$, $\mathcal{L}_{J}$
 associated to $I, J$, under their corresponding grid-to-space transforms $\mathcal{A}_{I}$, $\mathcal{A}_{J}$ (fig. \ref{fig:syn_overview}). Let $G$ be the set of possible intensity values these images may take (e.g. $G=\left\lbrace 0,1,...,255\right\rbrace$). We aim to find two diffeomorphisms $\phi_{I}:\Omega_{I}\rightarrow \Omega_{R}$, $\phi_{J}:\Omega_{J}\rightarrow \Omega_{R}$ such that the images get aligned in the reference space $\Omega_{R}$ after warping them under $\phi_{I}^{-1}$ and $\phi_{J}^{-1}$. In other words, for each point $x \in \Omega_{R}$, $I(\phi_{I}^{-1}(x))$ is mapped to $J(\phi_{J}^{-1}(x))$
-(fig. \ref{fig:syn_overview}). Since transformations $\phi_{I}, \phi_{J}$ establish a correspondence between domains $\Omega_{I}$ and $\Omega_{J}$, they also establish a correspondence between intensities of $I$ and $J$, in the sense that the set of pairs $S = \left\lbrace \left( I(\phi_{I}^{-1}(x)), J(\phi_{J}^{-1}(x))\right): x\in\Omega_{R}\right\rbrace$ may be regarded as a set of independent samples from two \textbf{scalar} random variables $\mathbf{I}, \mathbf{J}$, which are related to each other by a joint probability function $P(\mathbf{I}, \mathbf{J} | I, J, \Phi)$ that depends both, on the observed images and the transformations that align them, and can be estimated from $S$. A common approach to handle multi-modality images is to assume the existence of a \emph{transfer function} $F_{I}$ that maps intensities of image $I$ to intensities of image $J$, or the other way around: assume the existence of $F_{J}$ mapping intensities of image $J$ to intensities of image $I$. The choice between using $F_{I}$ or $F_{J}$ is usually made based on the characteristics of the two modalities under consideration. It is important to notice that this assumption of \emph{functional relationship} between the modalities is very strong, and in general is not satisfied. However, similar studies, most notably Roche {\it et al.} \cite{Roche1998} have found that the assumption of a functional dependency is not critical in typical multi-modal brain image registration settings. Here, we will assume the existence of both transfer functions:
+(fig. \ref{fig:syn_overview}). Since transformations $\phi_{I}, \phi_{J}$ establish a correspondence between domains $\Omega_{I}$ and $\Omega_{J}$, they also establish a correspondence between intensities of $I$ and $J$, in the sense that the set of pairs $S = \left\lbrace \left( I(\phi_{I}^{-1}(x)), J(\phi_{J}^{-1}(x))\right): x\in\Omega_{R}\right\rbrace$ may be regarded as a set of independent samples from two \textbf{scalar} random variables $\mathbf{I}, \mathbf{J}$, which are related to each other by a joint probability function $P(\mathbf{I}, \mathbf{J} | I, J, \Phi)$ that depends both, on the observed images and the transformations that align them, and can be estimated from $S$. A common approach to handle multi-modal images is to assume the existence of a \emph{transfer function} $F_{I}$ that maps intensities of image $I$ to intensities of image $J$, or the other way around: assume the existence of $F_{J}$ mapping intensities of image $J$ to intensities of image $I$. The choice between using $F_{I}$ or $F_{J}$ is usually made based on the characteristics of the two modalities under consideration. It is important to notice that this assumption of \emph{functional relationship} between the modalities is very strong, and in general is not satisfied. However, similar studies, most notably Roche {\it et al.}~\cite{Roche1998} have found that the assumption of a functional dependency is not critical in typical multi-modal brain image registration settings. Here, we will assume the existence of both transfer functions:
 \begin{equation}\label{eq:intensity_transfers}
     \begin{array}{ccccc}
         F_{I}\left[\mathbf{I}\right] &=& \mathbf{J}\\
@@ -17,7 +17,7 @@ Under these assumptions, once the correct transformations $\Phi$ are known, imag
     \end{array}, x\in\Omega_{R},
 \end{equation}
 where $\eta_{I}, \eta_{J}$ are random fields that account for acquisition noise.
-%This formulation differs from Arce {\it et al.} \cite{Arce-santana2014} in that
+%This formulation differs from Arce {\it et al.}~\cite{Arce-santana2014} in that
 %we are taking advantage of both modalities by estimating transfer functions in both directions.\\
 
 \begin{figure}[H]
@@ -28,10 +28,10 @@ diffeomorphism is computed by composing the two partial diffeomorphisms.}
 \label{fig:syn_overview}
 \end{figure}
 
-By defining the warped images \hbox{$\tilde{I}(x) = I(\phi_{I}^{-1}(x))$} and \hbox{$\tilde{J}(x) = J(\phi_{J}^{-1}(x))$} and the hidden random variables
+By defining the warped images \hbox{$\tilde{I}(x) = I(\phi_{I}^{-1}(x))$} and \hbox{$\tilde{J}(x) = J(\phi_{J}^{-1}(x))$} and the hidden random variables \cite{Arce-santana2014} \cite{Dempster1977} \cite{Li2001}
 \begin{equation}\label{eq:hidden_fields}
     \begin{array}{ccc}
-        Y(x) &:=& F_{J}\left[\tilde{J}(x)\right]\\
+        Y(x) &:=& F_{J}\left[\tilde{J}(x)\right]\\[+2mm]
         Z(x) &:=& F_{I}\left[\tilde{I}(x)\right]
     \end{array},x\in\Omega_{R},
 \end{equation}
@@ -49,7 +49,7 @@ These are precisely two instances of Arce's formulation (eq. (1) of \cite{Arce-s
         P(Z(x) = j | I, J, \Phi) &=& P(\mathbf{J}=j | \mathbf{I} = I(\phi_{I}^{-1}(x)))\\
     \end{array}, x\in\Omega_{R}.
 \end{equation}
-Here, we have used the notation $P(\mathbf{I}=i | \mathbf{J} = j)$ for simplicity, but it is important to remember that the definition of $P$ depends on $I, J$ and $\Phi$. The conditional expectation and variance of $Y(x)$ given $I, J, \Phi$ can be computed from $P$ as
+Here, we have used the notation $P(\mathbf{I}=i | \mathbf{J} = j)$ instead of \hbox{$P(\mathbf{I}=i | \mathbf{J} = j, I, J, \Phi)$} for simplicity, but it is important to remember that the definition of $P$ depends on $I, J$ and $\Phi$. The conditional expectation and variance of $Y(x)$ given $I, J, \Phi$ can be computed from $P$ as
 \begin{equation}\label{eq:expectation_transfer}
     \overline{Y}(x) := \mathbbm{E}\left[\left.Y(x) \right| I, J, \Phi\right] = \mathbbm{E}\left[\left.\mathbf{I} \right| \mathbf{J} = \tilde{J}(x)\right] =
     \int_{\mathbbm{R}} i P(\mathbf{I}=i | \mathbf{J}=\tilde{J}(x)) di
@@ -58,7 +58,7 @@ and
 \begin{equation}\label{eq:expectation_variance}
     \sigma_{Y}^{2}(x) := Var\left[\left.Y(x) \right| I, J, \Phi\right] = \int_{\mathbbm{R}} \left(i - \overline{Y}(x)\right)^{2} P(\mathbf{I}=i | \mathbf{J}=\tilde{J}(x)) di.
 \end{equation}
-Corresponding expressions for $\overline{Z}(x)$ and $\sigma_{Z}^{2}(x)$ are obtained analogously. By performing similar computations as in \cite{Arce-santana2014} we can obtain a symmetric version of the ``EM metric'' to be \textbf{minimized} (named this way since the EM algorithm was used to obtained it), which is the sum of two independent cost functions (see \cite{Arce-santana2014} and appendix \ref{ap:E_step} for details):
+Corresponding expressions for $\overline{Z}(x)$ and $\sigma_{Z}^{2}(x)$ are obtained the same way. By performing similar computations as in \cite{Arce-santana2014} we can obtain a symmetric version of the ``EM metric'' to be minimized (named this way since the EM algorithm was used to obtained it), which is the sum of two independent cost functions (see \cite{Arce-santana2014} and appendix \ref{ap:E_step} for details):
 \begin{equation}\label{eq:SyNEM_energy}
     Q(\Phi; \Phi^{(0)}) = Q_{I}(\phi_{I}; \Phi^{(0)}) + Q_{J}(\phi_{J}; \Phi^{(0)})
 \end{equation}
@@ -69,9 +69,9 @@ given by:
         Q_{J}(\phi_{J}; \Phi^{(0)}) &=& \sum_{x \in \Omega_{R}} \frac{\left(\overline{Z}(x) - J(\phi_{J}^{-1}(x))\right)^{2}}{2\sigma^{2}_{Z}(x)} + \lambda R(\phi_{J}) \\
     \end{array}
 \end{equation}
-where $\Phi^{(0)} = (\phi_{I}^{(0)}, \phi_{J}^{(0)})$ are initial approximations to $\Phi$, and the means and variances of $Y(x), Z(x)$ are computed using the approximated joint distribution $P(\mathbf{I}, \mathbf{J} | I, J, \Phi^{(0)})$.\\
+where $\Phi^{(0)} = (\phi_{I}^{(0)}, \phi_{J}^{(0)})$ are initial approximations to $\Phi$, and the means and variances of $Y(x)$ and $Z(x)$ are computed using the approximated joint distribution $P(\mathbf{I}, \mathbf{J} | I, J, \Phi^{(0)})$.\\
 
-Notice that $\overline{Y}(x)$ and $\overline{Z}(x)$ are exactly the same optimal transfer functions used in the Correlation Ratio metric \cite{Roche1998} \cite{Roche2000}. Indeed, each of these metrics, derived by Arce {\it et al.} \cite{Arce-santana2014}, may be regarded as a generalization of the Correlation Ratio, which using our notation, is given by (eq. 3 of \cite{Roche1998}):
+Notice that $\overline{Y}(x)$ and $\overline{Z}(x)$ are exactly the same optimal transfer functions used in the correlation ratio metric \cite{Roche1998} \cite{Roche2000}. Indeed, each of these metrics, derived by Arce {\it et al.}~\cite{Arce-santana2014}, may be regarded as a generalization of the correlation ratio, which using our notation, is given by (eq. 3 of \cite{Roche1998}):
 
 \begin{equation}
     CR(I, J, \Phi) = 1 - \frac{Var\left[ \mathbf{I} - \mathbbm{E}\left[ \mathbf{I} | \mathbf{J}\right] \right]}{Var\left[ \mathbf{I} \right]}
@@ -80,7 +80,7 @@ which, in practice, is computed as (eq. 4 of \cite{Roche1998}):
 \begin{equation}
     CR(I, J, \Phi) = 1 - \frac{\frac{1}{|\Omega_{R}|}\sum_{x \in \Omega_{R}} \left(\overline{Y}(x) - I(\phi_{I}^{-1}(x))\right)^{2}}{Var\left[ \mathbf{I} \right]}.
 \end{equation}
-Therefore, in the special case that all variances $\sigma^{2}_{Y}(x), x\in\Omega_{R}$ are equal, minimizing the EM metric is equivalent to maximizing the Correlation Ratio metric. The Correlation Ratio metric arises from an observation model similar to the one presented in Arce {\it et al.} \cite{Arce-santana2014}, and extended in this work (eq. \eqref{eq:SyNEM_gom_ref}), but assuming the variance of the noise is constant (see for example eq. 10 in \cite{Roche2000}). However, the EM metric does not make this homoscedasticity assumption, which results in a metric that weighs each squared residual $\left(\overline{Y}(x) - I(\phi_{I}^{-1}(x))\right)^{2}$ using a different factor $\frac{1}{\sigma^{2}_{Y}(x)}$ that measures the uncertainty in the approximation of $\tilde{I}(x)$ by $\overline{Y}(x)$.\\
+Therefore, in the special case that all variances $\sigma^{2}_{Y}(x), x\in\Omega_{R}$ are equal, minimizing the EM metric is equivalent to maximizing the correlation ratio metric. The correlation ratio metric arises from an observation model similar to the one presented in Arce {\it et al.}~\cite{Arce-santana2014}, and extended in this work (eq. \eqref{eq:SyNEM_gom_ref}), but assuming the variance of the noise is constant (see for example eq. 10 in \cite{Roche2000}). However, the EM metric does not make this homoscedasticity assumption, which results in a metric that weighs each squared residual $\left(\overline{Y}(x) - I(\phi_{I}^{-1}(x))\right)^{2}$ using a different factor $\frac{1}{\sigma^{2}_{Y}(x)}$ that measures the uncertainty in the approximation of $\tilde{I}(x)$ by $\overline{Y}(x)$.\\
 
 Functionals $Q_{I}, Q_{J}$ can be efficiently minimized by following Vercauteren's analysis of the \textit{diffeomorphic demons} algorithm \cite{Vercauteren2009} as follows.
 Let's choose the regularization function $R(\cdot) = ||\nabla \cdot||^{2}$. Starting from the initial transform $\phi^{(0)}_{J}$ we wish to find a small update displacement field $\mathbf{u}$, which minimizes:
@@ -101,9 +101,9 @@ $\tilde{J}(x+\mathbf{u}(x)) \approx \tilde{J}(x) + \nabla \tilde{J}(x)^{T}\mathb
 \begin{equation}\label{eq:euler_lagrange_step1}
     \widehat{\mathbf{u}}(x) = \frac{\overline{Z}(x) - \tilde{J}(x)}{||\nabla \tilde{J}(x)||^{2} + \frac{\sigma_{Z}^{2}(x)}{\tau}}\nabla \tilde{J}(x).
 \end{equation}
-This expression corresponds to equation (4) in Vercauteren {\it et al.} \cite{Vercauteren2009}, but in their work, the factor $\sigma_{Z}^{2}(x)$
+This expression corresponds to equation (4) in Vercauteren {\it et al.}~\cite{Vercauteren2009}, but in their work, the factor $\sigma_{Z}^{2}(x)$
 is approximated by $\sigma_{Z}(x) \approx |\overline{Z}(x) - \tilde{J}(x)|$ to obtain the traditional {\it demons} step. However, in our case as in Arce
-{\it et al.}\cite{Arce-santana2014}, we have an explicit and natural estimation of $\sigma^{2}_{Z}(x)$.\\
+{\it et al.}~\cite{Arce-santana2014}, we have an explicit and natural estimation of $\sigma^{2}_{Z}(x)$.\\
 
 The second step minimizes eq. \eqref{eq:vercauteren_extended_cost} with respect to $\mathbf{v}$ and keeping fixed the previously obtained displacement field $\mathbf{u}=\widehat{\mathbf{u}}$. The solution of this second sub-problem can be computed by applying a low-pass (smoothing) filter to $\widehat{\mathbf{u}}$. In practice,
 this low pass filter is approximated by a Gaussian kernel \cite{Vercauteren2009}\cite{Avants2011}.
@@ -124,11 +124,11 @@ this low pass filter is approximated by a Gaussian kernel \cite{Vercauteren2009}
 \STATE $t=0$
 \REPEAT
     \STATE Warp $\tilde{I}  = I \circ \phi_{I}^{-1}, \tilde{J} = J \circ \phi_{J}^{-1}$
-    \STATE E-Step $\overline{Y}(x) = \mathbbm{E}\left[\left.\mathbf{I}\right| \mathbf{J}= J(\phi_{J}^{-1}(x))\right]$
+    \STATE E-Step (eq. \eqref{eq:expectation_transfer}) $\overline{Y}(x) = \mathbbm{E}\left[\left.\mathbf{I}\right| \mathbf{J}= J(\phi_{J}^{-1}(x))\right]$
     \STATE E-Step $\overline{Z}(x) = \mathbbm{E}\left[\left.\mathbf{J}\right| \mathbf{I}= I(\phi_{I}^{-1}(x))\right]$
-    \STATE E-Step $\sigma^{2}_{Y}(x) = Var\left[\left.\mathbf{I}\right| \mathbf{J}= J(\phi_{J}^{-1}(x))\right]$
+    \STATE E-Step (eq. \eqref{eq:expectation_variance}) $\sigma^{2}_{Y}(x) = Var\left[\left.\mathbf{I}\right| \mathbf{J}= J(\phi_{J}^{-1}(x))\right]$
     \STATE E-Step $\sigma^{2}_{Z}(x) = Var\left[\left.\mathbf{J}\right| \mathbf{I}= I(\phi_{I}^{-1}(x))\right]$
-    \STATE M-Step $\mathbf{u}_{I} = \frac{\overline{Y}(x) - \tilde{I}(x)}{||\nabla \tilde{I}(x)||^{2} + \frac{\sigma_{Y}^{2}(x)}{\tau}}\nabla \tilde{I}(x)$
+    \STATE M-Step (eq. \eqref{eq:euler_lagrange_step1}) $\mathbf{u}_{I} = \frac{\overline{Y}(x) - \tilde{I}(x)}{||\nabla \tilde{I}(x)||^{2} + \frac{\sigma_{Y}^{2}(x)}{\tau}}\nabla \tilde{I}(x)$
     \STATE M-Step $\mathbf{u}_{J} = \frac{\overline{Z}(x) - \tilde{J}(x)}{||\nabla \tilde{J}(x)||^{2} + \frac{\sigma_{Z}^{2}(x)}{\tau}}\nabla \tilde{J}(x)$
     \STATE Update $\phi_{I} = \phi_{I} - \left(\epsilon K_{\sigma} \ast \mathbf{u}_{I} \right)\circ \phi_{I}$
     \STATE Update $\phi_{J} = \phi_{J} - \left(\epsilon K_{\sigma} \ast \mathbf{u}_{J} \right)\circ \phi_{J}$
@@ -143,10 +143,9 @@ this low pass filter is approximated by a Gaussian kernel \cite{Vercauteren2009}
 
 \subsection{Expected Cross-Correlation}\label{sec:syn_ecc}
 The main drawback of using a point-wise metric like SSD, the EM metric previously described, or Mutual Information, is that
-they are unable to capture important features from the voxels' neighborhoods like gradients and texture. Being point-wise, any permutation of the voxels' positions results in
-exactly the same measured similarity (provided the same permutation is applied to both, the moving and static images). This makes point-wise metrics more susceptible to noise and
-image artifacts such as the bias field in MRI. By considering small windows $W_{y}$ around each voxel $y\in\Omega_{R}$, the normalized Cross Correlation metric (CC), proposed to
-be used with the SyN algorithm by Avants {\it et al.} \cite{Avants2008} takes advantage of more complex local information, resulting in a more robust metric:
+they are unable to capture important features from the voxels' neighborhood like gradients and texture. Being point-wise, any permutation of the voxels' positions results in
+exactly the same measured similarity (provided the same permutation is applied to both, the moving and fixed images). This makes point-wise metrics more susceptible to noise and image artifacts such as the bias field in MRI. By considering small windows $W_{y}$ around each voxel $y\in\Omega_{R}$, the normalized Cross Correlation metric (CC), proposed to
+be used with the SyN algorithm by Avants {\it et al.}~\cite{Avants2008} takes advantage of more complex local information, resulting in a more robust metric:
 \begin{equation}
     CC(y;\tilde{I}, \tilde{J}) = \frac{\left[\sum_{z\in W_{y}} \left(\tilde{I}(z) - \mu_{y}\right)\left(\tilde{J}(z) - \nu_{y}\right)\right]^{2}}
     {\left[\sum_{z \in W_{y}}\left(\tilde{I}(z) - \mu_{y}\right)^{2}\right] \left[\sum_{z \in W_{y}}\left(\tilde{J}(z) - \nu_{y}\right)^{2}\right]}
@@ -159,9 +158,8 @@ where:
     \end{array}.
 \end{equation}
 
-The EM formulation belongs the class of multi-modal image registration methods that reduce the multi-modality problem to a mono-modality one\cite{Sotiras2013}. One of the
-advantages of this class of methods is that it is relatively easy to extend other mono-modal metrics to the multi-modal case using the same ideas. In particular, we can extend the CC metric for multi-modality images by defining the {\it Expected Cross Correlation} metric as:
-\begin{equation}
+The EM formulation belongs the class of multi-modal image registration methods that reduce the multi-modal problem to a mono-modal one \cite{Sotiras2013}. One of the advantages of this class of methods is that it is relatively easy to extend other mono-modal metrics to the multi-modal case using the same ideas. In particular, we can extend the CC metric for multi-modal images by defining the {\it Expected Cross Correlation} metric as:
+\begin{equation}\label{eq:ecc_metric}
     ECC(y;\tilde{I}, \tilde{J}) = CC(y; \overline{Y}, \tilde{I}) + CC(y; \overline{Z}, \tilde{J})
 \end{equation}
 
@@ -180,11 +178,11 @@ computing the gradients).
 \STATE $t=0$
 \REPEAT
     \STATE Warp $\tilde{I}  = I \circ \phi_{I}^{-1}, \tilde{J} = J \circ \phi_{J}^{-1}$
-    \STATE E-Step $\overline{Y}(x) = \mathbbm{E}\left[\left.\mathbf{I}\right| \mathbf{J}= J(\phi_{J}^{-1}(x))\right]$
+    \STATE E-Step (eq. \eqref{eq:expectation_transfer}) $\overline{Y}(x) = \mathbbm{E}\left[\left.\mathbf{I}\right| \mathbf{J}= J(\phi_{J}^{-1}(x))\right]$
     \STATE E-Step $\overline{Z}(x) = \mathbbm{E}\left[\left.\mathbf{J}\right| \mathbf{I}= I(\phi_{I}^{-1}(x))\right]$
-    \STATE E-Step $\sigma^{2}_{Y}(x) = Var\left[\left.\mathbf{I}\right| \mathbf{J}= J(\phi_{J}^{-1}(x))\right]$
+    \STATE E-Step (eq. \eqref{eq:expectation_variance}) $\sigma^{2}_{Y}(x) = Var\left[\left.\mathbf{I}\right| \mathbf{J}= J(\phi_{J}^{-1}(x))\right]$
     \STATE E-Step $\sigma^{2}_{Z}(x) = Var\left[\left.\mathbf{J}\right| \mathbf{I}= I(\phi_{I}^{-1}(x))\right]$
-    \STATE M-Step $\mathbf{u}_{I} = - \nabla_{\phi^{-1}_{I}} ECC(\tilde{I}, \tilde{J} | \phi_{I}, \phi_{J})$
+    \STATE M-Step (gradient of eq. \eqref{eq:ecc_metric}) $\mathbf{u}_{I} = - \nabla_{\phi^{-1}_{I}} ECC(\tilde{I}, \tilde{J} | \phi_{I}, \phi_{J})$
     \STATE M-Step $\mathbf{u}_{J} = - \nabla_{\phi^{-1}_{J}} ECC(\tilde{I}, \tilde{J} | \phi_{I}, \phi_{J})$
     \STATE Update $\phi_{I} = \phi_{I} - \left(\epsilon K_{\sigma} \ast \mathbf{u}_{I} \right)\circ \phi_{I}$
     \STATE Update $\phi_{J} = \phi_{J} - \left(\epsilon K_{\sigma} \ast \mathbf{u}_{J} \right)\circ \phi_{J}$

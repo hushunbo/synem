@@ -13,21 +13,26 @@ def compute_ranks(T):
             R[i, j] = rank
     return R
 
-#graph_title = 'Jaccard index of 31 anatomical regions averaged over 612 multi-modal registrations'
-graph_title = ''
-#graph_title = 'Jaccard index of 31 anatomical regions averaged over 306 mono-modal registrations'
-#data_fname = 'data_mono_seg.txt'
-#regions_fname = 'xlabels_mono_seg.txt'
-#series_fname = 'series_mono_seg.txt'
+#graph_title = 'Jaccard index of 31 anatomical regions averaged over 612 T1-T2 registrations'
+#data_fname = 'data_multi_seg.txt'
+#regions_fname = 'xlabels_multi_seg.txt'
+#series_fname = 'series_multi_seg.txt'
+
+graph_title = 'Jaccard index of 31 anatomical regions averaged over 306 T1-T1 registrations'
+data_fname = 'data_mono_seg.txt'
+regions_fname = 'xlabels_mono_seg.txt'
+series_fname = 'series_mono_seg.txt'
 
 #data_fname = 'data_multi_seg_NO_ECC.txt'
 #regions_fname = 'xlabels_multi_seg_NO_ECC.txt'
 #series_fname = 'series_multi_seg_NO_ECC.txt'
 
-graph_title = 'LPBA40, 56 regions, 1560 registrations'
-data_fname = 'data_mono_short_t_overlap_lpba40.txt'
-regions_fname = 'xlabels_mono_short_t_overlap_lpba40.txt'
-series_fname = 'series_mono_short_t_overlap_lpba40.txt'
+
+#graph_title = ''
+#graph_title = 'LPBA40, 56 regions, 1560 registrations'
+#data_fname = 'data_mono_short_t_overlap_lpba40.txt'
+#regions_fname = 'xlabels_mono_short_t_overlap_lpba40.txt'
+#series_fname = 'series_mono_short_t_overlap_lpba40.txt'
 
 
 data = np.loadtxt(data_fname)
@@ -47,10 +52,11 @@ linestyles = ['--', '--', '--', '--']
 fig = plt.figure()
 ax = fig.add_subplot(111)
 for s in range(ncols):
-    line, = ax.plot(range(1, nrows+1), data[:,s], linestyle=linestyles[s], marker=markers[s])
+    line, = ax.plot(range(1, nrows+1), data[:,s], linestyle=linestyles[s], marker=markers[s], linewidth=2)
     line.set_label(series[s])
-ax.legend()
-plt.xticks(np.array(range(1,1+nrows)), xlabels, rotation='vertical', horizontalalignment='left')
+ax.legend(loc=3, fontsize=18)
+plt.xticks(np.array(range(1, 1 + nrows)), xlabels, rotation='vertical', horizontalalignment='left', fontsize=18)
+plt.xlim(0.75, nrows+0.25)
 plt.grid()
 plt.ylim(0, 1)
 plt.tight_layout()
