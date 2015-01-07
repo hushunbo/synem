@@ -1,6 +1,6 @@
 %\documentclass[final,authoryear,1p,times]{elsarticle}
 %\documentclass[final,authoryear,5p,times,twocolumn]{elsarticle}
-\documentclass[authoryear,preprint,review,12pt]{elsarticle}
+\documentclass[authoryear,preprint,review,9pt]{elsarticle}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{bbm}
@@ -11,6 +11,8 @@
 \usepackage{relsize}
 \usepackage{booktabs}
 \usepackage{color}
+\usepackage[labelfont={small,bf}]{caption}
+\usepackage[font={small,bf}]{caption}
 \journal{Medical Image Analysis}
 
 \begin{document}
@@ -41,6 +43,8 @@ Multi-modal registration \sep Deformable registration \sep Diffeomorphic \sep Ex
 \input{experiments}
 \input{conclusion}
 \input{appendix}
+
+\clearpage
 \bibliographystyle{model2-names}
 \bibliography{references}
 \end{document}

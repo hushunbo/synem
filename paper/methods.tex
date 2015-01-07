@@ -1,8 +1,8 @@
-\section{Extending SyN for multi-modality images}\label{sec:syn_em}
+\section{Methods}
+\subsection{Bidirectional transfer functions model for multi-modal registration}\label{sec:syn_em}
 
-Let $I$, $J$ be two images defined over $\Omega_{I}$, $\Omega_{J}$, respectively. We consider $\Omega_{I}, \Omega_{J}$ as the transformed grids $\mathcal{L}_{I}$, $\mathcal{L}_{J}$
-associated to $I, J$, under their corresponding grid-to-space transforms $\mathcal{A}_{I}$, $\mathcal{A}_{J}$ (Fig. \ref{fig:syn_overview}). Let $G$ be the set of possible intensity values these images may take (e.g. $G=\left\lbrace 0,1,...,255\right\rbrace$). We aim to find two diffeomorphisms $\phi_{I}:\Omega_{I}\rightarrow \Omega_{R}$, $\phi_{J}:\Omega_{J}\rightarrow \Omega_{R}$ such that the images get aligned in the reference space $\Omega_{R}$ after warping them under $\phi_{I}^{-1}$ and $\phi_{J}^{-1}$. In other words, for each point $x \in \Omega_{R}$, $I(\phi_{I}^{-1}(x))$ is mapped to $J(\phi_{J}^{-1}(x))$
-(Fig. \ref{fig:syn_overview}). Since transformations $\phi_{I}, \phi_{J}$ establish a correspondence between domains $\Omega_{I}$ and $\Omega_{J}$, they also establish a correspondence between intensities of $I$ and $J$, in the sense that the set of pairs $S = \left\lbrace \left( I(\phi_{I}^{-1}(x)), J(\phi_{J}^{-1}(x))\right): x\in\Omega_{R}\right\rbrace$ may be regarded as a set of independent samples from two \textbf{scalar} random variables $\mathbf{I}, \mathbf{J}$, which are related to each other by a joint probability function $P(\mathbf{I}, \mathbf{J} | I, J, \Phi)$ that depends both, on the observed images and the transformations that align them, and can be estimated from $S$. A common approach to handle multi-modal images is to assume the existence of a \emph{transfer function} $F_{I}$ that maps intensities of image $I$ to intensities of image $J$, or the other way around: assume the existence of $F_{J}$ mapping intensities of image $J$ to intensities of image $I$. The choice between using $F_{I}$ or $F_{J}$ is usually made based on the characteristics of the two modalities under consideration. It is important to notice that this assumption of \emph{functional relationship} between the modalities is very strong, and in general is not satisfied. However, similar studies, most notably \cite{Roche1998} have found that the assumption of a functional dependency is not critical in typical multi-modal brain image registration settings. Here, we will assume the existence of both transfer functions:
+Let $I$, $J$ be two images defined over $\Omega_{I}$, $\Omega_{J}$, respectively. We consider $\Omega_{I}, \Omega_{J}$ as the transformed grids $\mathcal{L}_{I}$, $\mathcal{L}_{J}$ associated to $I, J$, under their corresponding grid-to-space transforms $\mathcal{A}_{I}$, $\mathcal{A}_{J}$ (Fig. \ref{fig:syn_overview}). Let $G$ be the set of possible intensity values these images may take (e.g. $G=\left\lbrace 0,1,...,255\right\rbrace$). We aim to find two diffeomorphisms $\phi_{I}:\Omega_{I}\rightarrow \Omega_{R}$ and $\phi_{J}:\Omega_{J}\rightarrow \Omega_{R}$ such that the images get aligned in the reference space $\Omega_{R}$ after warping them under $\phi_{I}^{-1}$ and $\phi_{J}^{-1}$. In other words, for each point $x \in \Omega_{R}$, $I(\phi_{I}^{-1}(x))$ is mapped to $J(\phi_{J}^{-1}(x))$
+(Fig. \ref{fig:syn_overview}). Since transformations $\phi_{I}$ and $\phi_{J}$ establish a correspondence between domains $\Omega_{I}$ and $\Omega_{J}$, they also establish a correspondence between intensities of $I$ and $J$, in the sense that the set of pairs $S = \left\lbrace \left( I(\phi_{I}^{-1}(x)), J(\phi_{J}^{-1}(x))\right): x\in\Omega_{R}\right\rbrace$ may be regarded as a set of independent samples from two \textbf{scalar} random variables $\mathbf{I}, \mathbf{J}$, which are related to each other by a joint probability function $P(\mathbf{I}, \mathbf{J} | I, J, \Phi)$ that depends both, on the observed images and the transformations that align them, and can be estimated from $S$. A common approach to handle multi-modal images is to assume the existence of a \emph{transfer function} $F_{I}$ that maps intensities of image $I$ to intensities of image $J$, or the other way around: assume the existence of $F_{J}$ mapping intensities of image $J$ to intensities of image $I$. The choice between using $F_{I}$ or $F_{J}$ is usually made based on the characteristics of the two modalities under consideration. It is important to notice that this assumption of \emph{functional relationship} between the modalities is very strong, and in general is not satisfied. However, similar studies, most notably \cite{Roche1998} have found that the assumption of a functional dependency is not critical in typical multi-modal brain image registration settings. Here, we will assume the existence of both transfer functions:
 \begin{equation}\label{eq:intensity_transfers}
     \begin{array}{ccccc}
         F_{I}\left[\mathbf{I}\right] &=& \mathbf{J}\\
@@ -111,33 +111,6 @@ this low pass filter is approximated by a Gaussian kernel \citep{Vercauteren2009
 %(Alg. \ref{alg:SyNEM})is equivalent to the Greedy SyN algorithm previously described (Alg. \ref{alg:Greedy_SyN}), which has been extensively tested by the neuroimaging
 %community.
 
-\begin{algorithm}[h!]
-\caption{SyN-EM}\label{alg:SyNEM}
-\begin{algorithmic}[1]
-\REQUIRE Gaussian kernel parameter $\sigma>0$
-\REQUIRE Step size $\epsilon>0$
-\REQUIRE Maximum number of iterations $T>0$
-\STATE Initialize: $\phi_{I} = Id, \phi_{J} = Id$
-\STATE $t=0$
-\REPEAT
-    \STATE Warp $\tilde{I}  = I \circ \phi_{I}^{-1}, \tilde{J} = J \circ \phi_{J}^{-1}$
-    \STATE E-Step (eq. \eqref{eq:expectation_transfer}) $\overline{Y}(x) = \mathbbm{E}\left[\left.\mathbf{I}\right| \mathbf{J}= J(\phi_{J}^{-1}(x))\right]$
-    \STATE E-Step $\overline{Z}(x) = \mathbbm{E}\left[\left.\mathbf{J}\right| \mathbf{I}= I(\phi_{I}^{-1}(x))\right]$
-    \STATE E-Step (eq. \eqref{eq:expectation_variance}) $\sigma^{2}_{Y}(x) = Var\left[\left.\mathbf{I}\right| \mathbf{J}= J(\phi_{J}^{-1}(x))\right]$
-    \STATE E-Step $\sigma^{2}_{Z}(x) = Var\left[\left.\mathbf{J}\right| \mathbf{I}= I(\phi_{I}^{-1}(x))\right]$
-    \STATE M-Step (eq. \eqref{eq:euler_lagrange_step1}) $\mathbf{u}_{I} = \frac{\overline{Y}(x) - \tilde{I}(x)}{||\nabla \tilde{I}(x)||^{2} + \frac{\sigma_{Y}^{2}(x)}{\tau}}\nabla \tilde{I}(x)$
-    \STATE M-Step $\mathbf{u}_{J} = \frac{\overline{Z}(x) - \tilde{J}(x)}{||\nabla \tilde{J}(x)||^{2} + \frac{\sigma_{Z}^{2}(x)}{\tau}}\nabla \tilde{J}(x)$
-    \STATE Update $\phi_{I} = \phi_{I} - \left(\epsilon K_{\sigma} \ast \mathbf{u}_{I} \right)\circ \phi_{I}$
-    \STATE Update $\phi_{J} = \phi_{J} - \left(\epsilon K_{\sigma} \ast \mathbf{u}_{J} \right)\circ \phi_{J}$
-    \STATE Invert $\phi_{I}^{-1}, \phi_{J}^{-1} = invert(\phi_{I}), invert(\phi_{J})$
-    \STATE Invert $\phi_{I}, \phi_{J} = invert(\phi_{I}^{-1}), invert(\phi_{J}^{-1})$
-    \STATE t = t + 1
-\UNTIL{$t\geq T$ or convergence}
-\RETURN $\phi_{I}, \phi_{J}$
-\end{algorithmic}
-\end{algorithm}
-
-
 \subsection{Expected Cross-Correlation}\label{sec:syn_ecc}
 The main drawback of using a point-wise metric like SSD, the EM metric previously described, or Mutual Information, is that they are unable to capture important features from the voxels' neighborhood like gradients and texture. Being point-wise, any permutation of the voxels' positions results in exactly the same measured similarity (provided the same permutation is applied to both, the moving and fixed images). This makes point-wise metrics more susceptible to noise and image artifacts such as the bias field in MRI. By considering small windows $W_{y}$ around each voxel $y\in\Omega_{R}$, the normalized Cross Correlation metric (CC), takes advantage of more complex local information, resulting in a more robust metric:
 \begin{equation}
@@ -158,32 +131,12 @@ The EM formulation belongs to the class of multi-modal image registration method
 \end{equation}
 
 The first term measures the similarity between $\overline{Y}$ and $\tilde{I}$ (corresponding to a similarity measure in the modality of $I$), while the second term measures the
-similarity between $\overline{Z}$ and $\tilde{J}$ (corresponding to a similarity measure in the modality of $J$). The resulting algorithm (\ref{alg:SyNECC})
-is, therefore, a combination of the Greedy-SyN algorithm (\ref{alg:Greedy_SyN}) and the SyN-EM algorithm (see \ref{ap:CC_gradient} for details on
+similarity between $\overline{Z}$ and $\tilde{J}$ (corresponding to a similarity measure in the modality of $J$). The resulting algorithm (see \ref{ap:Algorithms}, alg. \ref{alg:SyNECC}) is, therefore, a combination of the Greedy-SyN algorithm (\ref{alg:Greedy_SyN}) and the SyN-EM algorithm (see \ref{ap:CC_gradient} for details on
 computing the gradients).
 
-\begin{algorithm}[h!]
-\caption{SyN-ECC}\label{alg:SyNECC}
-\begin{algorithmic}[1]
-\REQUIRE Gaussian kernel parameter $\sigma>0$
-\REQUIRE Step size $\epsilon>0$
-\REQUIRE Maximum number of iterations $T>0$
-\STATE Initialize: $\phi_{I} = Id, \phi_{J} = Id$
-\STATE $t=0$
-\REPEAT
-    \STATE Warp $\tilde{I}  = I \circ \phi_{I}^{-1}, \tilde{J} = J \circ \phi_{J}^{-1}$
-    \STATE E-Step (eq. \eqref{eq:expectation_transfer}) $\overline{Y}(x) = \mathbbm{E}\left[\left.\mathbf{I}\right| \mathbf{J}= J(\phi_{J}^{-1}(x))\right]$
-    \STATE E-Step $\overline{Z}(x) = \mathbbm{E}\left[\left.\mathbf{J}\right| \mathbf{I}= I(\phi_{I}^{-1}(x))\right]$
-    \STATE E-Step (eq. \eqref{eq:expectation_variance}) $\sigma^{2}_{Y}(x) = Var\left[\left.\mathbf{I}\right| \mathbf{J}= J(\phi_{J}^{-1}(x))\right]$
-    \STATE E-Step $\sigma^{2}_{Z}(x) = Var\left[\left.\mathbf{J}\right| \mathbf{I}= I(\phi_{I}^{-1}(x))\right]$
-    \STATE M-Step (gradient of eq. \eqref{eq:ecc_metric}) $\mathbf{u}_{I} = - \nabla_{\phi^{-1}_{I}} ECC(\tilde{I}, \tilde{J} | \phi_{I}, \phi_{J})$
-    \STATE M-Step $\mathbf{u}_{J} = - \nabla_{\phi^{-1}_{J}} ECC(\tilde{I}, \tilde{J} | \phi_{I}, \phi_{J})$
-    \STATE Update $\phi_{I} = \phi_{I} - \left(\epsilon K_{\sigma} \ast \mathbf{u}_{I} \right)\circ \phi_{I}$
-    \STATE Update $\phi_{J} = \phi_{J} - \left(\epsilon K_{\sigma} \ast \mathbf{u}_{J} \right)\circ \phi_{J}$
-    \STATE Invert $\phi_{I}^{-1}, \phi_{J}^{-1} = invert(\phi_{I}), invert(\phi_{J})$
-    \STATE Invert $\phi_{I}, \phi_{J} = invert(\phi_{I}^{-1}), invert(\phi_{J}^{-1})$
-    \STATE t = t + 1
-\UNTIL{$t\geq T$ or convergence}
-\RETURN $\phi_{I}, \phi_{J}$
-\end{algorithmic}
-\end{algorithm}
+
+\subsection{Experiments}
+Validation is one of the most challenging aspects of developing image registration algorithms. In order to rigorously evaluate the performance of non-linear
+image registration algorithms, we would require a ground-truth consisting of true correspondences between voxels of realistic pairs of images. Since such a ground-truth data are not currently available, researchers resort to surrogates that indirectly measure the quality of their algorithms. For brain MRI registration, for instance, one of the most accepted surrogate measures, is based on the overlap of localized anatomical areas of registered images: ideally, corresponding anatomical areas of perfectly registered images should perfectly overlap. Even a perfect registration algorithm is unlikely to achieve such an ambitious goal, though, since anatomical areas are usually defined manually by an expert, which is by no means a perfect process and the annotations may vary even between different experts. Despite this limitation, it has been shown that among the alternative surrogate measures usually employed, overlap scores of localized anatomical areas is the one that better distinguish reasonable from inaccurate registrations \citep{Rohlfing2012} and it has been employed in the most rigorous evaluations of registration algorithms \citep{Klein2009, Klein2010, Rohlfing2012}. In our experiments, we employ the publicly available Internet Brain Segmentation Repository (IBSR) database consisting of 18 manually annotated T1 brain MRI volumes. Our algorithms are publicly available from the Dipy non-linear registration module \citep{Garyfallidis2014}.\\ 
+
+The methods under evaluation in this section are: 1) SyN with the Normalized Cross Correlation metric \citep{Avants2008, Avants2011}, denoted ``SyN-CC'', 2) SyN with the Mutual Information metric \citep{Mattes2003, Avants2011}, denoted ``SyN-MI'', available in the ANTs software package, 3) the SyN-EM algorithm (see \ref{ap:Algorithms}, alg. \ref{alg:SyNEM}) proposed in section \ref{sec:syn_em}, and 4) the SyN-ECC algorithm (see \ref{ap:Algorithms}, alg. \ref{alg:SyNECC}) proposed in section \ref{sec:syn_ecc}. 
