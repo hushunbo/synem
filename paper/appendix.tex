@@ -1,13 +1,13 @@
-\appendix
+\appendix{Appendices}
 \section{Computation of the E-Step}\label{ap:E_step}
-Here, we show the details to compute the E-step of the EM algorithm \cite{Dempster1977} to obtain a local maximum likelihood estimator for $\Phi = (\phi_{I}, \phi_{J})$.
-We follow similar steps as in Arce {\it et al.}~\cite{Arce-santana2014}.\\
+Here, we show the details to compute the E-step of the EM algorithm \citep{Dempster1977} to obtain a local maximum likelihood estimator for $\Phi = (\phi_{I}, \phi_{J})$.
+We follow similar steps as \cite{Arce-santana2014}.\\
 
-The E-step \cite{Dempster1977} consists in computing the conditional expectation of the log-likelihood of the (complete) data $(Y, Z, \tilde{I}, \tilde{J}, \Phi)$, according to the observation model given in eq. \eqref{eq:SyNEM_gom_update}, where $Y, Z$ are hidden random fields modeling the (unknown) transfer functions between both modalities \hbox{(eq. \eqref{eq:hidden_fields})}. A consequence of the transformations $\phi_{I}, \phi_{J}$ being diffeomorphisms (in particular, invertible) is that the domains $\Omega_{I}, \Omega_{J}$ satisfy \hbox{$\phi_{I}(\Omega_{I}) = \Omega_{R} = \phi_{J}(\Omega_{J})$} (see fig. \ref{fig:syn_overview}). This implies that $\tilde{I}$ is independent from $\phi_{I}$, because the event $\left\lbrace I(\phi_{I}^{-1}(x)) : x\in \Omega_{R} \right\rbrace$ is equal to the event $\left\lbrace I(y) : y\in \Omega_{I} \right\rbrace$, therefore:
+The E-step \citep{Dempster1977} consists in computing the conditional expectation of the log-likelihood of the (complete) data $(Y, Z, \tilde{I}, \tilde{J}, \Phi)$, according to the observation model given in eq. \eqref{eq:SyNEM_gom_update}, where $Y, Z$ are hidden random fields modeling the (unknown) transfer functions between both modalities \hbox{(eq. \eqref{eq:hidden_fields})}. A consequence of the transformations $\phi_{I}, \phi_{J}$ being diffeomorphisms (in particular, invertible) is that the domains $\Omega_{I}, \Omega_{J}$ satisfy \hbox{$\phi_{I}(\Omega_{I}) = \Omega_{R} = \phi_{J}(\Omega_{J})$} (see fig. \ref{fig:syn_overview}). This implies that $\tilde{I}$ is independent from $\phi_{I}$, because the event $\left\lbrace I(\phi_{I}^{-1}(x)) : x\in \Omega_{R} \right\rbrace$ is equal to the event $\left\lbrace I(y) : y\in \Omega_{I} \right\rbrace$, therefore:
 \begin{equation}\label{eq:image_transform_independence}
      P(\tilde{I} | \Phi) = P(I | \Phi) = P(I).
 \end{equation}
-A weaker assumption was made in \cite{Roche2000} (p. 73), to obtain a similar independence property (they only require the transformation to be injective, not necessarily invertible).\\
+It is possible to obtain a similar independence property by making a weaker (injectivity, not necessarily invertibility) assumption \citep[see][pg. 73]{Roche2000}\\
 
 We will assume that, when the transformations $\Phi=(\phi_{I}, \phi_{J})$ are known, the random fields $(Y, \tilde{I})$ are independent from $(Z, \tilde{J})$. In other words, once we know $\Phi$, any knowledge of $(Z, \tilde{J})$ no longer provide any additional information regarding the distribution of $(Y, \tilde{I})$, and viceversa. More precisely:
 \begin{equation}\label{eq:conditional_independence_assumption}
@@ -87,7 +87,7 @@ Finally, by approximating the (unknown) parameters $\sigma_{Y}(x)$ by $\widehat{
 \begin{equation}
     Q_{I}(\phi_{I} ; \Phi^{(0)}) = C_{I} - \sum_{x\in\Omega_{x}}\frac{(\overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\widehat{\sigma^{2}_{Y}(x)}},
 \end{equation}
-where $C_{I} = -\frac{1}{2} - \log\left(\widehat{\sigma^{2}_{Y}(x)}\sqrt{2\pi}\right)$ is a constant that depends on the (known) initial transformations $\Phi^{(0)}$, but not on the (unknown) transformation $\phi_{I}$ we wish to optimize. Image $\overline{Y}$ may be regarded as an approximation of image $\tilde{I}$, since it can be efficiently computed by assigning to $\overline{Y}(x)$ the average intensity of the iso-set $\left\lbrace \tilde{I}(y) : \tilde{J}(y) = \tilde{J}(x)\right\rbrace$ \cite{Roche1998}. The conditional variance $\widehat{\sigma^{2}_{Y}}(x)$ measures the uncertainty at each point $x\in \Omega_{R}$.\\
+where $C_{I} = -\frac{1}{2} - \log\left(\widehat{\sigma^{2}_{Y}(x)}\sqrt{2\pi}\right)$ is a constant that depends on the (known) initial transformations $\Phi^{(0)}$, but not on the (unknown) transformation $\phi_{I}$ we wish to optimize. Image $\overline{Y}$ may be regarded as an approximation of image $\tilde{I}$, since it can be efficiently computed by assigning to $\overline{Y}(x)$ the average intensity of the iso-set $\left\lbrace \tilde{I}(y) : \tilde{J}(y) = \tilde{J}(x)\right\rbrace$ \citep{Roche1998}. The conditional variance $\widehat{\sigma^{2}_{Y}}(x)$ measures the uncertainty at each point $x\in \Omega_{R}$.\\
 
 Similarly, if $\overline{Z}(x), \widehat{\sigma^{2}_{Z}(x)}$ are the conditional mean and variance of $Z(x)$ given the data
 and fixed parameters $\Phi^{(0)}$, the second conditional expectation of eq. \eqref{eq:separated_expectations} can be writen as
@@ -107,7 +107,7 @@ We are interested in computing the gradient of
 \begin{equation}
     CC(\bar{I}, \bar{J}, x) = \frac{<\bar{I}, \bar{J}>^{2}}{<\bar{I}><\bar{J}>}
 \end{equation}
-where the inner product is taken over an $n^{D}$ window (eq. 4, in Avants {\it et al.}~\cite{Avants2008}). Since the windows are considered discrete, a more precise notation
+where the inner product is taken over an $n^{D}$ window \citep[see][eq. 4]{Avants2008}. Since the windows are considered discrete, a more precise notation
 for this expression is:
 \begin{equation}\label{eq:CC_definition}
     CC(y;\phi_{I}, \phi_{J}) = \frac{\left[\sum_{z\in W_{y}} \left(\tilde{I}(z) - \mu_{y}\right)\left(\tilde{J}(z) - \nu_{y}\right)\right]^{2}}
@@ -163,8 +163,6 @@ we can write the gradient of $CC$ with respect to $\phi^{-1}_{J}$ as:
     \psi_{J} = \nabla_{\phi^{-1}_{J}} CC(\phi_{I}, \phi_{J}) = \left[S_{a} \tilde{I} - S_{b}\tilde{J} - S_{c}\right]\nabla \tilde{J}.
 \end{equation}
 
-It is important to notice the similarity and differences between equation \eqref{eq:CC_gradient} and the expressions derived by Hermosillo {\it et al.}~\cite{Hermosillo2004}
-and Avants {\it et al.}~\cite{Avants2008}. On the one hand, Hermosillo {\it et al.} considered separately the cases of local and global intensity comparisons: the global comparison corresponds to setting $W_{x} = \Omega$ (summing over the full domain). The local intensity comparison is accomplished by using a Gaussian kernel centered at each location $x\in\Omega$. The limitation of using Gaussian kernels is the computational cost, as pointed out by Hermosillo {\it et al.}~\cite{Hermosillo2004},
-which makes it necessary to perform some simplifications and use parallel computing, while using rectangular windows results in a very efficient and robust implementation, as shown by Avants {\it et al.}~\cite{Avants2008}. On the other hand, even though the formulation of Avants {\it et al.}~\cite{Avants2008}
-is the same as eq. \eqref{eq:CC_definition}, only the central voxel contributes to the sum in eq. \eqref{eq:CC_gradient} (see Avants {\it et al.}~\cite{Avants2008}, equations (6) and (7)). In practice, we have not observed significant differences between the quantitative results using eq. \eqref{eq:CC_gradient} of this appendix, and eqs. (6) and (7) from Avants {\it et al.}~\cite{Avants2008}, thus we opted for using rectangular windows and the gradient computations as in \cite{Avants2008}.
+It is important to notice the similarity and differences between equation \eqref{eq:CC_gradient} and the expressions derived by \cite{Hermosillo2004}
+and \cite{Avants2008}. On the one hand, \cite{Hermosillo2004} considered separately the cases of local and global intensity comparisons: the global comparison corresponds to setting $W_{x} = \Omega$ (summing over the full domain). The local intensity comparison is accomplished by using a Gaussian kernel centered at each location $x\in\Omega$. The limitation of using Gaussian kernels is the computational cost, as pointed out by \cite{Hermosillo2004}, which makes it necessary to perform some simplifications and use parallel computing, while using rectangular windows results in a very efficient and robust implementation, as shown by \cite{Avants2008}. On the other hand, even though the formulation of \cite{Avants2008} is the same as eq. \eqref{eq:CC_definition}, only the central voxel contributes to the sum in eq. \eqref{eq:CC_gradient} \citep[see][eqs. 6, 7]{Avants2008}. In practice, we have not observed significant differences between the quantitative results using eq. \eqref{eq:CC_gradient} of this appendix, and eqs. (6) and (7) from \cite{Avants2008}, thus we opted for using rectangular windows and the gradient computations as in \cite{Avants2008}.
 

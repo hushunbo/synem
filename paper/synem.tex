@@ -1,42 +1,46 @@
-\documentclass[11pt]{article}
+%\documentclass[final,authoryear,1p,times]{elsarticle}
+%\documentclass[final,authoryear,5p,times,twocolumn]{elsarticle}
+\documentclass[authoryear,preprint,review,12pt]{elsarticle}
+\usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{bbm}
 \usepackage{graphicx}
 \usepackage{subfig}
 \usepackage{algorithmic}
 \usepackage{algorithm}
 \usepackage{relsize}
-\usepackage{fancyhdr,authblk,multicol}
 \usepackage{booktabs}
 \usepackage{color}
-\usepackage{bbm}
-\usepackage[showframe=false]{geometry}
-\usepackage{changepage}
-
-\title{\textbf{Symmetric Diffeomorphic Registration with Expected Cross-Correlation for Multi-Modal MRI}}
-\date{}
-%\author{Omar Ocegueda, Eleftherios Garyfallidis, \\Maxime Descoteaux and Mariano Rivera}
-\author[a,*]{Omar Ocegueda}
-\author[b]{Eleftherios Garyfallidis}
-\author[b]{Maxime Descoteaux}
-\author[a]{Mariano Rivera}
-
-\renewcommand\Affilfont{\itshape\small}
-\affil[a]{Centro de Investigacion en Matematicas, Guanajuato, Gto, Mexico}
-\affil[b]{University of Sherbrooke, Quebec, Canada}
+\journal{Medical Image Analysis}
 
 \begin{document}
 
-\maketitle
+
+\begin{frontmatter}
+
+\title{\textbf{Symmetric Diffeomorphic Registration with Expected Cross-Correlation for Multi-Modal MRI}}
+\author[cimat]{Omar Ocegueda}
+\author[scil]{Eleftherios Garyfallidis}
+\author[scil]{Maxime Descoteaux}
+\author[cimat]{Mariano Rivera}
+\address[cimat]{Centro de Investigaci\'{o}n en Matem\'{a}ticas, Guanajuato, Gto, M\'{e}xico}
+\address[scil]{Computer Science Department, Universit\'{e} de Sherbrooke, Sherbrooke, Qu\'{e}bec, Canada}
 
 \input{abstract}
-\pagebreak
+
+\begin{keyword}
+Multi-modal registration \sep Deformable registration \sep Diffeomorphic \sep Expectation maximization \sep Cross-correlation
+\end{keyword}
+
+\end{frontmatter}
+
+
 \input{introduction}
 \input{background}
 \input{methods}
 \input{experiments}
 \input{conclusion}
 \input{appendix}
-\bibliographystyle{plain}
-{\footnotesize
-\bibliography{references}}
+\bibliographystyle{model2-names}
+\bibliography{references}
 \end{document}
