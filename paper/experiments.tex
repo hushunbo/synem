@@ -8,7 +8,7 @@ window centered at each voxel for computing the similarity, while the EM is voxe
 \input{monomodal_results_seg}
 \input{monomodal_results_segTri_fill}
 
-\begin{figure}[H]
+\begin{figure}[t!]
 \centering
 \includegraphics[width=1.0\linewidth]{./images/mono_lines_seg.png}\\
 \caption{Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with EM, ECC, CC and MI metrics. The Jaccard
@@ -36,7 +36,7 @@ The cross-correlation metric is occasionally used for some multi-modal image reg
 \end{table}%
 
 
-\begin{figure}[H]
+\begin{figure}[t!]
 \centering
 \includegraphics[width=1.0\linewidth]{./images/t1_t2_reg_pannel.png}
 \caption{T2 brain image registered towards T1 using the greedy SyN algorithm with different metrics. Since both images are perfectly aligned, the expected result is a zero deformation field. Row 1: using the CC metric, the cortex is clearly distorted. Row 2: with the EM metric deformations are less visible. Row 3: with the ECC metric deformations are smaller than with the EM metric. Row 4: the MI metric leaves the image almost unchanged (see Table \ref{tab:deformation_magnitude} for detailed numerical results). Note that, with exception of the CC metric, the largest deformations occur outside of the region of interest, which is a result of the regularization term.}
@@ -55,7 +55,7 @@ Unfortunately, to the best of our knowledge, there are no manually annotated mul
 
 The Brainweb template also provides us with a simulation of a proton density (PD) image for the same brain anatomy. This allows us to repeat the procedure described above for each pair of three modalities, T1, T2 and PD, which results in 3 mono-modal and 3 multi-modal registration experiments. For the sake of brevity, Figure \ref{fig:all_pairs_boxplots} depicts a summary of the results obtained over all pairs of modalities. For each pair of registered images, we compute the average Jaccard index of all anatomical regions. Each boxplot in Figure \ref{fig:all_pairs_boxplots} corresponds to the set of all 306 (mono-modal) or 612 (multi-modal) average scores for that particular method and that particular pair of modalities. We can observe that the CC metric performs very well for all mono-modal experiments (diagonal graphs), but it is severely affected in the multi-modal case (off-diagonal graphs). The ECC metric performs practically the same as CC in the mono-modal case, but is less affected in the multi-modal case. By measuring the similarity of local windows instead of individual voxels, the ECC metric outperforms the EM and MI metrics in all cases.
 
-\begin{figure}[H]
+\begin{figure}[t!]
 \centering
     \subfloat[]{\label{fig:T1T2}\includegraphics[width=0.5\linewidth]{./images/t1_t2_transfer_brainweb.png}}
     \subfloat[]{\label{fig:T2T1}\includegraphics[width=0.5\linewidth]{./images/t2_t1_transfer_brainweb.png}}\\
@@ -75,7 +75,7 @@ The Brainweb template also provides us with a simulation of a proton density (PD
 \input{multimodal_results_seg}
 \input{multimodal_results_segTri_fill}
 
-\begin{figure}[H]
+\begin{figure}[t!]
 \centering
 \includegraphics[width=1.0\linewidth]{./images/multi_lines_seg.png}\\
 \caption{Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with EM, ECC, CC and MI metrics. The Jaccard
