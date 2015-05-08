@@ -1,5 +1,12 @@
+\clearpage
 \appendix
-\section{Computation of the E-Step}\label{ap:E_step}
+\numberwithin{equation}{subsection}
+\section*{Appendix}
+\label{sec:appendix}
+
+\renewcommand{\thesubsection}{\Alph{subsection}}
+
+\subsection{Computation of the E-Step}\label{ap:E_step}
 Here, we show the details to compute the E-step of the EM algorithm \citep{Dempster1977} to obtain a local maximum likelihood estimator for $\Phi = (\phi_{I}, \phi_{J})$.
 We follow similar steps as \cite{Arce-santana2014}.\\
 
@@ -84,8 +91,8 @@ given the data and fixed parameters $\Phi^{(0)}$, we have
     = \log \frac{1}{\sigma_{Y}(x)\sqrt{2\pi}} - \frac{\widehat{\sigma^{2}_{Y}(x)} + (\overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\sigma^{2}_{Y}(x)}.
 \end{equation}
 Finally, by approximating the (unknown) parameters $\sigma_{Y}(x)$ by $\widehat{\sigma_{Y}(x)}$ we obtain:
-\begin{equation}
-    Q_{I}(\phi_{I} ; \Phi^{(0)}) = C_{I} - \sum_{x\in\Omega_{x}}\frac{(\overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\widehat{\sigma^{2}_{Y}(x)}},
+\begin{equation}\label{eq:arce_em_metric}
+    Q_{I}(\phi_{I} ; \Phi^{(0)}) = C_{I} - \sum_{x\in\Omega_{R}}\frac{(\overline{Y}(x) - I(\phi^{-1}_{I}(x)))^{2}}{2\widehat{\sigma^{2}_{Y}(x)}},
 \end{equation}
 where $C_{I} = -\frac{1}{2} - \log\left(\widehat{\sigma^{2}_{Y}(x)}\sqrt{2\pi}\right)$ is a constant that depends on the (known) initial transformations $\Phi^{(0)}$, but not on the (unknown) transformation $\phi_{I}$ we wish to optimize. Image $\overline{Y}$ may be regarded as an approximation of image $\tilde{I}$, since it can be efficiently computed by assigning to $\overline{Y}(x)$ the average intensity of the iso-set $\left\lbrace \tilde{I}(y) : \tilde{J}(y) = \tilde{J}(x)\right\rbrace$ \citep{Roche1998}. The conditional variance $\widehat{\sigma^{2}_{Y}}(x)$ measures the uncertainty at each point $x\in \Omega_{R}$.\\
 
@@ -93,7 +100,7 @@ Similarly, if $\overline{Z}(x), \widehat{\sigma^{2}_{Z}(x)}$ are the conditional
 and fixed parameters $\Phi^{(0)}$, the second conditional expectation of eq. \eqref{eq:separated_expectations} can be writen as
 
 \begin{equation}
-    Q_{J}(\phi_{J}; \Phi^{(0)}) = C_{J} - \sum_{x\in\Omega_{x}}\frac{(\overline{Z}(x) - J(\phi^{-1}_{J}(x)))^{2}}{2\widehat{\sigma^{2}_{Z}(x)}}.
+    Q_{J}(\phi_{J}; \Phi^{(0)}) = C_{J} - \sum_{x\in\Omega_{R}}\frac{(\overline{Z}(x) - J(\phi^{-1}_{J}(x)))^{2}}{2\widehat{\sigma^{2}_{Z}(x)}}.
 \end{equation}
 If we choose a regularization function of the form $R(\Phi) = \lambda R_{I}(\phi_{I}) + \lambda R_{J}(\phi_{J})$ the final function to be \textbf{maximized} in the M step is given by
 
@@ -102,7 +109,7 @@ If we choose a regularization function of the form $R(\Phi) = \lambda R_{I}(\phi
 \end{equation}
 which is the sum of two independent cost functions for $\phi_{I}$ and $\phi_{J}$.
 
-\section{Gradient of the CC metric}\label{ap:CC_gradient}
+\subsection{Gradient of the CC metric}\label{ap:CC_gradient}
 We are interested in computing the gradient of
 \begin{equation}
     CC(\bar{I}, \bar{J}, x) = \frac{<\bar{I}, \bar{J}>^{2}}{<\bar{I}><\bar{J}>}
@@ -166,7 +173,7 @@ we can write the gradient of $CC$ with respect to $\phi^{-1}_{J}$ as:
 It is important to notice the similarity and differences between equation \eqref{eq:CC_gradient} and the expressions derived by \cite{Hermosillo2004}
 and \cite{Avants2008}. On the one hand, \cite{Hermosillo2004} considered separately the cases of local and global intensity comparisons: the global comparison corresponds to setting $W_{x} = \Omega$ (summing over the full domain). The local intensity comparison is accomplished by using a Gaussian kernel centered at each location $x\in\Omega$. The limitation of using Gaussian kernels is the computational cost, as pointed out by \cite{Hermosillo2004}, which makes it necessary to perform some simplifications and use parallel computing, while using rectangular windows results in a very efficient and robust implementation, as shown by \cite{Avants2008}. On the other hand, even though the formulation of \cite{Avants2008} is the same as eq. \eqref{eq:CC_definition}, only the central voxel contributes to the sum in eq. \eqref{eq:CC_gradient} \citep[see][eqs. 6, 7]{Avants2008}. In practice, we have not observed significant differences between the quantitative results using eq. \eqref{eq:CC_gradient} of this appendix, and eqs. (6) and (7) from \cite{Avants2008}, thus we opted for using rectangular windows and the gradient computations as in \cite{Avants2008}.
 
-\section{Algorithms}\label{ap:Algorithms}
+\subsection{Algorithms}\label{ap:Algorithms}
 \begin{algorithm}[h!]
 \caption{Greedy SyN. This algorihtm was the method used for evaluating ANTS \citep{Avants2011} in the large comparative studies developed by \cite{Klein2009, Klein2010} in which it consistently ranked first.}\label{alg:Greedy_SyN}
 \begin{algorithmic}[1]
@@ -240,4 +247,4 @@ and \cite{Avants2008}. On the one hand, \cite{Hermosillo2004} considered separat
 \UNTIL{$t\geq T$ or convergence}
 \RETURN $\phi_{I}, \phi_{J}$
 \end{algorithmic}
-\end{algorithm}
+\end{algorithm} 

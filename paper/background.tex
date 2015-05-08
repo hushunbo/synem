@@ -61,7 +61,7 @@ where $\tilde{I} = I \circ \phi_{1}^{-1}(\cdot, 0.5)$, $\tilde{J} = J \circ \phi
 \begin{equation}\label{eq:gsyn_update}
     \phi_{i}(\cdot, 0.5) = \phi_{i}(\cdot, 0.5) - \left( \epsilon K_{\sigma} \ast \nabla_{\phi_{i}} \Pi(\tilde{I}, \tilde{J}) \right) \circ \phi_{i}(\cdot, 0.5),
 \end{equation}
-where $\ast$ denotes the convolution operator and $\epsilon$ is a small factor controlling the step size in the optimization process. Finally, the updated midpoint transformations (which, after composition with the gradient, are not ensured to be diffeomorphisms) are forced to be invertible by using an explicit vector field inversion algorithm \citep{Chen2008}. This algorithm, called \textit{Greedy SyN} (see \ref{ap:Algorithms}, alg. \ref{alg:Greedy_SyN}) has been adopted by the neuroimaging community as the \textit{de facto} state-of-the-art brain MRI registration algorithm due to its reliability and efficiency. It was the method used for evaluating ANTS \citep{Avants2011} in the large comparative studies developed by \cite{Klein2009, Klein2010} in which \textit{Greedy SyN} consistently ranked first.
+where $\ast$ denotes the convolution operator and $\epsilon$ is a small factor controlling the step size in the optimization process. Finally, the updated midpoint transformations (which, after composition with the gradient, are not ensured to be diffeomorphisms) are forced to be invertible by using an explicit vector field inversion algorithm \citep{Chen2008}. This algorithm, called \textit{Greedy SyN} (see Appendix \ref{ap:Algorithms}, alg. \ref{alg:Greedy_SyN}) has been adopted by the neuroimaging community as the \textit{de facto} state-of-the-art brain MRI registration algorithm due to its reliability and efficiency. It was the method used for evaluating ANTS \citep{Avants2011} in the large comparative studies developed by \cite{Klein2009, Klein2010} in which \textit{Greedy SyN} consistently ranked first.
 
 \subsection{Multi-modal image registration}
 
@@ -71,9 +71,7 @@ Recently, \cite{Arce-santana2014} modeled the transfer function between the imag
 \begin{equation}\label{eq:arce_model}
     F[I(x)] = J(\phi(x)) + \eta(x), x\in \mathcal{L}
 \end{equation}
-where $F$ is the (unknown) transfer function between image modalities and $\eta(x), x\in \mathcal{L}$ are independent random variables with Gaussian distribution. To simplify
-the problem, the dynamic range $G$ of image $I$ is assumed to be discrete and relatively small (\cite{Arce-santana2014} chose $G = \mathrm{Z}_{256}$). By having a discrete
-dynamic range, the function $F: G \rightarrow G$ may be modeled as a discrete set of hidden random variables $Y_g = F(g), g\in G$ whose distribution parameters
+where $F$ is the (unknown) transfer function between image modalities and $\eta(x), x\in \mathcal{L}$ are independent random variables with Gaussian distribution. Since the grid $\mathcal{L}$ is discrete, image $F[I(x)], x\in \mathcal{L}$ may be modeled as a discrete set of hidden random variables $Y(x) = F[I(x)]$ whose distribution parameters
 can be estimated using the Expectation Maximization (EM) algorithm \citep{Dempster1977}. In their work, \cite{Arce-santana2014} used a discretized elastic
 deformation model to test the behavior of their metric, which leads to the following energy minimization problem
 
@@ -82,4 +80,4 @@ deformation model to test the behavior of their metric, which leads to the follo
 \end{equation}
 where $\bar{I}(x), \sigma(x), x\in \mathcal{L}$ are the estimated parameters (mean and standard deviation) of the hidden variable $F[I(x)]$ given the
 observed intensity $I(x)$ and $<x, y>$ denote neighboring pixels in $\mathcal{L}$. Even though the authors only evaluated their metric for 2D image registration and used
-the elastic model, this formulation can be extended, as we will show in the next section, to develop an efficient and accurate symmetric diffeomorphic non-linear image registration algorithm for 3D multi-modality data by taking advantage of the ideas of Avants' \textit{Greedy SyN} \citep{Avants2008}, Vercauteren's \textit{Diffeomorphic Demons} \citep{Vercauteren2009}and Arce's \textit{EM transfer function} model \citep{Arce-santana2014}.\\
+the elastic model, this formulation can be extended, as we will show in the next section, to develop an efficient and accurate symmetric diffeomorphic non-linear registration algorithm for 3D multi-modal images by taking advantage of the ideas of Avants' \textit{Greedy SyN} \citep{Avants2008}, Vercauteren's \textit{Diffeomorphic Demons} \citep{Vercauteren2009} and Arce's \textit{EM transfer function} model \citep{Arce-santana2014}.
