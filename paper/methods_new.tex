@@ -1,24 +1,179 @@
+\vspace{-0.5cm}
 \section{Methods}
-\subsection{Bidirectional transfer functions model for multi-modal registration}\label{sec:syn_em}
-
-Let $I$, $J$ be two images defined over $\Omega_{I}$, $\Omega_{J}$, respectively. We consider $\Omega_{I}, \Omega_{J}$ as the transformed grids $\mathcal{L}_{I}$, $\mathcal{L}_{J}$ associated to $I, J$, under their corresponding grid-to-space transforms $\mathcal{A}_{I}$, $\mathcal{A}_{J}$ (Fig. \ref{fig:syn_overview}). Let $G$ be the set of possible intensity values these images may take (e.g. $G=\left\lbrace 0,1,...,255\right\rbrace$). We aim to find two diffeomorphisms $\phi_{I}:\Omega_{I}\rightarrow \Omega_{R}$ and $\phi_{J}:\Omega_{J}\rightarrow \Omega_{R}$ such that the images get aligned in the reference space $\Omega_{R}$ after warping them under $\phi_{I}^{-1}$ and $\phi_{J}^{-1}$. In other words, for each point $x \in \Omega_{R}$, $I(\phi_{I}^{-1}(x))$ is mapped to $J(\phi_{J}^{-1}(x))$
-(Fig. \ref{fig:syn_overview}). Since transformations $\phi_{I}$ and $\phi_{J}$ establish a correspondence between domains $\Omega_{I}$ and $\Omega_{J}$, they also establish a correspondence between intensities of $I$ and $J$, in the sense that the set of pairs $S = \left\lbrace \left( I(\phi_{I}^{-1}(x)), J(\phi_{J}^{-1}(x))\right): x\in\Omega_{R}\right\rbrace$ may be regarded as a set of independent samples from two \textbf{scalar} random variables $\mathbf{I}, \mathbf{J}$, which are related to each other by a joint probability function $P(\mathbf{I}, \mathbf{J} | I, J, \Phi)$ that depends both, on the observed images and the transformations that align them, and can be estimated from $S$. A common approach to handle multi-modal images is to assume the existence of a \emph{transfer function} $F_{I}$ that maps intensities of image $I$ to intensities of image $J$, or the other way around: assume the existence of $F_{J}$ mapping intensities of image $J$ to intensities of image $I$. The choice between using $F_{I}$ or $F_{J}$ is usually made based on the characteristics of the two modalities under consideration. It is important to notice that this assumption of \emph{functional relationship} between the modalities is very strong, and in general is not satisfied. However, similar studies, most notably \cite{Roche1998} have found that the assumption of a functional dependency is not critical in typical multi-modal brain image registration settings. Here, we will assume the existence of both transfer functions:
-\begin{equation}\label{eq:intensity_transfers}
-    \begin{array}{ccccc}
-        F_{I}\left[\mathbf{I}\right] &=& \mathbf{J}\\
-        F_{J}\left[\mathbf{J}\right] &=& \mathbf{I}
-    \end{array}.
+A more detailed analysis of the LLR matching functional reveals that it is closely related to the CC metric, in the following sense. Let's consider the non-degenerate case first (the case that $\mathbf{y}_{v}$ and $\mathbf{x}_{v}$ are not ``constant'' vectors or in other words, they are not scalar multiples of $\mathbbm{1}$), we will discuss the degenerate cases later. First of all, note that we may assume, without loss of generality, that both vectors $\mathbf{x}_{v}, \mathbf{y}_{v}$ are \emph{centered} (i.e., their means are zero: $\frac{\mathbf{x}_{v}^{T}\mathbbm{1}}{n} = \frac{\mathbf{y}_{v}^{T}\mathbbm{1}}{n} = 0$), which may be proven as follows. Let's decompose $\mathbf{x}_{v}, \mathbf{y}_{v}$ into their centered part and their mean: $\mathbf{x}_{v} = \mathbf{x}_{v}' + \mu_{x}\mathbbm{1}$, and $\mathbf{y}_{v} = \mathbf{y}_{v}' + \mu_{y}\mathbbm{1}$, where $\mathbf{x}_{v}'$ and $\mathbf{y}_{v}'$ are centered. Then
+\begin{displaymath}
+    \begin{array}{lcl}
+        ||[\mathbf{x}_{v} \; \mathbbm{1}]\beta - \mathbf{y}_{v}||^{2} &=& ||[\mathbf{x}_{v}' \; \mathbbm{1}]\beta - \mathbf{y}_{v}' + \beta_{1}\mu_{x}\mathbbm{1} - \mu_{y}\mathbbm{1}||^{2}\\
+        &=&||[\mathbf{x}_{v}' \; \mathbbm{1}]\beta' - \mathbf{y}_{v}'||^{2}
+    \end{array}
+\end{displaymath}
+where $\beta' = (\beta_{1}, \beta_{0} + \beta_{1}\mu_{x} - \mu_{y})^{T}$. This $\beta'$ is the unique m.l.e. for $\beta$ in the centered, non-degenerate case. This means that the LLR evaluated at non-centered vectors equals the LLR evaluated at their corresponding centered vectors. The projection matrix $\mathbf{Q}_{v}$ in \eqref{eq:def_P_v} can be directly computed as
+\begin{align*}
+    \mathbf{Q}_{v} &= \frac{1}{\Delta}
+    [\mathbf{x}_{v} \; \mathbbm{1}]
+    \left[\begin{array}{cc}
+        n & - \mathbf{x}_{v}^{T}\mathbbm{1}\\
+        -\mathbf{x}_{v}^{T}\mathbbm{1} & ||\mathbf{x}_{v}||^{2}
+    \end{array}\right]
+    \left[\begin{array}{c}
+        \mathbf{x}_{v}^{T}\\
+        \mathbbm{1}^{T}
+    \end{array}\right] \\
+    &= [\mathbf{x}_{v} \; \mathbbm{1}]
+    \left[\begin{array}{cc}
+        \frac{1}{||\mathbf{x}_{v}||^{2}} & 0\\
+        0 & \frac{1}{n}
+    \end{array}\right]
+    \left[\begin{array}{c}
+        \mathbf{x}_{v}^{T}\\
+        \mathbbm{1}^{T}
+    \end{array}\right]
+\end{align*}
+where $\Delta = n||\mathbf{x}_{v}||^{2} - \left(\mathbf{x}_{v}^{T}\mathbbm{1}\right)^{2} = n||\mathbf{x}_{v}||^{2} > 0$ ($||\mathbf{x}_{v}||^{2}$ cannot be zero, by hypothesis). Therefore, the entry $\mathbf{q}_{i,j}$ of $\mathbf{Q}_v$ at row $i$, column $j$ is given by:
+\begin{displaymath}
+    \mathbf{q}_{i,j} = \frac{n\mathbf{x}_{v,i}\mathbf{x}_{v,j} + ||\mathbf{x_v}||^{2}}{n||\mathbf{x}_{v}||^{2}}.
+\end{displaymath}
+Each term of the LLR metric (corresponding to the local window centered at voxel $v$) can be expanded as:
+\begin{equation}\label{eq:llr_cc_relationship}
+    \begin{split}
+        ||(\mathbf{Q}_{v} - \mathbbm{I}_{n})\mathbf{y}_{v}||^{2} &= \sum_{i=1}^{n} \left(\sum_{j=1}^{n} \mathbf{q}_{i,j} \mathbf{y}_{v,j} - \mathbf{y}_{v,i}\right)^{2}\\
+        &=\sum_{i=1}^{n}\left(\frac{\mathbf{x}_{v}^{T}\mathbf{y}_{v}}{||\mathbf{x}_{v}||^{2}} \mathbf{x}_{v,i} - \mathbf{y}_{v,i}\right)^{2} \\
+        &=||\mathbf{y}_{v}||^{2} - \frac{(\mathbf{x}_{v}^{T}\mathbf{y}_{v})^{2}}{||\mathbf{x}_{v}||^{2}}\\
+        &= ||\mathbf{y}_{v}||^{2}\left(1 - \frac{(\mathbf{x}_{v}^{T}\mathbf{y}_{v})^{2}}{||\mathbf{x}_{v}||^{2}||\mathbf{y}_{v}||^{2}}\right).
+    \end{split}
 \end{equation}
-Under these assumptions, once the correct transformations $\Phi$ are known, images $I, J$ can be obtained from each other by applying the transfer functions:
-\begin{equation}\label{eq:SyNEM_gom_ref}
-    \begin{array}{ccccc}
-        F_{J}\left[J(\phi_{J}^{-1}(x))\right] &=& I(\phi_{I}^{-1}(x)) &+& \eta_{J}(x)\\
-        F_{I}\left[I(\phi_{I}^{-1}(x))\right] &=& J(\phi_{J}^{-1}(x)) &+& \eta_{I}(x)
-    \end{array}, x\in\Omega_{R},
+Therefore, the LLR functional may be regarded as a modified CC functional with a bias towards making $||\mathbf{y}_{v}||$ ``dark'' (close to zero). This bias may be removed from model \eqref{eq:wang_model} by normalizing $\mathbf{y}_{v}$:\\
+\begin{equation}\label{eq:normalized_ll_model}
+    \frac{\mathbf{y}_{v}}{||\mathbf{y}_{v}||} = \left[\mathbf{x}_{v} \; \mathbbm{1}\right]\beta + \eta(v) \; \forall v\in\Omega_{I},
 \end{equation}
-where $\eta_{I}, \eta_{J}$ are random fields that account for acquisition noise.\\
+and we can see that likelihood maximization under model \eqref{eq:normalized_ll_model} is now equivalent to maximization of CC.\\
 
-\begin{figure}[t!]
+Regarding the degenerate cases, note that if $\mathbf{y}_{v} = \alpha \mathbbm{1}, \alpha\in \mathbbm{R}$, then the LLR at $v$ is zero regardless of the value of $\mathbf{x}_{v}$ (by choosing $\widehat{\beta} = (0, \alpha)^{T}$), otherwise, if $\mathbf{x}_{v} = \gamma \mathbbm{1}, \gamma\in \mathbbm{R}$, then the LLR at $v$ is $||\mathbf{y}_{v} - \frac{\mathbf{y}_{v}^{T}\mathbbm{1}}{n}||^{2}$ (the norm of the centered $\mathbf{y}_{v}$ vector), which confirms that the a registration algorithm driven by LLR has a bias towards making $\mathbf{y}_{v}$ ``darker''. On the other hand, the CC metric is undefined in these degenerate cases (CC is defined for centered local vectors \cite{Avants2008}\cite{Avants2011}) and they are handled in practice by discarding their contribution to the metric and its gradient (this can be verified, for example, from the ANTS \cite{Avants2011a} source code).
+
+\subsection{Global non-linear transfer}
+The matching functional we propose in this work is based on the empirical observation that the non-linear relationship between both image modalities at local windows (fig. \ref{fig:llr_test}) may be made closer to linear by applying a global, non-linear, transfer function $F: G \rightarrow \mathbbm{R}$ that maps intensities from one modality to the other (fig. \ref{fig:ecc_test_good}). More precisely, our model may be written as
+\begin{equation}\label{eq:ecc_model}
+    \frac{\mathbf{y}_{v}}{||\mathbf{y}_{v}||} = \left[F\left[\mathbf{x}_{v}\right] \; \mathbbm{1}\right]\beta + \eta(v) \; \forall v\in\Omega_{I},
+\end{equation}
+where we have denoted $F[\mathbf{x}_{v}]$ the vector that results from applying function $F$ to each element of vector $\mathbf{x}_{v}$. By following the exact same steps as before, we can compute the optimal regression parameters $\widehat{\beta}$ and obtain the negative log-likelihood of our data under model \eqref{eq:ecc_model} (by replacing $\mathbf{x}_{v}$ with $F[\mathbf{x}_{v}]$ and $\mathbf{y}_{v}$ with $\frac{\mathbf{y}_{v}}{||\mathbf{y}_{v}||}$ in eq. \eqref{eq:llr_cc_relationship}):
+\begin{equation}\label{eq:ecc_neg_likelihood}
+    U(I, J;\phi) = \sum_{v\in\Omega_{I}}\left(1-\frac{\left(F\left[\mathbf{x}_{v}\right]^{T} \mathbf{y}_{v}\right)^{2}}{||F\left[\mathbf{x}_{v}\right]||^{2}||\mathbf{y}_{v}||^{2}}\right).
+\end{equation}
+The minimum of \eqref{eq:ecc_neg_likelihood} can be obtain by maximizing our proposed matching functional, which we call \emph{Expected Cross Correlation} (the reason of this name will be clear soon):
+\begin{equation}\label{eq:ecc_functional}
+    ECC(I, J;\phi) = \sum_{v\in\Omega_{I}}\frac{\left(F\left[\mathbf{x}_{v}\right]^{T} \mathbf{y}_{v}\right)^{2}}{||F\left[\mathbf{x}_{v}\right]||^{2}||\mathbf{y}_{v}||^{2}}.
+\end{equation}
+Now we will proceed to compute an optimal non-linear transfer function $F$. We can see from model \eqref{eq:ecc_model}, that the optimal function $F$ is not unique: if $F^{*}$ is optimal, then any affine transform of $F^{*}$, say $\widehat{F} = \alpha_{0} F^{*} + \alpha_{1}$ is optimal too, because:
+\begin{displaymath}
+    \left[\widehat{F}\left[\mathbf{x}_{v}\right] \; \mathbbm{1}\right]\beta =
+    \left[\left(\alpha_{0}F^{*}\left[\mathbf{x}_{v}\right]+\alpha_{1}\mathbbm{1}\right) \; \mathbbm{1}\right]\beta =
+    \left[F^{*}\left[\mathbf{x}_{v}\right] \; \mathbbm{1}\right]\beta',
+\end{displaymath}
+where $\beta' = (\alpha_{0}\beta_{0}, \alpha_{1}\beta_{0} + \beta_{1})^{T}$. We aim to find an optimal $F$ modulo an affine transform. Let's denote by $m$ the number of different intensity values in the fixed image $I$ (a typical choice is $m=256$). We will assign a value $\mathbf{f}_{\ell}$ to each intensity $\ell$ of the fixed image, $0\leq \ell < m$, and define the transfer function $F$ as $F(\mathbf{x}_{v,i}) = \mathbf{f}_{\ell}$, where $\ell = \mathbf{x}_{v,i}$. The transfer function $F$ may then be represented as a vector $\mathbf{f}$ of dimension $m$. Let $\mathbf{k}_{v,\ell}$, and $\mathbf{a}_{v,\ell}$ be number of elements of $\mathbf{x}_{v}$ equal to $\ell$, and the sum of elements of $\mathbf{y}_{v}$ whose corresponding elements in $\mathbf{x}_{v}$ equal $\ell$, respectively. More precisely:
+\begin{displaymath}
+    \mathbf{k}_{v,\ell} = |\left\lbrace i : \mathbf{x}_{v,i}=\ell \right\rbrace|
+\end{displaymath}
+\begin{displaymath}
+    \mathbf{a}_{v, \ell} = \sum_{i:\mathbf{x}_{v,i}=\ell} \mathbf{y}_{v,i}
+\end{displaymath}
+then, the dot product in equation \eqref{eq:ecc_neg_likelihood} may be written in term of $\mathbf{f}$ as follows:
+\begin{displaymath}
+    F\left[\mathbf{x}_{v}\right]^{T} \mathbf{y}_{v} = \sum_{\ell=1}^{m} \sum_{i:\mathbf{x}_{v,i}=\ell} F(\mathbf{x}_{v,i})\mathbf{y}_{v,i}
+    =\sum_{\ell=1}^{m} \mathbf{f_{\ell}}\mathbf{a}_{v, \ell} = \mathbf{f}^{T}\mathbf{a}_{v}
+\end{displaymath}
+and the squared norm $||F[\mathbf{x}_{v}]||^{2}$ as:
+\begin{displaymath}
+    ||F\left[\mathbf{x}_{v}\right]||^{2} = \sum_{\ell=1}^{m} \sum_{i:\mathbf{x}_{v,i}=\ell} F(\mathbf{x}_{v,i})^{2}
+    = \sum_{\ell=1}^{m} \mathbf{f_{\ell}}^{2} \mathbf{k}_{v, \ell} = \mathbf{f}^{T} \mathbf{D}_{v} \mathbf{f}
+\end{displaymath}
+where $\mathbf{D}_{v} = $ diag($\mathbf{k}_{v}$). The ECC matching functional (eq. \eqref{eq:ecc_functional}) can now be written as:
+\begin{equation}\label{eq:ecc_neg_likelihood_vector_form}
+    ECC(I, J;\phi) = \sum_{v\in\Omega_{I}}\frac{\mathbf{f}^{T}\mathbf{a}_{v}\mathbf{a}_{v}^{T}\mathbf{f}}
+    {\mathbf{f}^{T} \mathbf{D}_{v} \mathbf{f}||\mathbf{y}_{v}||^{2}}.
+\end{equation}
+
+The problem of maximizing the sum of quotients of quadratic forms (like eq. \eqref{eq:ecc_neg_likelihood_vector_form}) doesn't have, in general, a close form solution, and it is necessary to resort to iterative algorithms (see for example Kiers, 1995 \cite{Kiers1995} for a thorough review of this problem). The sole evaluation of the functional may be very time consuming because in order to apply fast strategies like partial sums (used for example by Avants \cite{Avants2008} to evaluate the CC metric and its gradient) we need to store the partial results for each intensity value $0 \leq \ell < m$, which would require a very large amount of memory. Therefore, we will compute an approximation based on the following assumptions.\\
+
+1. The set of intensities of each each vector $\mathbf{x}_{v}$ and $\mathbf{y}_{v}$ are approximately random samples from intensities of images $I$ and $J$, respectively. On the one hand, if $\mathbf{x}_{v}$ is approximately a random sample from $I$, then the number $\mathbf{k}_{v,\ell}$ of vector elements $i$ where $\mathbf{x}_{v,i} = \ell$, may be approximated by its expected value $n\mathbf{p}_{\ell}$, where the probability $\mathbf{p}_{\ell}$ of a voxel having intensity $\ell$ may be estimated by its empirical probability:
+\begin{equation}
+    \frac{\mathbf{k}_{v, \ell}}{n} \approx \frac{\mathbbm{E}[\mathbf{k}_{v,\ell}]}{n} \approx \frac{|\left\lbrace v\in\Omega_{I} : I(v) = \ell\right\rbrace|}{|\Omega_{I}|} =: \mathbf{p}_{\ell},
+\end{equation}
+and from this approximation it follows that $\frac{1}{n}\mathbf{D}_{v} = \frac{1}{n}diag(\mathbf{k}_{v}) \approx diag(\mathbf{p}) =: \mathbf{P}$.\\
+
+On the other hand, if $\mathbf{y}_{v}$ is approximately a random sample from $J$, then the average $\frac{\mathbf{a}_{v,\ell}}{\mathbf{k}_{v,\ell}}$ of all elements of vector $\mathbf{y}_{v}$ whose corresponding entries in $\mathbf{x}_{v}$ are equal to $\ell$ may be approximated by the average computed over the full image $J$, where intensities in $I$ are equal to $\ell$:
+\begin{equation}\label{eq:average_of_isosets}
+    \frac{\mathbf{a}_{v,\ell}}{\mathbf{k}_{v,\ell}} =  \frac{1}{\mathbf{k}_{v,\ell}}\sum_{i:\mathbf{x}_{v,i}=\ell} \mathbf{y}_{v,i} \approx \frac{1}{|G_{\ell}|}\sum_{v\in G_{\ell}} J(\phi(v))
+    =:\bar{\mathbf{f}}_{\ell},
+\end{equation}
+where $G_{\ell} = \left\lbrace v\in \Omega_{I}: I(v) = \ell\right\rbrace$. From the above conditions it follows that $\mathbf{a}_{v} \approx n \mathbf{P} \mathbf{\bar{f}}$.\\
+
+2. The norm $||\mathbf{y}_{v}||$ is approximately equal to $||F[\mathbf{x}_{v}]||$.
+\begin{equation}
+    ||\mathbf{y}_{v}|| \approx ||F[\mathbf{x}_{v}]|| \; \forall v\in\Omega_{I}
+\end{equation}
+
+Notice that, if the local windows $W_{v}, v\in\Omega_{I}$ are sufficiently large, then these two conditions are satisfied (to convince ourselves, it suffices to consider the extreme case of one single ``local'' window of size equal to the full volume). The question is how small can we make the local windows so that these conditions are reasonably satisfied. Please note that, in practice, we do not need these conditions to be satisfied everywhere, but we only need that the optimal $\mathbf{f}$ obtained under the given assumptions is reasonably close to the optimal $\mathbf{f}$ obtained without making the assumptions. From our experiments, as we will show below, we have found that rectangular local windows of radius $4$ voxels ($n=9\times 9\times 9 = 729$) work surprisingly well in practice.\\
+
+Under the conditions stated above, eq. \eqref{eq:ecc_neg_likelihood_vector_form} can be approximated as
+\begin{equation}
+    \sum_{v\in\Omega_{I}}\frac{\mathbf{f}^{T}\mathbf{a}_{v}\mathbf{a}_{v}^{T}\mathbf{f}}
+    {\mathbf{f}^{T} \mathbf{D}_{v} \mathbf{f}||\mathbf{y}_{v}||^{2}} \approx
+    \frac{n^{2}|\Omega_{I}|}{n^{2}}
+    \frac{\mathbf{f}^{T}\mathbf{P}\mathbf{\bar{f}}\mathbf{\bar{f}}^{T}\mathbf{P}^{T}\mathbf{f}}{\left(\mathbf{f}^{T} \mathbf{P} \mathbf{f}\right)^{2}}.
+\end{equation}
+
+By making the change of variables $\mathbf{h} = \mathbf{P}^{\frac{1}{2}}\mathbf{f}$, we obtain:
+\begin{equation}\label{eq:ecc_neg_likelihood_vector_form_simplified}
+    \frac{\mathbf{f}^{T}\mathbf{P}\mathbf{\bar{f}}\mathbf{\bar{f}}^{T}\mathbf{P}^{T}\mathbf{f}}{\left(\mathbf{f}^{T} \mathbf{P} \mathbf{f}\right)^{2}} =
+    \frac{\mathbf{h}^{T}\mathbf{P}^{\frac{1}{2}}\mathbf{\bar{f}}\mathbf{\bar{f}}^{T}\mathbf{P}^{\frac{1}{2}}\mathbf{h}} {\left(\mathbf{h}^{T}\mathbf{h}\right)^{2}} =
+    \frac{\mathbf{h}^{T}\mathbf{\bar{h}}\mathbf{\bar{h}}^{T}\mathbf{h}} {\left(\mathbf{h}^{T}\mathbf{h}\right)^{2}}
+\end{equation}
+where $\mathbf{\bar{h}} := \mathbf{P}^{\frac{1}{2}}\mathbf{\bar{f}}$. Since we are interested in finding the optimal $\mathbf{f}$ modulo affine transforms, we may without loss of generality maximize eq. \eqref{eq:ecc_neg_likelihood_vector_form_simplified} subject to $||\mathbf{h}|| = ||\mathbf{\bar{h}}||$, which yields solution $\mathbf{h} = \mathbf{\bar{h}}$, and by definition, $\mathbf{f} = \mathbf{P}^{-\frac{1}{2}}\mathbf{h} = \mathbf{\bar{f}}$. It may not be surprising, given our assumptions, that this transfer function $\mathbf{\bar{f}}$ (defined in eq. \eqref{eq:average_of_isosets}) is exactly the same as the optimal transfer function used in the CR and the EM matching functionals. As shown by Roche {\it et al.} \citep{Roche1998, Roche2000} and more recently by Arce {\it et al.} \cite{Arce-santana2014}, the transfer function $\bar{f}$ evaluated over image $I$ corresponds to the conditional expectation of image $J$ given image $I$, more precisely:
+\begin{displaymath}
+    F[I] = \mathbbm{E}[J | I]
+\end{displaymath}
+where the expectation is evaluated point-wise (voxel by voxel) with respect to the conditional distribution of intensities of $J$ given intensities of $I$. Therefore:
+\begin{equation}\label{eq:ecc_meaning}
+    ECC(I, J; \phi) = CC(\mathbbm{E}[J|I], J ; \phi).
+\end{equation}
+In the especial case that all local vectors $\mathbf{x}_{v}, \mathbf{y}_{v}$ are normalized, the $CC$ metric is a linear operator, and by linearity of the expectation operator, it follows that eq. \eqref{eq:ecc_meaning} is the conditional expectation of the cross correlation given $I$, from which we adopted the name ``Expected Cross Correlation''. To assess how reasonable our simplifying assumptions are, we compared the optimal transfer function, computed by directly maximizing eq. \eqref{eq:ecc_neg_likelihood_vector_form} w.r.t. $\mathbf{f}$ using BFGS \citep{GVK502988711}, and compared the result against the iso-set means $\mathbf{\bar{f}}$ (see fig. \ref{fig:comparison_optimal_transfers}). We can see that regardless of the relatively small window size, the optimal transfers are very similar, which allows us to approximate the optimal transfer according to eq. \eqref{eq:ecc_neg_likelihood_vector_form} (computationally very costly) with the iso-set means (fast and easy to compute).\\
+
+
+\begin{figure}[p]
+\centering
+    \subfloat[T2 as a function of T1.]{\label{fig:t1lab_comparison}\includegraphics[width=1.0\linewidth]{./images/comparison_optimal_transfers_t1lab.png}}\\
+    \subfloat[T1 as a function of T2.]{\label{fig:t2lab_comparison}\includegraphics[width=1.0\linewidth]{./images/comparison_optimal_transfers_t2lab.png}}
+    \caption{Comparison of optimal transfer functions according to eq. \eqref{eq:ecc_neg_likelihood_vector_form} against the iso-set means (optimal transfer functions used in the Correlation Ratio metric). Input images are shown in figure \ref{fig:brainweb_t1_t2}. The window size was set to radius $4$ voxels ($9\times 9\times 9$). The optimal transfers according to eq. \eqref{eq:ecc_neg_likelihood_vector_form} were obtained using BFGS \citep{GVK502988711}, initializing all elements uniformly at random in [0,1]. Since the vector $\mathbf{f}$ maximizing eq. \eqref{eq:ecc_neg_likelihood_vector_form} is not unique (any affine transform of the optimal $\mathbf{f}$ is optimal too), we may obtain a result very different from the iso-set means (left) but after applying an affine transform normalizing them to $[0,1]$ (normalizing after changing the sign, in this case), the transfer functions are very similar (right).}
+\label{fig:comparison_optimal_transfers}
+\end{figure}
+
+The effect of introducing the global non-linear transfer into the local linear model is illustrated in fig. \ref{fig:ecc_test_good}. This example is the same as fig. \ref{fig:llr_test}, the fixed image $I$ is the T1, the moving image $J$ is the T2, but instead of fitting the local linear models between $I$ and $J$ directly, we used $F[I]$ and $J$, where $F$ is defined by vector $\mathbf{\bar{f}}$. It can be observed that the non-linear local relationship was made significantly closer to linear by the use of the global transfer function.
+\begin{figure*}[t]
+\centering
+    \subfloat[]{\label{fig:FT1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/Ft1_aafo_t2_sample2.png}}
+    \subfloat[]{\label{fig:FT1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/t2_aafo_Ft1_sample2.png}}
+    \subfloat[]{\label{fig:FT1T2_affine_fit_map}\includegraphics[width=0.2\linewidth]{./images/residuals_t2.png}}
+    \subfloat[]{\label{fig:FT1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/Ft1_aafo_t2_sample1.png}}
+    \subfloat[]{\label{fig:FT1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/t2_aafo_Ft1_sample1.png}}\\
+    \caption{Local linear reconstruction between T2 intensities and F[T1], where F is the global transfer function used in the Correlation Ratio metric (the average T2 intensity computed over iso-sets of the T1). Center image (c) depicts the reconstruction error in false color (red means high, and blue means low). The selected windows are the same as in figure \ref{fig:llr_test}. The scatter plots depict the best affine fit of F[T1] intensities as a function of T2 (a) and d) ), and the best fit of T2 as a function of F[T1] (b) and e)).}
+\label{fig:ecc_test_good}
+\end{figure*}
+\subsection{Bidirectional transfer functions}
+
+A limitation of existing registration methods that are based on the estimation of a functional relationship between image modalities (such as CR and EM\cite{Roche1998, Roche2000, Arce-santana2014}) is that one of the image modalities must be chosen \emph{a priori} as the target modality (either map intensities from modality A to modality B or viceversa). This is an important decision and what choice is the best may not be obvious in general. To illustrate this, figure \ref{fig:ecc_test_bad} depicts the same example as fig. \ref{fig:ecc_test_good}, but instead of mapping intensities from T1 to T2, we map intensities from T2 to T1. Although the transfer function helps, the relationship is still far from affine. To overcome this limitation, we estimate both transfer functions between $I$ and $J$. Instead of directly computing one single transformation $\phi:\Omega_{I} \rightarrow \Omega_{J}$, we aim to find two invertible transformations (\emph{diffeomorphisms}) $\phi_{I}:\Omega_{I}\rightarrow \Omega_{R}$ and $\phi_{J}:\Omega_{J}\rightarrow \Omega_{R}$ such that the images get aligned in a reference space $\Omega_{R}$ after warping them under $\phi_{I}^{-1}$ and $\phi_{J}^{-1}$ (Fig. \ref{fig:syn_overview}). This is exactly the same formulation as the SyN algorithm proposed by Avants {\it et al.} \cite{Avants2011}, and explained in section \ref{sec:non_linear_image_registration}, where the partial transforms $\phi_{I}, \phi_{J}$ are the middle-point diffeomorphisms of a diffeomorphic flow transforming the domains $\Omega_{I}, \Omega_{J}$ toward each other.\\
+
+\begin{figure*}[t]
+\centering
+    \subfloat[]{\label{fig:T1FT2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/t1_aafo_Ft2_sample2.png}}
+    \subfloat[]{\label{fig:T1FT2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/Ft2_aafo_t1_sample2.png}}
+    \subfloat[]{\label{fig:T1FT2_affine_fit_map}\includegraphics[width=0.2\linewidth]{./images/residuals_t1.png}}
+    \subfloat[]{\label{fig:T1FT2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/t1_aafo_Ft2_sample1.png}}
+    \subfloat[]{\label{fig:T1FT2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/Ft2_aafo_t1_sample1.png}}\\
+    \caption{.}
+\label{fig:ecc_test_bad}
+\end{figure*}
+
+\begin{figure}[t]
 \centering
 \fbox{\includegraphics[width=1.0\linewidth]{./images/syn_overview.png}}
 \caption{The Greedy SyN algorithm registers two input images by computing two diffeomorphisms that map the input images towards a common reference domain. The final
@@ -26,92 +181,38 @@ diffeomorphism is computed by composing the two partial diffeomorphisms.}
 \label{fig:syn_overview}
 \end{figure}
 
-By defining the warped images \hbox{$\tilde{I}(x) = I(\phi_{I}^{-1}(x))$} and \hbox{$\tilde{J}(x) = J(\phi_{J}^{-1}(x))$} and the hidden random variables \citep{Dempster1977, Li2001}
-\begin{equation}\label{eq:hidden_fields}
-    \begin{array}{ccc}
-        Y(x) &:=& F_{J}\left[\tilde{J}(x)\right]\\[+2mm]
-        Z(x) &:=& F_{I}\left[\tilde{I}(x)\right]
-    \end{array},x\in\Omega_{R},
-\end{equation}
-our observation model can be written as
-\begin{equation}\label{eq:SyNEM_gom_update}
+Our model (eq. \eqref{eq:ecc_model}) may be symmetrized by introducing both transfer functions between image modalities and considering both transformations according to the SyN transformation model as follows. As before, consider a rectangular local window $W_{v}$ but this time centered at a voxel $v$ in the reference space $v\in\Omega_{R}$. Denote by
+\begin{align*}
+    \mathbf{x}_{v}' &= \left(I(\phi_{I}^{-1}(v_{1})), I(\phi_{I}^{-1}(v_{2})), ..., I(\phi_{I}^{-1}(v_{n}))\right)^{T}\\
+    \mathbf{y}_{v}' &= \left(J(\phi_{J}^{-1}(v_{1})), J(\phi_{J}^{-1}(v_{2})), ..., J(\phi_{J}^{-1}(v_{n}))\right)^{T},
+\end{align*}
+the (non-centered) images $I, J$ evaluated at all voxels of the local window $v_{i}\in W_{v}, i=1, 2, .., n$, and let $\mathbf{x}_{v} = \mathbf{x}_{v}' - \frac{\mathbf{x}_{v}^{T}\mathbbm{1}}{n}$, and $\mathbf{y}_{v} = \mathbf{y}_{v}' - \frac{\mathbf{y}_{v}^{T}\mathbbm{1}}{n}$ be their centered counterparts. Note that this time, both vectors $\mathbf{x}_{v}$ and $\mathbf{y}_{v}$ are moving according to the (inverses of the) transforms $\phi_{I}$ and $\phi_{J}$. By introducing both transfer functions, $F_{I}$ and $F_{J}$ mapping intensities from $I$ to $J$ and from $J$ to $I$ respectively, our symmetric model may be written as follows:
+\begin{equation}\label{eq:symmetric_ecc_model}
     \begin{array}{ccccc}
-    	Y(x) &=& \tilde{I}(x) &+& \eta_{J}(x)\\
-        Z(x) &=& \tilde{J}(x) &+& \eta_{I}(x)
-    \end{array}, x\in\Omega_{R}.
+        \frac{\mathbf{y}_{v}}{||\mathbf{y}_{v}||} = \left[F_{I}\left[\mathbf{x}_{v}\right] \; \mathbbm{1}\right]\alpha + \eta_{I}(v) \; \forall v\in\Omega_{R}\\
+        \frac{\mathbf{x}_{v}}{||\mathbf{x}_{v}||} = \left[F_{J}\left[\mathbf{y}_{v}\right] \; \mathbbm{1}\right]\beta + \eta_{J}(v) \; \forall v\in\Omega_{R}\\
+    \end{array}.
 \end{equation}
-These are precisely two instances of Arce's formulation \citep[see][eq. 1]{Arce-santana2014} in the reference space. The distributions of $Y(x)$ and $Z(x)$ can be written in terms of $\mathbf{I}$ and $\mathbf{J}$ as:
-\begin{equation}\label{eq:y_z_i_j_relationship}
-    \begin{array}{ccccc}
-    	P(Y(x) = i | I, J, \Phi) &=& P(\mathbf{I}=i | \mathbf{J} = J(\phi_{J}^{-1}(x)))\\
-        P(Z(x) = j | I, J, \Phi) &=& P(\mathbf{J}=j | \mathbf{I} = I(\phi_{I}^{-1}(x)))\\
-    \end{array}, x\in\Omega_{R}.
-\end{equation}
-Here, we have used the notation $P(\mathbf{I}=i | \mathbf{J} = j)$ instead of \hbox{$P(\mathbf{I}=i | \mathbf{J} = j, I, J, \Phi)$} for simplicity, but it is important to remember that the definition of $P$ depends on $I, J$ and $\Phi$. The conditional expectation and variance of $Y(x)$ given $I, J, \Phi$ can be computed from $P$ as
-\begin{equation}\label{eq:expectation_transfer}
-    \overline{Y}(x) := \mathbbm{E}\left[\left.Y(x) \right| I, J, \Phi\right] = \mathbbm{E}\left[\left.\mathbf{I} \right| \mathbf{J} = \tilde{J}(x)\right] =
-    \int_{\mathbbm{R}} i P(\mathbf{I}=i | \mathbf{J}=\tilde{J}(x)) di
-\end{equation}
-and
-\begin{equation}\label{eq:expectation_variance}
-    \sigma_{Y}^{2}(x) := Var\left[\left.Y(x) \right| I, J, \Phi\right] = \int_{\mathbbm{R}} \left(i - \overline{Y}(x)\right)^{2} P(\mathbf{I}=i | \mathbf{J}=\tilde{J}(x)) di.
-\end{equation}
-Corresponding expressions for $\overline{Z}(x)$ and $\sigma_{Z}^{2}(x)$ are obtained the same way. By performing similar computations as \cite{Arce-santana2014}, we can obtain a symmetric version of the ``EM metric'' to be minimized (named this way since the EM algorithm was used to obtained it), which is the sum of two independent cost functions (see Appendix \ref{ap:E_step} for details):
-\begin{equation}\label{eq:SyNEM_energy}
-    Q(\Phi; \Phi^{(0)}) = Q_{I}(\phi_{I}; \Phi^{(0)}) + Q_{J}(\phi_{J}; \Phi^{(0)})
-\end{equation}
-given by:
-\begin{equation}\label{eq:SyNEM_energy_split}
-    \begin{array}{lll}
-        Q_{I}(\phi_{I}; \Phi^{(0)}) &=& \sum_{x \in \Omega_{R}} \frac{\left(\overline{Y}(x) - I(\phi_{I}^{-1}(x))\right)^{2}}{2\sigma^{2}_{Y}(x)} + \lambda R(\phi_{I}) \\
-        Q_{J}(\phi_{J}; \Phi^{(0)}) &=& \sum_{x \in \Omega_{R}} \frac{\left(\overline{Z}(x) - J(\phi_{J}^{-1}(x))\right)^{2}}{2\sigma^{2}_{Z}(x)} + \lambda R(\phi_{J}) \\
-    \end{array}
-\end{equation}
-where $\Phi^{(0)} = (\phi_{I}^{(0)}, \phi_{J}^{(0)})$ are initial approximations to $\Phi$, and the means and variances of $Y(x)$ and $Z(x)$ are computed using the approximated joint distribution $P(\mathbf{I}, \mathbf{J} | I, J, \Phi^{(0)})$.\\
-
-Notice that $\overline{Y}(x)$ and $\overline{Z}(x)$ are exactly the same optimal transfer functions used in the correlation ratio metric \citep{Roche1998, Roche2000}. Using our notation, the correlation ratio is given by \citep[see][eq. 3]{Roche1998}:
-%Indeed, each of these metrics, derived by \cite{Arce-santana2014}, may be regarded as a generalization of the correlation ratio, which using our notation, is given by \citep[see][eq. 3]{Roche1998}:
-\begin{equation}
-    CR(I, J, \Phi) = 1 - \frac{Var\left[ \mathbf{I} - \mathbbm{E}\left[ \mathbf{I} | \mathbf{J}\right] \right]}{Var\left[ \mathbf{I} \right]}
-\end{equation}
-which, in practice, may be computed as \citep[see][eq. 4]{Roche1998}:
-\begin{equation}
-    CR(I, J, \Phi) = 1 - \frac{\frac{1}{|\Omega_{R}|}\sum_{x \in \Omega_{R}} \left(\overline{Y}(x) - I(\phi_{I}^{-1}(x))\right)^{2}}{Var\left[ \mathbf{I} \right]}.
-\end{equation}
-Therefore, if we set $\sigma^{2}_{Y}(x) = Var\left[ \mathbf{I}\right]$, for all variances, then minimizing the EM metric is equivalent to maximizing the correlation ratio metric. Notice, however, that $Var\left[ \mathbf{I}\right]$ depends on $\phi_{I}^{-1}(x)$ (it is the variance of the {\it moving} image's intensities), while all variances $\sigma^{2}_{Y}(x)$, in the EM metric, are computed using the transform $\phi_{I}^{-1}(x)$ at the previous iteration (see \cite{Arce-santana2014}, eqs. (17, 18),  and Appendix \ref{ap:E_step}, eq. \eqref{eq:arce_em_metric}), which makes them constant with respect to the current transform $\phi_{I}^{-1}(x)$. The correlation ratio metric arises from an observation model similar to the one presented in \cite{Arce-santana2014}, and extended in this work (eq. \eqref{eq:SyNEM_gom_ref}), but assuming the variance of the noise is constant (see for example eq. 10 in \citep{Roche2000}). However, the EM metric does not make this homoscedasticity assumption which results in a metric that weighs each squared residual $\left(\overline{Y}(x) - I(\phi_{I}^{-1}(x))\right)^{2}$ using a different factor $\frac{1}{\sigma^{2}_{Y}(x)}$ that measures the uncertainty in the approximation of $\tilde{I}(x)$ by $\overline{Y}(x)$.\\
-
-Functionals $Q_{I}, Q_{J}$ can be efficiently minimized following Vercauteren's analysis of the \textit{diffeomorphic demons} algorithm \citep{Vercauteren2009} as follows.
-Let's choose the regularization function $R(\cdot) = ||\nabla \cdot||^{2}$. Starting from the initial transform $\phi^{(0)}_{J}$, we wish to find a small update displacement field $\mathbf{u}$, which minimizes:
-\begin{equation}\label{eq:vercauteren_cost}
-    \sum_{x \in \Omega_{R}} \frac{\left(\overline{Z}(x) - \tilde{J}(x + \mathbf{u}(x))\right)^{2}}{\sigma^{2}_{Z}(x)} + \lambda ||\nabla \mathbf{u}||^{2}.
-\end{equation}
-
-By introducing an auxiliary deformation field $\mathbf{v}$ and a modified energy function
-\begin{equation}\label{eq:vercauteren_extended_cost}
-    \sum_{x \in \Omega_{R}} \frac{(\overline{Z}(x) - \tilde{J}(x + \mathbf{u}(x)))^{2}}{\sigma^{2}_{Z}(x)} dV + \frac{1}{\tau}||\mathbf{u}-\mathbf{v}||^{2}+\lambda ||\nabla \mathbf{v}||^{2},
-\end{equation}
-the optimization can be accomplished by alternating two steps. In the first step, we optimize with respect to $\mathbf{u}$ starting with $\mathbf{v} = 0$
-\begin{equation}\label{eq:vercauteren_step1}
-    \widehat{\mathbf{u}} = \arg\min_{\mathbf{u}}\sum_{x \in \Omega_{R}} \frac{(\overline{Z}(x) - \tilde{J}(x+\mathbf{u}(x)))^{2}}{\sigma^{2}_{Z}(x)} dV + \frac{1}{\tau} ||\mathbf{u}||^{2}.
-\end{equation}
-We can perform a point-wise minimization by using the first order approximation around the identity
-$\tilde{J}(x+\mathbf{u}(x)) \approx \tilde{J}(x) + \nabla \tilde{J}(x)^{T}\mathbf{u}(x)$ and then equating to zero the derivative with respect to $\mathbf{u}(x)$ to obtain:
-\begin{equation}\label{eq:euler_lagrange_step1}
-    \widehat{\mathbf{u}}(x) = \frac{\overline{Z}(x) - \tilde{J}(x)}{||\nabla \tilde{J}(x)||^{2} + \frac{\sigma_{Z}^{2}(x)}{\tau}}\nabla \tilde{J}(x).
-\end{equation}
-This expression corresponds to equation (4) in \cite{Vercauteren2009}, but in their work, the factor $\sigma_{Z}^{2}(x)$
-is approximated by $\sigma_{Z}(x) \approx |\overline{Z}(x) - \tilde{J}(x)|$ to obtain the traditional {\it demons} step. However, in our case, as in \cite{Arce-santana2014}, we have an explicit and natural estimation of $\sigma^{2}_{Z}(x)$.\\
-
-The second step minimizes eq. \eqref{eq:vercauteren_extended_cost} with respect to $\mathbf{v}$ and keeping fixed the previously obtained displacement field $\mathbf{u}=\widehat{\mathbf{u}}$. The solution of this second sub-problem can be computed by applying a low-pass (smoothing) filter to $\widehat{\mathbf{u}}$. In practice,
-this low pass filter is approximated by a Gaussian kernel \citep{Vercauteren2009, Avants2011}.
-
-%To update diffeomorphisms $\phi_{I}, \phi_{J}$ we need to take into consideration that we used their inverses to map images $I, J$ to the reference space. A direct expansion of
-%$\tilde{I} \circ \psi$ yields $\phi_{I}^{-1} \leftarrow \phi_{I}^{-1} \circ \psi$, taking its inverse yields $\phi_{I} \leftarrow \psi^{-1} \circ \phi_{I}$, where
-%$\psi^{-1} = Id - \mathbf{u}$ for a small displacement field $\mathbf{u}$. We adopted this strategy rather than directly updating the inverses so that the resulting algorithm
-%(Alg. \ref{alg:SyNEM})is equivalent to the Greedy SyN algorithm previously described (Alg. \ref{alg:Greedy_SyN}), which has been extensively tested by the neuroimaging
-%community.
+By assuming independence between the two sets of normally distributed random vectors $\eta_{I}$ and $\eta_{I}$, it follows immediately that maximizing the log-likelihood of model \eqref{eq:symmetric_ecc_model} is equivalent to maximizing the (symmetric) ECC matching functional:
+\begin{equation*}
+    ECC(I, J;\phi_{I}, \phi_{J}) = CC(\mathbbm{E}[J|I], J ; \phi_{J}) + CC(\mathbbm{E}[I|J], I ; \phi_{I})
+\end{equation*}
+%the negative log likelyhood is proportional to
+%\begin{displaymath}
+%    U(I, J;\phi) =
+%    \sum_{v\in\Omega_{R}}\left(1-\frac{\left(F_{I}\left[\mathbf{x}_{v}\right]^{T} \mathbf{y}_{v}\right)^{2}}{||F_{I}\left[\mathbf{x}_{v}\right]||^{2}||\mathbf{y}_{v}||^{2}}\right) %+
+%    \left(1-\frac{\left(F_{J}\left[\mathbf{y}_{v}\right]^{T} \mathbf{x}_{v}\right)^{2}}{||F_{J}\left[\mathbf{y}_{v}\right]||^{2}||\mathbf{x}_{v}||^{2}}\right),
+%\end{displaymath}
+%and the maximum likelihood estimator for $\phi_{I}$ and $\phi_{J}$ can be obtain by maximizing the symmetric Expected Cross Correlation:
+%\begin{equation}
+%    ECC(I, J;\phi) =
+%    \sum_{v\in\Omega_{R}}\frac{\left(F_{I}\left[\mathbf{x}_{v}\right]^{T} \mathbf{y}_{v}\right)^{2}}{||F_{I}\left[\mathbf{x}_{v}\right]||^{2}||\mathbf{y}_{v}||^{2}} +
+%    \frac{\left(F_{J}\left[\mathbf{y}_{v}\right]^{T} \mathbf{x}_{v}\right)^{2}}{||F_{J}\left[\mathbf{y}_{v}\right]||^{2}||\mathbf{x}_{v}||^{2}}
+%\end{equation}
 
 
+
+\iffalse
 \begin{figure}[t!]
     \subfloat[]{\label{fig:epicor_b0up_ecc.png}\includegraphics[width=1\linewidth]{./images/T1B0Result/epicor_b0up_ecc.png}}\\
     \subfloat[]{\label{fig:epicor_b0up_mi.png}\includegraphics[width=1\linewidth]{./images/T1B0Result/epicor_b0up_mi.png}}\\
@@ -159,3 +260,4 @@ this low pass filter is approximated by a Gaussian kernel \citep{Vercauteren2009
 \label{fig:epicor_down_ecc}
 \end{figure}
 
+\fi 
