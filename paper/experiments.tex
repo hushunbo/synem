@@ -3,65 +3,69 @@ We compared the accuracy of four matching functionals driving the SyN transforma
 
 \subsection{Mono-modal registration}
 Although our matching functional was designed for multi-modal image registration, it is important to first verify that the quality of the algorithms is reasonable for mono-modal registration. Figure \ref{fig:mono_graph_seg} show the average overlap score for each of 31 manually annotated anatomical regions from the IBSR database. Note that the Jaccard indices obtained with CC (i.e. ANTS) are higher than reported by Rohlfing \cite{Rohlfing2012}. In his experiments, he used three resolutions with a maximum of 10, 10 and 5 iterations only. Here, we set a maximum of 100, 100 and 25 iterations, leaving the rest of the parameters unchanged (the same for all functionals). We can see that SyN with the EM metric is very competitive, but still not as good as CC. This may be explained by the fact that CC uses a window centered at each voxel for computing the similarity, while the EM is voxelwise. This behavior can also be observed from the results of SyN with Mutual Information (MI), which is also voxel-wise and very competitve but not as good as CC. By considering neighborhoods of the same size, the performance of ECC is practically the same as CC. Table \ref{tab:monomodal_results_segTri_fill} shows the overlap scores over tissue types (white matter, gray matter and cerebrospinal fluid), instead of anatomical areas.
-%Table \ref{tab:monomodal_results_seg} and 
+%Table \ref{tab:monomodal_results_seg} and
 %\input{monomodal_results_seg}
 \input{monomodal_results_segTri_fill}
 
-\begin{figure}[t!]
+\begin{figure*}[t!]
 \centering
 \includegraphics[width=1.0\linewidth]{./images/mono_lines_seg.png}\\
-\caption{Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with EM, ECC, CC and MI metrics. The Jaccard
-indices were averaged over 306 monomodal registrations.}
+\caption{{\small Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with EM, ECC, CC and MI metrics. The Jaccard indices were averaged over 306 monomodal registrations.}}
 \label{fig:mono_graph_seg}
-\end{figure}
+\end{figure*}
 
 \subsection{Multi-modal registration}\label{sec:multimodal_results}
 
-Unfortunately, to the best of our knowledge, there are no manually annotated multi-modal data publicly available to evaluate the registration performance quantitatively. Instead, we generated synthetic T2 images for all IBSR T1 images by following the procedure illustrated in Fig. (\ref{fig:semi_synthetic_image_creation}). We first register the Brainweb T1 template (which plays the role of moving image) towards each IBSR T1 image (which play the role of fixed images) using ANTs with the CC metric (a mono-modal registration problem), which has consistently been ranked among the top performers in the most extensive evaluations of mono-modal registration algorithms \citep{Klein2009, Klein2010, Rohlfing2012}. Then we applied the obtained deformation field to the Brainweb T2 template. The transfer function from the real T1 image to the warped T2 template is computed as the average T2 intensity associated to each T1 intensity. The computed transfer function is then applied to the real IBSR T1 image obtaining a ``perfectly aligned'' realistic synthetic T2 image for each IBSR volume, therefore the annotations remain exactly the same as the T1 counterparts and we are able to compute the overlap scores as before. Note that the number of registrations we need to perform is now 612 because we can use the T2 modality either as the moving or the fixed image. Figure \ref{fig:multi_seg} shows results similar to Figure \ref{fig:mono_graph_seg} but this time averaged over 612 multimodal registrations. Note how the performance of the CC metric strongly drops while EM, ECC and MI are less affected by the change of modality. Table \ref{tab:multimodal_results_segTri_fill} shows the overlap scores of tissue types, where the same behavior can be observed.\\
-%Table \ref{tab:monomodal_results_seg} and 
-%Table \ref{tab:multimodal_results_seg} and 
-\begin{figure}[H]
-\centering
-    \includegraphics[width=\linewidth]{./images/semi_synthetic_image_creation.png}
-    \caption{Semi-synthetic, manually annotated images for quantitative evaluation of multi-modal non-linear image registration algorithms.}
-\label{fig:semi_synthetic_image_creation}
-\end{figure}
+Unfortunately, to the best of our knowledge, there are no manually annotated multi-modal data publicly available to evaluate the registration performance quantitatively. Instead, we generated synthetic T2 images for all IBSR T1 images as follows. We first register the Brainweb T1 template (which plays the role of moving image) towards each IBSR T1 image (which play the role of fixed images) using ANTs with the CC metric (a mono-modal registration problem). Then we applied the resulting deformation field to the Brainweb T2 template. The transfer function from the real T1 image to the warped T2 template is computed as the average T2 intensity associated to each T1 intensity. The computed transfer function is then applied to the real IBSR T1 image obtaining a ``perfectly aligned'' realistic synthetic T2 image for each IBSR volume, therefore the annotations remain exactly the same as the T1 counterparts and we are able to compute the overlap scores as before. Note that the number of registrations we need to perform is now 612 because we can use the T2 modality either as the moving or the fixed image. Figure \ref{fig:multi_seg} shows results similar to Figure \ref{fig:mono_graph_seg} but this time averaged over 612 multimodal registrations. Note how the performance of the CC metric strongly drops while EM, ECC and MI are less affected by the change of modality. Table \ref{tab:multimodal_results_segTri_fill} shows the overlap scores of tissue types, where the same behavior can be observed.\\
+%Table \ref{tab:monomodal_results_seg} and
+%Table \ref{tab:multimodal_results_seg} and
+%\begin{figure}[H]
+%\centering
+%    \includegraphics[width=\linewidth]{./images/semi_synthetic_image_creation.png}
+%    \caption{{\small Semi-synthetic, manually annotated images for quantitative evaluation of multi-modal non-linear image registration algorithms.}}
+%\label{fig:semi_synthetic_image_creation}
+%\end{figure}
 
 The Brainweb template also provides us with a simulation of a proton density (PD) image for the same brain anatomy. This allows us to repeat the procedure described above for each pair of three modalities, T1, T2 and PD, which results in 3 mono-modal and 3 multi-modal registration experiments. For the sake of brevity, Figure \ref{fig:all_pairs_boxplots} depicts a summary of the results obtained over all pairs of modalities. For each pair of registered images, we compute the average Jaccard index of all anatomical regions. Each boxplot in Figure \ref{fig:all_pairs_boxplots} corresponds to the set of all 306 (mono-modal) or 612 (multi-modal) average scores for that particular method and that particular pair of modalities. We can observe that the CC metric performs very well for all mono-modal experiments (diagonal graphs), but it is severely affected in the multi-modal case (off-diagonal graphs). The ECC metric performs practically the same as CC in the mono-modal case, but is less affected in the multi-modal case. By measuring the similarity of local windows instead of individual voxels, the ECC metric outperforms the EM and MI metrics in all cases.
 
 %\input{multimodal_results_seg}
 \input{multimodal_results_segTri_fill}
 
-\begin{figure}[t!]
+\begin{figure*}[t!]
 \centering
 \includegraphics[width=1.0\linewidth]{./images/multi_lines_seg.png}\\
-\caption{Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with EM, ECC, CC and MI metrics. The Jaccard
-indices were averaged over 612 multimodal registrations.}
+\caption{{\small Comparison of the registration performance (measured by the Jaccard index over 31 anatomical regions) of the Greedy SyN algorithm with EM, ECC, CC and MI metrics. The Jaccard indices were averaged over 612 multimodal registrations.}}
 \label{fig:multi_seg}
-\end{figure}
+\end{figure*}
 
 \begin{figure}[t!]
 \centering
     \includegraphics[width=\linewidth]{./images/all_modality_pairs_boxplots.png}
-    \caption{Distributions of average Jaccard indices for all pairs of available modalities (T1, T2 and PD). For each pair of registrations, we compute the average Jaccard index of all anatomical regions. The boxplots show the distribution of all such average overlap scores.}
+    \caption{{\small Distributions of average Jaccard indices for all pairs of available modalities (T1, T2 and PD). For each pair of registrations, we compute the average Jaccard index of all anatomical regions. The boxplots show the distribution of all such average overlap scores.}}
 \label{fig:all_pairs_boxplots}
 \end{figure}
 
-\subsection{$B_{0}$-T1 co-registration}
-Quantitative results shown in previous section indicate that ECC and MI perform best for multi-modal registration. Fig. \ref{fig:comparison_B0_T1_coregistration} depicts a a $B_{0}$-T1 co-registration result obtained using using ECC and MI. We can see from the level curves that the result obtained with ECC matches better the local structure of the T1. This behavior is explained by the fact that the ECC functional is computed over pairs of local windows rather than single voxel pairs. 
-\begin{figure}[H]
+\subsection{$B_{0}$-T1 registration}
+Quantitative results shown in previous section indicate that ECC and MI perform best for multi-modal registration. Fig. \ref{fig:comparison_B0_T1_coregistration} depicts a a $B_{0}$-T1 registration result obtained using using ECC and MI. We can see from the level curves that the result obtained with ECC matches better the local structure of the T1. This behavior is explained by the fact that the ECC functional is computed over pairs of local windows rather than single voxel pairs.\\
+%\begin{figure}[p]
+%\centering
+%    \subfloat[Example $B_{0}$-T1 registration result using SyN with %ECC.]{\label{fig:epicor_b0up_ecc}\includegraphics[width=1.0\linewidth]{./images/T1B0Result/epicor_b0up_ecc.png}}\\
+%    \subfloat[Example $B_{0}$-T1 registration result using SyN with MI.]{\label{fig:epicor_b0up_mi}\includegraphics[width=1.0\linewidth]{./images/T1B0Result/epicor_b0up_mi.png}}
+%    \caption{{\small Example of a $B_{0}$-T1 registration result using SyN with ECC and MI. Level curves of the warped $B_{0}$ were overlaid on top of the (undeformed) T1 to %visually assess local structure agreement. Visually, level curves obtained with ECC have a better correspondence with the structure of the T1. This visual assessment is confirmed %quantitatively, as shown in fig. \ref{fig:indirect_validation_boxplots}.}}
+%\label{fig:comparison_B0_T1_coregistration}
+%\end{figure}
+\begin{figure}[p]
 \centering
-    \subfloat[ECC result.]{\label{fig:epicor_b0up_ecc}\includegraphics[width=1.0\linewidth]{./images/T1B0Result/epicor_b0up_ecc.png}}\\
-    \subfloat[MI result.]{\label{fig:epicor_b0up_mi}\includegraphics[width=1.0\linewidth]{./images/T1B0Result/epicor_b0up_mi.png}}
-    \caption{}
+    \includegraphics[width=1.0\linewidth]{./images/T1B0Result/epicor_b0up_ecc_mi.png}\\
+    \caption{{\small Example of a $B_{0}$-T1 registration result using SyN with ECC (left) and MI (right). Level curves of the warped $B_{0}$ were overlaid on top of the (undeformed) T1 to visually assess local structure agreement. Visually, level curves obtained with ECC have a better correspondence with the structure of the T1. This visual assessment is confirmed quantitatively, as shown in fig. \ref{fig:indirect_validation_boxplots}.}}
 \label{fig:comparison_B0_T1_coregistration}
 \end{figure}
 
-Since a realistic T1-$B_{0}$ template is not available, the validation methodology described in previous section cannot be used to validate $B_{0}$-T1 co-registration. Instead, we performed an indirect quantitative validation illustrated in Fig. \ref{fig:indirect_validation}. Here, we used the fact that the computed transformations are diffeomorphic. We first register the $B_{0}$ (moving) image towards each T1 (fixed) annotated image. Then, for every pair of T1-$B0$ transforms, we compute the composition (which now maps two annotated T1 images), warp one image towards the other and compute the Jaccard index of overlapping anatomical regions. The resulting overlap index indirectly measures the accuracy of both $B_{0}$-T1 registrations (although accumulating their errors) because a perfect multi-modal registration algorithm, should perfectly match both T1 images, even indirectly through the $B_{0}$, while the registration errors of one transform are unlikely to get ``fixed'' by the other after composition.
+Since a realistic T1-$B_{0}$ template is not available, the validation methodology described in previous section cannot be used to validate $B_{0}$-T1 registration. Instead, we performed an indirect quantitative validation illustrated in Fig. \ref{fig:indirect_validation}. Here, we used the fact that the computed transformations are diffeomorphic. We first register the $B_{0}$ (moving) image towards each T1 (fixed) annotated image. Then, for every pair of T1-$B0$ transforms, we compute the composition (which now maps two annotated T1 images), warp one image towards the other and compute the Jaccard index of overlapping anatomical regions. The resulting overlap index indirectly measures the accuracy of both $B_{0}$-T1 registrations (although accumulating their errors) because a perfect multi-modal registration algorithm, should perfectly match both T1 images, even indirectly through the $B_{0}$, while the registration errors of one transform are unlikely to get ``fixed'' by the other after composition.
 \begin{figure}[H]
 \centering
     \includegraphics[width=\linewidth]{./images/new_validation.png}
-    \caption{Indirect validation protocol.}
+    \caption{{\small Indirect validation protocol for $B_{0}$-T1 registration.}}
 \label{fig:indirect_validation}
 \end{figure}
 
@@ -69,6 +73,6 @@ Quantitative results of the indirect validation are depicted in fig. \ref{fig:in
 \begin{figure}[H]
 \centering
     \includegraphics[width=\linewidth]{./images/T1B0Result/jaccard_boxplots_T1_B0.png}
-    \caption{$B0$-T1 co-registration results.}
+    \caption{{\small $B0$-T1 registration results according to the validation procedure depicted in fig. \ref{fig:indirect_validation}.}}
 \label{fig:indirect_validation_boxplots}
 \end{figure}

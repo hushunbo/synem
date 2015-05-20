@@ -51,7 +51,7 @@ where $\tilde{I} = I \circ \phi_{1}^{-1}(\cdot, 0.5)$, $\tilde{J} = J \circ \phi
 where $\ast$ denotes the convolution operator and $\epsilon$ is a small factor controlling the step size in the optimization process. Finally, the updated midpoint transformations (which, after composition with the gradient, are not ensured to be diffeomorphisms) are forced to be invertible by using an explicit vector field inversion algorithm \citep{Chen2008}. This algorithm, called \textit{Greedy SyN} (alg. \ref{alg:Greedy_SyN}) has been adopted by the neuroimaging community as the \textit{de facto} state-of-the-art brain MRI registration algorithm due to its reliability and efficiency. It was the method used for evaluating ANTS \citep{Avants2011} in the large comparative studies performed by Klein {\it et al.} \cite{Klein2009, Klein2010} in which \textit{Greedy SyN} was consistently ranked among the top performers.
 
 \begin{algorithm}[h!]
-\caption{Greedy SyN. This algorihtm was the method used for evaluating ANTS \citep{Avants2011} in the large comparative studies developed by \cite{Klein2009, Klein2010} in which it was consistently ranked among the top performers.}\label{alg:Greedy_SyN}
+\caption{{\small Greedy SyN. This algorihtm was the method used for evaluating ANTS \citep{Avants2011} in the large comparative studies developed by Klein {\it et al.} \cite{Klein2009, Klein2010} in which it was consistently ranked among the top performers.}}\label{alg:Greedy_SyN}
 \begin{algorithmic}[1]
 \REQUIRE Gaussian kernel parameter $\sigma>0$
 \REQUIRE Step size $\epsilon>0$
@@ -70,7 +70,7 @@ where $\ast$ denotes the convolution operator and $\epsilon$ is a small factor c
 \RETURN $\phi_{i}(\cdot, 0.5), i=1,2$
 \end{algorithmic}
 \end{algorithm}
-%\vspace{-0.5cm}
+
 \subsection{Local linear reconstruction}
 Defining an adequate matching functional is arguably the most important aspect of image registration, and has been the subject of significant amount of research \citep{Sotiras2013}. If the minimum of the metric does not coincide with what we understand by optimal image correspondence, then no matter what transformation or optimization algorithm we choose, we are unlikely to correctly align the images. In the mono-modal case, a plausible model relating the input images $I$ and $J$ by means of the (unknown) transform $\phi$ is given by
 \begin{equation}\label{eq:ssd_model}
@@ -80,7 +80,7 @@ where the Gaussian random variables $\eta(v) \sim N(0, \sigma^{2})$ are assumed 
 \begin{equation}\label{eq:ssd_functional}
     SSD(I, J; \phi) = \sum_{v \in \Omega_{I}} \left(I(v) - J(\phi(v))\right)^{2}.
 \end{equation}
-Thus, minimization of \eqref{eq:ssd_functional} with respect to the transformation $\phi$ corresponds to a maximum likelihood estimation of the parameters of model \eqref{eq:ssd_model} (the parameters being the transformation $\phi$). There are two main limitations of model \eqref{eq:ssd_model} in the context of brain MRI: a) it does not take into account spatial intensity inhomogeneities and b) the functional is computed \emph{point-wise}, which makes it susceptible to noise and unable to capture local image features beyond one single voxel. To overcome these limitations, Wang and Pan \cite{Wang2014} recently proposed a local linear model that attempts to account for the bias field in brain MRI. Let $W_{v} = \left\lbrace v_{1}, v_{2}, ..., v_{n} \right\rbrace$ be a rectangular local window centered at $v\in\Omega_{I}$, containing $n$ points and denote by $\mathbf{x}_{v} = (I(v_{1}), I(v_{2}), ..., I(v_{n}))^{T}$, $\mathbf{y}_{v} = (J(\phi(v_{1})), J(\phi(v_{2})), ..., J(\phi(v_{n})))^{T}$ the input images evaluated at all points $v_{i}\in W_{v}$, $i=1, ..., n$. Please keep in mind that $\mathbf{x}_{v}$ are fixed (they never change during optimization) while $\mathbf{y}_{v}$ change as we move $\phi$ (we cannot set the value of $\mathbf{y}_{v}$ freely but their value must be adjusted by moving $\phi$). Wang's local linear model states that, when $\phi$ correctly aligns $J$ to $I$, their intensities are approximately locally linear:
+Thus, minimization of \eqref{eq:ssd_functional} with respect to the transformation $\phi$ corresponds to a maximum likelihood estimation of the parameters of model \eqref{eq:ssd_model} (the parameters being the transformation $\phi$). There are two main limitations of model \eqref{eq:ssd_model} in the context of brain MRI: a) it does not take into account spatial intensity inhomogeneities and b) the functional is computed \emph{point-wise}, which makes it susceptible to noise and unable to capture the local structure of the image. To overcome these limitations, Wang and Pan \cite{Wang2014} recently proposed a local linear model that attempts to account for the bias field in brain MRI. Let $W_{v} = \left\lbrace v_{1}, v_{2}, ..., v_{n} \right\rbrace$ be a rectangular local window centered at $v\in\Omega_{I}$, containing $n$ points and denote by $\mathbf{x}_{v} = (I(v_{1}), I(v_{2}), ..., I(v_{n}))^{T}$, $\mathbf{y}_{v} = (J(\phi(v_{1})), J(\phi(v_{2})), ..., J(\phi(v_{n})))^{T}$ the input images evaluated at all points $v_{i}\in W_{v}$, $i=1, ..., n$. Please keep in mind that $\left\lbrace\mathbf{x}_{v}\right\rbrace$ are fixed (they never change during optimization) while $\left\lbrace\mathbf{y}_{v}\right\rbrace$ change as we move $\phi$ (we cannot set the value of $\mathbf{y}_{v}$ freely but its value must be adjusted by moving $\phi$). Wang's local linear model states that, when $\phi$ correctly aligns $J$ to $I$, their intensities are approximately locally linear:
 \begin{equation}\label{eq:wang_model}
     \mathbf{y}_{v} = \left[\mathbf{x}_{v} \; \mathbbm{1}\right]\beta + \eta(v) \; \forall v\in\Omega_{I}
 \end{equation}
@@ -117,20 +117,20 @@ The LLR matching functional turns out to be very robust for mono-modal registrat
 \begin{figure}[t!]
 \centering
     \includegraphics[width=1.0\linewidth]{./images/brainweb_t1_t2_overlay.png}\\
-    \caption{Coronal slice of two realistic synthetic brain MRI images from the Brainweb \cite{Cocosco1997} dataset. The center image is an overlay of the T1 (left) image in the red channel, over the T2 (right) image in the green channel.}
+    \caption{{\small Coronal slice of two realistic synthetic brain MRI images from the Brainweb \cite{Cocosco1997} dataset. The center image is an overlay of the T1 (left) image in the red channel, over the T2 (right) image in the green channel.}}
 \label{fig:brainweb_t1_t2}
 \end{figure}
 
-\begin{figure*}[t!]
+\begin{figure}[t!]
 \centering
     \subfloat[]{\label{fig:T1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/t1_aafo_t2_sample2.png}}
     \subfloat[]{\label{fig:T1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/t2_aafo_t1_sample2.png}}
     \subfloat[]{\label{fig:T1T2_affine_fit_map}\includegraphics[width=0.2\linewidth]{./images/residuals_input_arrows.png}}
     \subfloat[]{\label{fig:T1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/t1_aafo_t2_sample1.png}}
     \subfloat[]{\label{fig:T1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/t2_aafo_t1_sample1.png}}\\
-    \caption{Local linear reconstruction between intensities of a T1 and a T2 brain images (see fig. \ref{fig:brainweb_t1_t2}) under perfect alignment. Center image (c) depicts the reconstruction error in false color (red means high reconstruction error and blue means low reconstruction error). Two local windows were selected: Left (a, b): a local window with a close-to-linear relationship between image intensities. Right (d, e): a local window with a non-linear relationship between image intensities. The scatter plots depict the best affine fit of T1 intensities as a function of T2 (a, d), and the best fit of T2 as a function of T1 (b, e).}
+    \caption{{\small Local linear reconstruction between intensities of a T1 and a T2 brain images (see fig. \ref{fig:brainweb_t1_t2}) under perfect alignment. Center image (c) depicts the reconstruction error in false color (red means high reconstruction error and blue means low reconstruction error). Two local windows were selected: Left (a, b): a local window with a close-to-linear relationship between image intensities. Right (d, e): a local window with a non-linear relationship between image intensities. The scatter plots depict the best affine fit of T1 intensities as a function of T2 (a, d), and the best fit of T2 as a function of T1 (b, e).}}
 \label{fig:llr_test}
-\end{figure*}
+\end{figure}
 
 
 

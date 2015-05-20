@@ -1,4 +1,3 @@
-\vspace{-0.5cm}
 \section{Methods}
 Although the tendency of the (global) CC functional to fit a linear model to the joint PDF is well known and has been previously pointed out by other authors (see for example Hermosillo {\it et al.} \cite{Hermosillo2004}), we require a more precise description of the underlying observation model (and its assumptions) associated with the CC matching functional. In this section we first discuss such an observation model, then enhance it to obtain our proposed matching functional, and finally we show an efficient way to fit its parameters.
 
@@ -136,55 +135,64 @@ By making the change of variables $\mathbf{h} = \mathbf{P}^{\frac{1}{2}}\mathbf{
     \frac{\mathbf{h}^{T}\mathbf{\bar{h}}\mathbf{\bar{h}}^{T}\mathbf{h}} {\left(\mathbf{h}^{T}\mathbf{h}\right)^{2}}
 \end{equation}
 where $\mathbf{\bar{h}} := \mathbf{P}^{\frac{1}{2}}\mathbf{\bar{f}}$. Since we are interested in finding the optimal $\mathbf{f}$ modulo affine transforms, we may without loss of generality maximize eq. \eqref{eq:ecc_neg_likelihood_vector_form_simplified} subject to $||\mathbf{h}|| = ||\mathbf{\bar{h}}||$, which yields solution $\mathbf{h} = \mathbf{\bar{h}}$, and by definition, $\mathbf{f} = \mathbf{P}^{-\frac{1}{2}}\mathbf{h} = \mathbf{\bar{f}}$. Given our assumptions, it may be unsurprising that this transfer function $\mathbf{\bar{f}}$ (defined by eq. \eqref{eq:average_of_isosets}) is exactly the same as the optimal transfer function used in the CR and the EM matching functionals. As shown by Roche {\it et al.} \citep{Roche1998, Roche2000} and more recently by Arce {\it et al.} \cite{Arce-santana2014}, the transfer function $\mathbf{\bar{f}}$ evaluated over image $I$ corresponds to the conditional expectation of image $J$ given image $I$, more precisely:
-\begin{displaymath}
+\begin{equation*}
     F[I] = \mathbbm{E}[J | I]
-\end{displaymath}
+\end{equation*}
 where the expectation is evaluated point-wise (voxel by voxel) with respect to the conditional distribution of intensities of $J$ given intensities of $I$. Therefore:
 \begin{equation}\label{eq:ecc_meaning}
     ECC(I, J; \phi) = CC(\mathbbm{E}[J|I], J ; \phi).
 \end{equation}
-In the especial case that all local vectors $\mathbf{x}_{v}, \mathbf{y}_{v}$ are normalized, the $CC$ metric is a linear operator, and by linearity of the expectation operator, it follows that eq. \eqref{eq:ecc_meaning} is the conditional expectation of the cross correlation given $I$, from which we adopted the name ``Expected Cross Correlation''. To assess how reasonable our simplifying assumptions are, we compared the optimal transfer function, computed by directly maximizing eq. \eqref{eq:ecc_neg_likelihood_vector_form} w.r.t. $\mathbf{f}$ using BFGS \citep{GVK502988711}, and compared the result against the iso-set means $\mathbf{\bar{f}}$ (see fig. \ref{fig:comparison_optimal_transfers}). We can see that regardless of the relatively small window size, the optimal transfers are very similar, which allows us to approximate the optimal transfer according to eq. \eqref{eq:ecc_neg_likelihood_vector_form} (computationally very costly) with the iso-set means (fast and easy to compute).\\
-
+In the especial case that all local vectors $\mathbf{x}_{v}, \mathbf{y}_{v}$ are normalized, the $CC$ metric is a linear operator, and by linearity of the expectation operator, it follows that eq. \eqref{eq:ecc_meaning} is the conditional expectation of the cross correlation given $I$, from which we adopted the name ``Expected Cross Correlation''. To assess how reasonable our simplifying assumptions are, we compared the optimal transfer function, computed by directly maximizing eq. \eqref{eq:ecc_neg_likelihood_vector_form} w.r.t. $\mathbf{f}$ using BFGS \citep{GVK502988711}, and compared the result against the iso-set means $\mathbf{\bar{f}}$ (see fig. \ref{fig:comparison_optimal_transfers}). Figure \ref{fig:LLR_transfer_rmse} depicts the difference between $\mathbf{\bar{f}}$ and the optimal transfer function obtained using BFGS to maximize eq. \eqref{eq:ecc_neg_likelihood_vector_form} as a function of the window size. We can see that regardless of the relatively small window sizes, the optimal transfers are very similar, which allows us to approximate the optimal transfer according to eq. \eqref{eq:ecc_neg_likelihood_vector_form} (computationally very costly) with the iso-set means (fast and easy to compute). \\
 
 \begin{figure}[H]
 \centering
-    \subfloat[T2 as a function of T1.]{\label{fig:t1lab_comparison}\includegraphics[width=1.0\linewidth]{./images/comparison_optimal_transfers_t1lab.png}}\\
-    \subfloat[T1 as a function of T2.]{\label{fig:t2lab_comparison}\includegraphics[width=1.0\linewidth]{./images/comparison_optimal_transfers_t2lab.png}}
-    \caption{Comparison of optimal transfer functions according to eq. \eqref{eq:ecc_neg_likelihood_vector_form} against the iso-set means (optimal transfer functions used in the Correlation Ratio metric). Input images are shown in figure \ref{fig:brainweb_t1_t2}. The window size was set to radius $4$ voxels ($9\times 9\times 9$). The optimal transfers according to eq. \eqref{eq:ecc_neg_likelihood_vector_form} were obtained using BFGS \citep{GVK502988711}, initializing all elements uniformly at random in [0,1]. Since the vector $\mathbf{f}$ maximizing eq. \eqref{eq:ecc_neg_likelihood_vector_form} is not unique (any affine transform of the optimal $\mathbf{f}$ is optimal too), we may obtain a result very different from the iso-set means (left) but after applying an affine transform normalizing them to $[0,1]$ (normalizing after changing the sign, in this case), the transfer functions are very similar (right).}
+    \subfloat[T2 as a function of T1]{\label{fig:t1lab_comparison}\includegraphics[width=1.0\linewidth]{./images/comparison_optimal_transfers_t1lab_3.png}}\\
+    \subfloat[T1 as a function of T2]{\label{fig:t2lab_comparison}\includegraphics[width=1.0\linewidth]{./images/comparison_optimal_transfers_t2lab_3.png}}\\
+    \caption{{\small Comparison of optimal transfer functions according to eq. \eqref{eq:ecc_neg_likelihood_vector_form} against the iso-set means. The window size was set to radius $4$ voxels ($9\times 9\times 9$). The optimal transfers according to eq. \eqref{eq:ecc_neg_likelihood_vector_form} were obtained using BFGS \citep{GVK502988711}. Starting from the iso-set means (left), the optimized transfer stays very close to it. Initializing all elements uniformly at random in [0,1] (center), the optimized transfer function may be far from the iso-set means, but after applying an affine transform normalizing them to $[0,1]$ (normalizing after changing the sign, in this case), the transfer functions are very similar (right).}}
 \label{fig:comparison_optimal_transfers}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+    \includegraphics[width=1.0\linewidth]{./images/LLR_transfer_rmse.png}
+    \caption{{\small Difference between $\mathbf{\bar{f}}$ and the optimal transfer function maximizing eq. \eqref{eq:ecc_neg_likelihood_vector_form} (computed with BFGS) as a function of the window size (the total number voxels is $(2w+1)^{3}$ where $w$ is the ``window size''). As we increase the window size, the optimal transfer function approaches $\mathbf{\bar{f}}$, as expected (the exception here was $w=2$, which may happen in practice since iterative methods may fail to converge to the optimal solution).}}
+\label{fig:LLR_transfer_rmse}
+\end{figure}
+
+
+
 The effect of introducing the global non-linear transfer into the local linear model is illustrated in fig. \ref{fig:ecc_test_good}. This example is the same as fig. \ref{fig:llr_test}, the fixed image $I$ is the T1, the moving image $J$ is the T2, but instead of fitting the local linear models between $I$ and $J$ directly, we used $F[I]$ and $J$, where $F$ is defined by vector $\mathbf{\bar{f}}$. It can be observed that the non-linear local relationship was made significantly closer to linear by the use of the global transfer function.
-\begin{figure*}[t]
+\begin{figure}[t]
 \centering
     \subfloat[]{\label{fig:FT1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/Ft1_aafo_t2_sample2.png}}
     \subfloat[]{\label{fig:FT1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/t2_aafo_Ft1_sample2.png}}
     \subfloat[]{\label{fig:FT1T2_affine_fit_map}\includegraphics[width=0.2\linewidth]{./images/residuals_t2_arrows.png}}
     \subfloat[]{\label{fig:FT1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/Ft1_aafo_t2_sample1.png}}
     \subfloat[]{\label{fig:FT1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/t2_aafo_Ft1_sample1.png}}\\
-    \caption{Local linear reconstruction between T2 intensities and F[T1], where F is the global transfer function used in the Correlation Ratio metric (the average T2 intensity computed over iso-sets of the T1). Center image (c) depicts the reconstruction error in false color (red means high, and blue means low). The selected windows are the same as in figure \ref{fig:llr_test}. The scatter plots depict the best affine fit of F[T1] intensities as a function of T2 (a, d), and the best fit of T2 as a function of F[T1] (b, e). The local relationship was made closer to affine by applying the global non-linear transfer F.}
+    \caption{{\small Local linear reconstruction between T2 intensities and F[T1], where F is given by $\mathbf{\bar{f}}$ (eq. \eqref{eq:average_of_isosets}). Center image (c) depicts the reconstruction error in false color. The selected windows are the same as in figure \ref{fig:llr_test}. The local relationship was made closer to affine by applying the global non-linear transfer F.}}
 \label{fig:ecc_test_good}
-\end{figure*}
+\end{figure}
+
+
 \subsection{Bidirectional transfer functions}
-
-A limitation of existing registration methods that are based on the estimation of a functional relationship between image modalities (such as CR and EM\cite{Roche1998, Roche2000, Arce-santana2014}) is that one of the image modalities must be chosen \emph{a priori} as the target modality (either map intensities from modality A to modality B or viceversa). This is an important decision and what choice is the best may not be obvious in general. To illustrate this, figure \ref{fig:ecc_test_bad} depicts the same example as fig. \ref{fig:ecc_test_good}, but instead of mapping intensities from T1 to T2, we map intensities from T2 to T1. Although the transfer function helps, the relationship is still far from affine. To overcome this limitation, we estimate both transfer functions between $I$ and $J$. Instead of directly computing one single transformation $\phi:\Omega_{I} \rightarrow \Omega_{J}$, we aim to find two invertible transformations (\emph{diffeomorphisms}) $\phi_{I}:\Omega_{I}\rightarrow \Omega_{R}$ and $\phi_{J}:\Omega_{J}\rightarrow \Omega_{R}$ such that the images get aligned in a reference space $\Omega_{R}$ after warping them under $\phi_{I}^{-1}$ and $\phi_{J}^{-1}$ (Fig. \ref{fig:syn_overview}). This is exactly the same formulation as the SyN algorithm proposed by Avants {\it et al.} \cite{Avants2011}, and explained in section \ref{sec:non_linear_image_registration}, where the partial transforms $\phi_{I}, \phi_{J}$ are the middle-point diffeomorphisms of a diffeomorphic flow transforming the domains $\Omega_{I}, \Omega_{J}$ toward each other.\\
-
-\begin{figure*}[t]
-\centering
-    \subfloat[]{\label{fig:T1FT2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/t1_aafo_Ft2_sample2.png}}
-    \subfloat[]{\label{fig:T1FT2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/Ft2_aafo_t1_sample2.png}}
-    \subfloat[]{\label{fig:T1FT2_affine_fit_map}\includegraphics[width=0.2\linewidth]{./images/residuals_t1_arrows.png}}
-    \subfloat[]{\label{fig:T1FT2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/t1_aafo_Ft2_sample1.png}}
-    \subfloat[]{\label{fig:T1FT2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/Ft2_aafo_t1_sample1.png}}\\
-    \caption{Local linear reconstruction between T1 intensities and F[T2] (opposite of figure \ref{fig:ecc_test_good}), where F is the global transfer function used in the Correlation Ratio metric (the average T1 intensity computed over iso-sets of the T2). Center image (c) depicts the reconstruction error in false color (red means high, and blue means low). The selected windows are the same as in figure \ref{fig:ecc_test_good}. The scatter plots depict the best affine fit of T1 intensities as a function of F[T2] (a, d), and the best fit of F[T2] as a function of T1 (b, e). The local relationship was made closer to affine by mapping intensities from T2 to T1, but not as close as mapping from T1 to T2.}
-\label{fig:ecc_test_bad}
-\end{figure*}
+A limitation of existing registration methods that are based on the estimation of a functional relationship between image modalities (such as CR and EM\cite{Roche1998, Roche2000, Arce-santana2014}) is that one of the image modalities must be chosen \emph{a priori} as the target modality (either map intensities from modality A to modality B or viceversa). This is an important decision and what choice is the best may not be obvious in general. To overcome this limitation, we estimate both transfer functions between $I$ and $J$. Instead of directly computing one single transformation $\phi:\Omega_{I} \rightarrow \Omega_{J}$, we aim to find two invertible transformations (\emph{diffeomorphisms}) $\phi_{I}:\Omega_{I}\rightarrow \Omega_{R}$ and $\phi_{J}:\Omega_{J}\rightarrow \Omega_{R}$ such that the images get aligned in a reference space $\Omega_{R}$ after warping them under $\phi_{I}^{-1}$ and $\phi_{J}^{-1}$ (Fig. \ref{fig:syn_overview}). This is exactly the same formulation as the SyN algorithm proposed by Avants {\it et al.} \cite{Avants2011}, and explained in section \ref{sec:non_linear_image_registration}, where the partial transforms $\phi_{I}, \phi_{J}$ are the middle-point diffeomorphisms of a diffeomorphic flow transforming the domains $\Omega_{I}, \Omega_{J}$ toward each other.\\
+%To illustrate this, figure \ref{fig:ecc_test_bad} depicts the same example as fig. \ref{fig:ecc_test_good}, but instead of mapping intensities from T1 to T2, we map intensities from T2 to T1. Although the transfer function helps, the relationship is still far from affine.
+%\begin{figure}[t]
+%\centering
+%    \subfloat[]{\label{fig:T1FT2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/t1_aafo_Ft2_sample2.png}}
+%    \subfloat[]{\label{fig:T1FT2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/Ft2_aafo_t1_sample2.png}}
+%    \subfloat[]{\label{fig:T1FT2_affine_fit_map}\includegraphics[width=0.2\linewidth]{./images/residuals_t1_arrows.png}}
+%    \subfloat[]{\label{fig:T1FT2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/t1_aafo_Ft2_sample1.png}}
+%    \subfloat[]{\label{fig:T1FT2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/Ft2_aafo_t1_sample1.png}}\\
+%    \caption{{\small Local linear reconstruction between T1 intensities and F[T2], where F is given by $\mathbf{\bar{f}}$ (eq. \eqref{eq:average_of_isosets}). Center image (c) %depicts the reconstruction error in false color. The selected windows are the same as in figure \ref{fig:ecc_test_good}. The local relationship was made closer to affine by mapping %intensities from T2 to T1, but not as close as mapping from T1 to T2.}}
+%\label{fig:ecc_test_bad}
+%\end{figure}
 
 \begin{figure}[t]
 \centering
 \fbox{\includegraphics[width=1.0\linewidth]{./images/syn_overview.png}}
-\caption{The Greedy SyN algorithm registers two input images by computing two diffeomorphisms that map the input images towards a common reference domain. The final
-diffeomorphism is computed by composing the two partial diffeomorphisms.}
+\caption{{\small The Greedy SyN algorithm registers two input images by computing two diffeomorphisms that map the input images towards a common reference domain. The final
+diffeomorphism is computed by composing the two partial diffeomorphisms.}}
 \label{fig:syn_overview}
 \end{figure}
 
@@ -223,7 +231,7 @@ By assuming independence between the two sets of normally distributed random vec
 \begin{figure}[t!]
     \subfloat[]{\label{fig:epicor_b0up_ecc.png}\includegraphics[width=1\linewidth]{./images/T1B0Result/epicor_b0up_ecc.png}}\\
     \subfloat[]{\label{fig:epicor_b0up_mi.png}\includegraphics[width=1\linewidth]{./images/T1B0Result/epicor_b0up_mi.png}}\\
-    \caption{Registration of B0(blip up) to T1.}
+    \caption{{\small Registration of B0(blip up) to T1.}}
 \label{fig:epicor_up_ecc}
 \end{figure}
 
@@ -235,7 +243,7 @@ By assuming independence between the two sets of normally distributed random vec
     \subfloat[]{\label{fig:synmi_contours_t1b0up_sagital_zoom}\includegraphics[width=0.5\linewidth]{./images/T1B0Result/synmi_contours_t1b0up_sagital_zoom.png}}\\
     \subfloat[]{\label{fig:synecc_t1b0up_sagital_zoom}\includegraphics[width=0.5\linewidth]{./images/T1B0Result/synecc_t1b0up_sagital_zoom.png}}
     \subfloat[]{\label{fig:synmi_t1b0up_sagital_zoom}\includegraphics[width=0.5\linewidth]{./images/T1B0Result/synmi_t1b0up_sagital_zoom.png}}\\
-    \caption{Registration of T1 to B0(blip up).}
+    \caption{{\small Registration of T1 to B0(blip up).}}
 \label{fig:sagital_zoom_t1b0up}
 \end{figure}
 
