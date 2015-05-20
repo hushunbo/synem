@@ -14,10 +14,11 @@
 \usepackage{color}
 \usepackage[labelfont={small,bf}]{caption}
 \usepackage[font={small,bf}]{caption}
-%\usepackage[margin=1.0in]{geometry}
+\usepackage[numbers]{natbib}
+\renewcommand{\bibfont}{\footnotesize}
+\usepackage[margin=0.6in]{geometry}
 \newcommand{\closer}{\vspace{-0.0cm}}
-\newcommand{\citep}{\cite}
-%\journal{Medical Image Analysis}
+\newcommand{\figcloser}{\vspace{-0.4cm}}
 
 \begin{document}
 
@@ -41,8 +42,8 @@
 %\address[cimat]{, }
 %\address[scil]{}
 \maketitle
+%\vspace{-1.0cm}
 \input{abstract_new}
-
 \begin{IEEEkeywords}
 Multi-modal registration, Deformable registration, Diffeomorphic, Expectation maximization, Cross-correlation
 \end{IEEEkeywords}
@@ -53,15 +54,11 @@ Multi-modal registration, Deformable registration, Diffeomorphic, Expectation ma
 \input{introduction_new}
 \input{background_new}
 \input{methods_new}
-%\input{ecc}
 \input{experiments}
 \input{conclusion}
-%\input{acknowledgements}
-%\input{appendix_new}
-
 \bibliographystyle{ieeetr}
+\vspace{-0.5cm}
 \bibliography{references}
-
 
 \end{document}
 

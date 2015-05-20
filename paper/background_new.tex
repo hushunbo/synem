@@ -7,26 +7,23 @@ possible values called the ``dynamic range'' of $I$. The images we are intereste
 \vspace{-0.5cm}
 \subsection{Non-linear image registration}\label{sec:non_linear_image_registration}
 The goal of image registration is to compute a transformation $\phi: \Omega_{I} \rightarrow \Omega_{J}$ that brings a moving image $J:\Omega_{J} \rightarrow G$ into correspondence
-with a fixed image $I:\Omega_{I} \rightarrow G$. The transformation $\phi$ is chosen from a set $\Phi$ of feasible solutions having properties that are desirable depending on the
-application, such as smoothness and invertibility. Correspondence between $I$ and $J$ is defined to be reached when a matching functional measuring the dissimilarity between them is minimized.\\
-
-In non-linear image registration, the transformation $\phi$ is usually represented by a deformation field $\mathbf{u(\cdot)}$ that assigns a displacement vector
-to each point $x$ such that $\phi(x) = x + \mathbf{u}(x)$. The classical elastic model is one of the earliest formulation for non-linear image registration \citep{Bajcsy1982, Gee1999}, and may be written as
+with a fixed image $I:\Omega_{I} \rightarrow G$. Correspondence between $I$ and $J$ is defined to be reached when a matching functional measuring the dissimilarity between them is minimized. In non-linear image registration, the transformation $\phi$ is usually represented by a deformation field $\mathbf{u(\cdot)}$ that assigns a displacement vector
+to each point $x$ such that $\phi(x) = x + \mathbf{u}(x)$. The classical elastic model is one of the earliest formulation for non-linear image registration \cite{Bajcsy1982, Gee1999}, and may be written as
 \begin{equation}\label{eq:elastic}
     \mathbf{u}^{*} = \arg \min_{\mathbf{u}} \int_{\Omega} ||L \mathbf{u}(x)||^{2}dV + \Pi(I, J \circ \phi),
 \end{equation}
 where $L$ is a differential operator used to promote smoothness on $\mathbf{u}$ and $\Pi$ is the dissimilarity metric driving the registration. A limitation of this model, especially important for medical image registration is that the solution, although being smooth, is not guaranteed to be invertible, and the topology of the moving image is not guaranteed to be preserved after transforming it under $\phi$.\\
 
-To overcome the limitations of the elastic model, the large deformation model proposed by Christensen {\it et al.} \cite{Christensen2001} and further developed by Beg {\it et al.} \cite{Science2005} formulates the problem in terms of a trajectory of transformations \hbox{$\phi:\Omega_{I} \times [0, 1] \rightarrow \Omega_{J}$} that satisfies $\frac{d \phi(x, t)}{dt} = v(\phi(x, t), t)$ and $\phi(x, 0) = x$, where $v(\cdot, \cdot)$ is the velocity field associated to the curve $\phi$. Beg's Large Deformation Diffeomorphic Metric Mapping (LDDMM) \citep{Science2005} formulation of the registration problem is given by:
-\begin{equation}\label{eq:LDDMM}
-    v^{*} = \arg \min_{v:\dot{\phi} = v_{t}(\phi)} \int_{0}^{1} ||L v_{t}||^{2} dt + \Pi(I, J \circ \phi(\cdot, 1)),
-\end{equation}
-where $\dot{\phi} = \frac{d\phi}{dt}$, $v_{t} = v(\cdot, t), t\in [0, 1]$. The final diffeomorphisms can be obtained by integrating over time
-\begin{equation}\label{eq:velocity_integral}
-    \phi(x, 1) = \phi(x, 0) + \int_{0}^{1}v(\phi(x, t), t) dt.
-\end{equation}
-
-Dupuis {\it et al.} \cite{Dupuis1998} showed that by enforcing sufficient smoothness in $v$, through the differential operator $L$, it can be guaranteed that $\phi(\cdot, t), t \in [0, 1]$ are diffeomorphisms. This and other formulations also based on diffeomorphic flows ensure that images are smoothly transformed and their topology preserved: an important property for many medical applications. Avants {\it et al.} \cite{Avants2008, Avants2011} modified the standard LDDMM formulation to enforce symmetry in the sense that the registration result is the same regardless of which image we designate as $I$ and $J$. This property, although natural and desirable, is not ensured in standard computational methods solving the LDDMM problem. By splitting the trajectory $\phi$ into two trajectories with opposite direction $\phi_{1}(x, t) = \phi_{2}(y, 1-t)$, where $y = \phi(x, 1)$, with corresponding velocity fields $v_{1}, v_{2}$, the Symmetric formulation for Diffemorphic Image Registration \citep{Avants2008, Avants2011} can be written as:
+%Beg's Large Deformation Diffeomorphic Metric Mapping (LDDMM) \cite{Science2005} formulation of the registration problem is given by:
+%\begin{equation}\label{eq:LDDMM}
+%    v^{*} = \arg \min_{v:\dot{\phi} = v_{t}(\phi)} \int_{0}^{1} ||L v_{t}||^{2} dt + \Pi(I, J \circ \phi(\cdot, 1)),
+%\end{equation}
+%where $\dot{\phi} = \frac{d\phi}{dt}$, $v_{t} = v(\cdot, t), t\in [0, 1]$. The final diffeomorphisms can be obtained by integrating over time
+%\begin{equation}\label{eq:velocity_integral}
+%    \phi(x, 1) = \phi(x, 0) + \int_{0}^{1}v(\phi(x, t), t) dt.
+%\end{equation}
+%This and other formulations also based on diffeomorphic flows ensure that images are smoothly transformed and their topology preserved: an important property for many medical %applications.
+To overcome the limitations of the elastic model, the large deformation model proposed by Christensen {\it et al.} \cite{Christensen2001} and further developed by Beg {\it et al.} \cite{Science2005} formulates the problem in terms of a trajectory of transformations \hbox{$\phi:\Omega_{I} \times [0, 1] \rightarrow \Omega_{J}$} that satisfies $\frac{d \phi(x, t)}{dt} = v(\phi(x, t), t)$ and $\phi(x, 0) = x$, where $v(\cdot, \cdot)$ is the velocity field associated to the curve $\phi$. Dupuis {\it et al.} \cite{Dupuis1998} showed that by enforcing sufficient smoothness in $v$, through the differential operator $L$, it can be guaranteed that $\phi(\cdot, t), t \in [0, 1]$ are diffeomorphisms. Avants {\it et al.} \cite{Avants2008, Avants2011} modified the standard large deformation model to enforce symmetry in the sense that the registration result is the same regardless of which image we designate as $I$ and $J$. This property, although natural and desirable, is not ensured in standard computational methods. By splitting the trajectory $\phi$ into two trajectories with opposite direction $\phi_{1}(x, t) = \phi_{2}(y, 1-t)$, where $y = \phi(x, 1)$, with corresponding velocity fields $v_{1}, v_{2}$, the Symmetric formulation for Diffemorphic Image Registration \cite{Avants2008, Avants2011} can be written as:
 \begin{equation}\label{eq:syn_energy}
     \begin{array}{lll}
         v_{1}^{*}, v_{2}^{*} &=& \mathlarger{\arg \min \int_{t=0}^{0.5} ||L v_{1}(x, t)||^{2} + ||L v_{2}(x, t)||^{2} dt}\\
@@ -40,7 +37,7 @@ subject to
         \phi_{i}(\cdot, 0) = \mathbf{I},\, \phi_{i}^{-1}(\phi_{i}) = \mathbf{I},\, \phi_{i}(\phi_{i}^{-1}) = \mathbf{I},\, i=1,2,
     \end{array}
 \end{equation}
-where $\mathbf{I}$ denotes the identity transformation. Avants {\it et al.} \cite{Avants2006} proposed a numerical algorithm, called \textit{Geodesic SyN} for solving \eqref{eq:syn_energy}, which deforms both images towards the midpoint of the trajectory. The main drawback of directly solving eq. \eqref{eq:syn_energy} is its computational cost, since it requires space and time discretization and it is necessary to integrate the velocity fields in eq. \eqref{eq:velocity_integral} to obtain the trajectories at each iteration. A more efficient optimization algorithm to approximately solve eq. \eqref{eq:syn_energy}, also proposed by Avants {\it et al.} \cite{Avants2008, Avants2011}, consists in computing the gradient of the metric only at the midpoint of the trajectory (as opposed to evaluating it for all time):
+where $\mathbf{I}$ denotes the identity transformation. Avants {\it et al.} \cite{Avants2006} proposed a numerical algorithm, called \textit{Geodesic SyN} for solving \eqref{eq:syn_energy}, which deforms both images towards the midpoint of the trajectory. The main drawback of directly solving eq. \eqref{eq:syn_energy} is its computational cost, since it requires space and time discretization and it is necessary to integrate the velocity fields at each iteration to obtain the trajectories. A more efficient optimization algorithm to approximately solve eq. \eqref{eq:syn_energy}, also proposed by Avants {\it et al.} \cite{Avants2008, Avants2011}, consists in computing the gradient of the metric only at the midpoint of the trajectory (as opposed to evaluating it for all time):
 \begin{equation}\label{eq:grad_metric}
     \nabla_{\phi_{i}} \Pi(\tilde{I}, \tilde{J}) = \frac{\partial}{\partial \phi_{i}} \Pi \left( \tilde{I}, \tilde{J}\right),
 \end{equation}
@@ -48,10 +45,10 @@ where $\tilde{I} = I \circ \phi_{1}^{-1}(\cdot, 0.5)$, $\tilde{J} = J \circ \phi
 \begin{equation}\label{eq:gsyn_update}
     \phi_{i}(\cdot, 0.5) = \phi_{i}(\cdot, 0.5) - \left( \epsilon K_{\sigma} \ast \nabla_{\phi_{i}} \Pi(\tilde{I}, \tilde{J}) \right) \circ \phi_{i}(\cdot, 0.5),
 \end{equation}
-where $\ast$ denotes the convolution operator and $\epsilon$ is a small factor controlling the step size in the optimization process. Finally, the updated midpoint transformations (which, after composition with the gradient, are not ensured to be diffeomorphisms) are forced to be invertible by using an explicit vector field inversion algorithm \citep{Chen2008}. This algorithm, called \textit{Greedy SyN} (alg. \ref{alg:Greedy_SyN}) has been adopted by the neuroimaging community as the \textit{de facto} state-of-the-art brain MRI registration algorithm due to its reliability and efficiency. It was the method used for evaluating ANTS \citep{Avants2011} in the large comparative studies performed by Klein {\it et al.} \cite{Klein2009, Klein2010} in which \textit{Greedy SyN} was consistently ranked among the top performers.
+where $\ast$ denotes the convolution operator and $\epsilon$ is a small factor controlling the step size in the optimization process. Finally, the updated midpoint transformations (which, after composition with the gradient, are not ensured to be diffeomorphisms) are forced to be invertible by using an explicit vector field inversion algorithm \cite{Chen2008}. This algorithm, called \textit{Greedy SyN} (alg. \ref{alg:Greedy_SyN}) has been adopted by the neuroimaging community as the \textit{de facto} state-of-the-art brain MRI registration algorithm due to its reliability and efficiency. It was the method used for evaluating ANTS \cite{Avants2011} in the large comparative studies performed by Klein {\it et al.} \cite{Klein2009, Klein2010} in which \textit{Greedy SyN} was consistently ranked among the top performers.
 
 \begin{algorithm}[h!]
-\caption{{\small Greedy SyN. This algorihtm was the method used for evaluating ANTS \citep{Avants2011} in the large comparative studies developed by Klein {\it et al.} \cite{Klein2009, Klein2010} in which it was consistently ranked among the top performers.}}\label{alg:Greedy_SyN}
+\caption{{\small Greedy SyN (available in ANTS \cite{Avants2011}). This algorihtm was consistently ranked among the top performers in the large comparative studies performed by Klein {\it et al.} \cite{Klein2009, Klein2010}.}}\label{alg:Greedy_SyN}
 \begin{algorithmic}[1]
 \REQUIRE Gaussian kernel parameter $\sigma>0$
 \REQUIRE Step size $\epsilon>0$
@@ -69,10 +66,10 @@ where $\ast$ denotes the convolution operator and $\epsilon$ is a small factor c
 \UNTIL{$t\geq T$ or convergence}
 \RETURN $\phi_{i}(\cdot, 0.5), i=1,2$
 \end{algorithmic}
-\end{algorithm}
+\end{algorithm}\figcloser
 
 \subsection{Local linear reconstruction}
-Defining an adequate matching functional is arguably the most important aspect of image registration, and has been the subject of significant amount of research \citep{Sotiras2013}. If the minimum of the metric does not coincide with what we understand by optimal image correspondence, then no matter what transformation or optimization algorithm we choose, we are unlikely to correctly align the images. In the mono-modal case, a plausible model relating the input images $I$ and $J$ by means of the (unknown) transform $\phi$ is given by
+Defining an adequate matching functional is arguably the most important aspect of image registration, and has been the subject of significant amount of research \cite{Sotiras2013}. If the minimum of the metric does not coincide with what we understand by optimal image correspondence, then no matter what transformation or optimization algorithm we choose, we are unlikely to correctly align the images. In the mono-modal case, a plausible model relating the input images $I$ and $J$ by means of the (unknown) transform $\phi$ is given by
 \begin{equation}\label{eq:ssd_model}
     I(v) = J(\phi(v)) + \eta(v), \; \forall v\in\Omega_{I}
 \end{equation}
@@ -80,7 +77,7 @@ where the Gaussian random variables $\eta(v) \sim N(0, \sigma^{2})$ are assumed 
 \begin{equation}\label{eq:ssd_functional}
     SSD(I, J; \phi) = \sum_{v \in \Omega_{I}} \left(I(v) - J(\phi(v))\right)^{2}.
 \end{equation}
-Thus, minimization of \eqref{eq:ssd_functional} with respect to the transformation $\phi$ corresponds to a maximum likelihood estimation of the parameters of model \eqref{eq:ssd_model} (the parameters being the transformation $\phi$). There are two main limitations of model \eqref{eq:ssd_model} in the context of brain MRI: a) it does not take into account spatial intensity inhomogeneities and b) the functional is computed \emph{point-wise}, which makes it susceptible to noise and unable to capture the local structure of the image. To overcome these limitations, Wang and Pan \cite{Wang2014} recently proposed a local linear model that attempts to account for the bias field in brain MRI. Let $W_{v} = \left\lbrace v_{1}, v_{2}, ..., v_{n} \right\rbrace$ be a rectangular local window centered at $v\in\Omega_{I}$, containing $n$ points and denote by $\mathbf{x}_{v} = (I(v_{1}), I(v_{2}), ..., I(v_{n}))^{T}$, $\mathbf{y}_{v} = (J(\phi(v_{1})), J(\phi(v_{2})), ..., J(\phi(v_{n})))^{T}$ the input images evaluated at all points $v_{i}\in W_{v}$, $i=1, ..., n$. Please keep in mind that $\left\lbrace\mathbf{x}_{v}\right\rbrace$ are fixed (they never change during optimization) while $\left\lbrace\mathbf{y}_{v}\right\rbrace$ change as we move $\phi$ (we cannot set the value of $\mathbf{y}_{v}$ freely but its value must be adjusted by moving $\phi$). Wang's local linear model states that, when $\phi$ correctly aligns $J$ to $I$, their intensities are approximately locally linear:
+Thus, minimization of \eqref{eq:ssd_functional} with respect to the transformation $\phi$ corresponds to a maximum likelihood estimation of the parameters of model \eqref{eq:ssd_model} (the parameters being the transformation $\phi$). There are two main limitations of model \eqref{eq:ssd_model} in the context of brain MRI: a) it does not take into account spatial intensity inhomogeneities and b) the functional is computed \emph{point-wise}, which makes it susceptible to noise and unable to capture the local structure of the image \cite{Heinrich2012}. To overcome these limitations, Wang and Pan \cite{Wang2014} recently proposed a local linear model that attempts to account for the bias field in brain MRI. Let $W_{v} = \left\lbrace v_{1}, v_{2}, ..., v_{n} \right\rbrace$ be a rectangular local window centered at $v\in\Omega_{I}$, containing $n$ points and denote by $\mathbf{x}_{v} = (I(v_{1}), I(v_{2}), ..., I(v_{n}))^{T}$, $\mathbf{y}_{v} = (J(\phi(v_{1})), J(\phi(v_{2})), ..., J(\phi(v_{n})))^{T}$ the input images evaluated at all points $v_{i}\in W_{v}$, $i=1, ..., n$. Please keep in mind that $\left\lbrace\mathbf{x}_{v}\right\rbrace$ are fixed (they never change during optimization) while $\left\lbrace\mathbf{y}_{v}\right\rbrace$ change as we move $\phi$ (we cannot set the value of $\mathbf{y}_{v}$ freely but its value must be adjusted by moving $\phi$). Wang's local linear model states that, when $\phi$ correctly aligns $J$ to $I$, their intensities are approximately locally linear:
 \begin{equation}\label{eq:wang_model}
     \mathbf{y}_{v} = \left[\mathbf{x}_{v} \; \mathbbm{1}\right]\beta + \eta(v) \; \forall v\in\Omega_{I}
 \end{equation}
@@ -112,13 +109,13 @@ where
         \mathbbm{1}^{T}
     \end{array}\right].
 \end{equation}
-The LLR matching functional turns out to be very robust for mono-modal registration. However, in some multi-modal registration tasks, the local linear model is insufficient to describe the relationship between image modalities. To exemplify this, figure \ref{fig:llr_test} depicts an example of the residual error of local linear reconstructions between two aligned brain images (a T1 and a T2 image) from the Brainweb \cite{Cocosco1997} dataset\footnote{The Brainweb dataset was used by Wang and Pan \cite{Wang2014} in their evaluations.}. The center image in fig. \ref{fig:llr_test} depicts the reconstruction error in false color. Although the local relationship between both images is close to linear almost everywhere, there are local regions where the intensity relationship is not close to linear regardless of what image is selected as predictor (either T1 as a function of T2 or viceversa).\\
+The LLR matching functional turns out to be very robust for mono-modal registration. However, in some multi-modal registration tasks, the local linear model is insufficient to describe the relationship between image modalities. To exemplify this, figure \ref{fig:llr_test} depicts an example of the residual error of local linear reconstructions between two aligned brain images (a T1 and a T2 image) from the Brainweb \cite{Cocosco1997} dataset\footnote{The Brainweb dataset was used by Wang and Pan \cite{Wang2014} in their evaluations.}. The center image in fig. \ref{fig:llr_test} depicts the reconstruction error in false color. Although the local relationship between both images is close to linear almost everywhere, there are local regions where the intensity relationship is not close to linear regardless of what image is selected as predictor.\\
 
 \begin{figure}[t!]
 \centering
     \includegraphics[width=1.0\linewidth]{./images/brainweb_t1_t2_overlay.png}\\
-    \caption{{\small Coronal slice of two realistic synthetic brain MRI images from the Brainweb \cite{Cocosco1997} dataset. The center image is an overlay of the T1 (left) image in the red channel, over the T2 (right) image in the green channel.}}
-\label{fig:brainweb_t1_t2}
+    \caption{{\small Coronal slice of two realistic brain MRI images from the Brainweb \cite{Cocosco1997} dataset. The center image is an overlay of the T1 (left) image in the red channel, over the T2 (right) image in the green channel.}}
+\label{fig:brainweb_t1_t2}\figcloser
 \end{figure}
 
 \begin{figure}[t!]
@@ -128,8 +125,8 @@ The LLR matching functional turns out to be very robust for mono-modal registrat
     \subfloat[]{\label{fig:T1T2_affine_fit_map}\includegraphics[width=0.2\linewidth]{./images/residuals_input_arrows.png}}
     \subfloat[]{\label{fig:T1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/t1_aafo_t2_sample1.png}}
     \subfloat[]{\label{fig:T1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/t2_aafo_t1_sample1.png}}\\
-    \caption{{\small Local linear reconstruction between intensities of a T1 and a T2 brain images (see fig. \ref{fig:brainweb_t1_t2}) under perfect alignment. Center image (c) depicts the reconstruction error in false color (red means high reconstruction error and blue means low reconstruction error). Two local windows were selected: Left (a, b): a local window with a close-to-linear relationship between image intensities. Right (d, e): a local window with a non-linear relationship between image intensities. The scatter plots depict the best affine fit of T1 intensities as a function of T2 (a, d), and the best fit of T2 as a function of T1 (b, e).}}
-\label{fig:llr_test}
+    \caption{{\small Local linear reconstruction between T1 and T2 images under perfect alignment (see fig. \ref{fig:brainweb_t1_t2}). Center image (c) depicts the reconstruction error in false color. Two local windows were selected: Left (a, b): a local window with a close-to-linear relationship. Right (d, e): a local window with a non-linear relationship. The scatter plots depict the best affine fit of T1 intensities as a function of T2 (a, d), and the best fit of T2 as a function of T1 (b, e).}}
+\label{fig:llr_test}\figcloser
 \end{figure}
 
 

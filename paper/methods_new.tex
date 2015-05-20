@@ -1,6 +1,7 @@
+\vspace{-0.5cm}
 \section{Methods}
 Although the tendency of the (global) CC functional to fit a linear model to the joint PDF is well known and has been previously pointed out by other authors (see for example Hermosillo {\it et al.} \cite{Hermosillo2004}), we require a more precise description of the underlying observation model (and its assumptions) associated with the CC matching functional. In this section we first discuss such an observation model, then enhance it to obtain our proposed matching functional, and finally we show an efficient way to fit its parameters.
-
+\vspace{-0.5cm}
 \subsection{Relationship between LLR and CC}
 A more detailed analysis of the LLR matching functional reveals that it is closely related to the CC metric, in the following sense. Let's consider the non-degenerate case first (the case that $\mathbf{y}_{v}$ and $\mathbf{x}_{v}$ are not ``constant'' vectors or in other words, they are not scalar multiples of $\mathbbm{1}$), we will discuss the degenerate cases later. First of all, note that we may assume, without loss of generality, that both vectors $\mathbf{x}_{v}, \mathbf{y}_{v}$ are \emph{centered} (i.e., their means are zero: $\frac{\mathbf{x}_{v}^{T}\mathbbm{1}}{n} = \frac{\mathbf{y}_{v}^{T}\mathbbm{1}}{n} = 0$), which may be proven as follows. Let's decompose $\mathbf{x}_{v}, \mathbf{y}_{v}$ into their centered part and their mean: $\mathbf{x}_{v} = \mathbf{x}_{v}' + \mu_{x}\mathbbm{1}$, and $\mathbf{y}_{v} = \mathbf{y}_{v}' + \mu_{y}\mathbbm{1}$, where $\mathbf{x}_{v}'$ and $\mathbf{y}_{v}'$ are centered. Then
 \begin{displaymath}
@@ -11,17 +12,7 @@ A more detailed analysis of the LLR matching functional reveals that it is close
 \end{displaymath}
 where $\beta' = (\beta_{1}, \beta_{0} + \beta_{1}\mu_{x} - \mu_{y})^{T}$. This $\beta'$ is the unique m.l.e. for $\beta$ in the centered, non-degenerate case. This means that the LLR evaluated at non-centered vectors equals the LLR evaluated at their corresponding centered vectors. The projection matrix $\mathbf{Q}_{v}$ in \eqref{eq:def_P_v} can be directly computed as
 \begin{align*}
-    \mathbf{Q}_{v} &= \frac{1}{\Delta}
-    [\mathbf{x}_{v} \; \mathbbm{1}]
-    \left[\begin{array}{cc}
-        n & - \mathbf{x}_{v}^{T}\mathbbm{1}\\
-        -\mathbf{x}_{v}^{T}\mathbbm{1} & ||\mathbf{x}_{v}||^{2}
-    \end{array}\right]
-    \left[\begin{array}{c}
-        \mathbf{x}_{v}^{T}\\
-        \mathbbm{1}^{T}
-    \end{array}\right] \\
-    &= [\mathbf{x}_{v} \; \mathbbm{1}]
+    \mathbf{Q}_{v} &= [\mathbf{x}_{v} \; \mathbbm{1}]
     \left[\begin{array}{cc}
         \frac{1}{||\mathbf{x}_{v}||^{2}} & 0\\
         0 & \frac{1}{n}
@@ -31,7 +22,7 @@ where $\beta' = (\beta_{1}, \beta_{0} + \beta_{1}\mu_{x} - \mu_{y})^{T}$. This $
         \mathbbm{1}^{T}
     \end{array}\right]
 \end{align*}
-where $\Delta = n||\mathbf{x}_{v}||^{2} - \left(\mathbf{x}_{v}^{T}\mathbbm{1}\right)^{2} = n||\mathbf{x}_{v}||^{2} > 0$ ($||\mathbf{x}_{v}||^{2}$ cannot be zero, by hypothesis). Therefore, the entry $\mathbf{q}_{i,j}$ of $\mathbf{Q}_v$ at row $i$, column $j$ is given by:
+where $||\mathbf{x}_{v}||^{2}$ cannot be zero, by hypothesis. Therefore, entry $\mathbf{q}_{i,j}$ of $\mathbf{Q}_v$ at row $i$, column $j$ is given by:
 \begin{displaymath}
     \mathbf{q}_{i,j} = \frac{n\mathbf{x}_{v,i}\mathbf{x}_{v,j} + ||\mathbf{x_v}||^{2}}{n||\mathbf{x}_{v}||^{2}}.
 \end{displaymath}
@@ -53,11 +44,11 @@ and we can see that likelihood maximization under model \eqref{eq:normalized_ll_
 Regarding the degenerate cases, note that if $\mathbf{y}_{v} = \alpha \mathbbm{1}, \alpha\in \mathbbm{R}$, then the LLR at $v$ is zero regardless of the value of $\mathbf{x}_{v}$ (by choosing $\widehat{\beta} = (0, \alpha)^{T}$), otherwise, if $\mathbf{x}_{v} = \gamma \mathbbm{1}, \gamma\in \mathbbm{R}$, then the LLR at $v$ is $||\mathbf{y}_{v} - \frac{\mathbf{y}_{v}^{T}\mathbbm{1}}{n}||^{2}$ (the norm of the centered $\mathbf{y}_{v}$ vector), which confirms that the a registration algorithm driven by LLR has a bias towards making $\mathbf{y}_{v}$ ``darker''. On the other hand, the CC metric is undefined in these degenerate cases (CC is defined for centered local vectors \cite{Avants2008}\cite{Avants2011}) and they are handled in practice by discarding their contribution to the metric and its gradient (this can be verified, for example, from the ANTS \cite{Avants2011a} source code).
 
 \subsection{Global non-linear transfer}
-The matching functional we propose in this work is based on the empirical observation that the non-linear relationship between both image modalities at local windows (fig. \ref{fig:llr_test}) may be made closer to linear by applying a global, non-linear, transfer function $F: G \rightarrow \mathbbm{R}$ that maps intensities from one modality to the other (fig. \ref{fig:ecc_test_good}). More precisely, our model may be written as
+The matching functional we propose in this work is based on the empirical observation that the non-linear relationship between both image modalities at local windows (fig. \ref{fig:llr_test}) may be made closer to linear by applying a global, non-linear, transfer function $F: G \rightarrow \mathbbm{R}$ (fig. \ref{fig:ecc_test_good}). More precisely, our model may be written as
 \begin{equation}\label{eq:ecc_model}
     \frac{\mathbf{y}_{v}}{||\mathbf{y}_{v}||} = \left[F\left[\mathbf{x}_{v}\right] \; \mathbbm{1}\right]\beta + \eta(v) \; \forall v\in\Omega_{I},
 \end{equation}
-where we have denoted $F[\mathbf{x}_{v}]$ the vector that results from applying function $F$ to each element of vector $\mathbf{x}_{v}$. By following the exact same steps as before, we can compute the optimal regression parameters $\widehat{\beta}$ and obtain the negative log-likelihood of our data under model \eqref{eq:ecc_model} (by replacing $\mathbf{x}_{v}$ with $F[\mathbf{x}_{v}]$ and $\mathbf{y}_{v}$ with $\frac{\mathbf{y}_{v}}{||\mathbf{y}_{v}||}$ in eq. \eqref{eq:llr_cc_relationship}):
+where we have denoted $F[\mathbf{x}_{v}]$ the vector that results from applying function $F$ to each element of vector $\mathbf{x}_{v}$. By following the exact same steps as before, we can compute the optimal regression parameters $\widehat{\beta}$ and obtain the negative log-likelihood of our data under model \eqref{eq:ecc_model}, which is proportional to:
 \begin{equation}\label{eq:ecc_neg_likelihood}
     U(I, J;\phi) = \sum_{v\in\Omega_{I}}\left(1-\frac{\left(F\left[\mathbf{x}_{v}\right]^{T} \mathbf{y}_{v}\right)^{2}}{||F\left[\mathbf{x}_{v}\right]||^{2}||\mathbf{y}_{v}||^{2}}\right).
 \end{equation}
@@ -71,7 +62,7 @@ Now we will proceed to compute an optimal non-linear transfer function $F$. We c
     \left[\left(\alpha_{0}F^{*}\left[\mathbf{x}_{v}\right]+\alpha_{1}\mathbbm{1}\right) \; \mathbbm{1}\right]\beta =
     \left[F^{*}\left[\mathbf{x}_{v}\right] \; \mathbbm{1}\right]\beta',
 \end{displaymath}
-where $\beta' = (\alpha_{0}\beta_{0}, \alpha_{1}\beta_{0} + \beta_{1})^{T}$. We aim to find an optimal $F$ modulo an affine transform. Let's denote by $m$ the number of different intensity values in the fixed image $I$ (a typical choice is $m=256$). We will assign a value $\mathbf{f}_{\ell}$ to each intensity $\ell$ of the fixed image, $0\leq \ell < m$, and define the transfer function $F$ as $F(\mathbf{x}_{v,i}) = \mathbf{f}_{\ell}$, where $\ell = \mathbf{x}_{v,i}$. The transfer function $F$ may then be represented as a vector $\mathbf{f}$ of dimension $m$. Let $\mathbf{k}_{v,\ell}$, and $\mathbf{a}_{v,\ell}$ be number of elements of $\mathbf{x}_{v}$ equal to $\ell$, and the sum of elements of $\mathbf{y}_{v}$ whose corresponding elements in $\mathbf{x}_{v}$ equal $\ell$, respectively. More precisely:
+where $\beta' = (\alpha_{0}\beta_{0}, \alpha_{1}\beta_{0} + \beta_{1})^{T}$. Let's denote by $m$ the number of different intensity values in the fixed image $I$ (a typical choice is $m=256$). We will assign a value $\mathbf{f}_{\ell}$ to each intensity $\ell$ of the fixed image, $0\leq \ell < m$, and define the transfer function $F$ as $F(\mathbf{x}_{v,i}) = \mathbf{f}_{\ell}$, where $\ell = \mathbf{x}_{v,i}$. The transfer function $F$ may then be represented as a vector $\mathbf{f}$ of dimension $m$. Let $\mathbf{k}_{v,\ell}$, and $\mathbf{a}_{v,\ell}$ be number of elements of $\mathbf{x}_{v}$ equal to $\ell$, and the sum of elements of $\mathbf{y}_{v}$ whose corresponding elements in $\mathbf{x}_{v}$ equal $\ell$, respectively. More precisely:
 \begin{displaymath}
     \mathbf{k}_{v,\ell} = |\left\lbrace i : \mathbf{x}_{v,i}=\ell \right\rbrace|
 \end{displaymath}
@@ -95,17 +86,16 @@ where $\mathbf{D}_{v} = $ diag($\mathbf{k}_{v}$). The ECC matching functional (e
 \end{equation}
 
 \subsection{Computing an optimal transfer function}
-The problem of maximizing the sum of quotients of quadratic forms (like eq. \eqref{eq:ecc_neg_likelihood_vector_form}) doesn't have, in general, a close form solution, and it is necessary to resort to iterative algorithms (see for example Kiers, 1995 \cite{Kiers1995} for a thorough review of this problem). The sole evaluation of the functional may be very time consuming because in order to apply fast strategies like partial sums (used for example by Avants \cite{Avants2008} to evaluate the CC metric and its gradient) we need to store the partial results for each intensity value $0 \leq \ell < m$, which would require a very large amount of memory. Therefore, we will compute an approximation based on the following assumptions.\\
+The problem of maximizing the sum of quotients of quadratic forms (eq. \eqref{eq:ecc_neg_likelihood_vector_form}) doesn't have, in general, a close form solution, and it is necessary to resort to iterative algorithms \cite{Kiers1995}. The sole evaluation of the functional may be very time consuming because in order to apply fast strategies like partial sums (used for example by Avants \cite{Avants2008} to evaluate the CC metric) we need to store the partial results for each intensity value $0 \leq \ell < m$, which would require a very large amount of memory. Therefore, we will compute an approximation based on the following assumptions.
 
 \begin{enumerate}
     \item The set of intensities contained in each local vector $\mathbf{x}_{v}$ and $\mathbf{y}_{v}$ are approximately random samples from intensities of images $I$ and $J$, respectively.\\
-    \item The norm $||\mathbf{y}_{v}||$ is approximately equal to $||F[\mathbf{x}_{v}]||$
-            \begin{equation*}
-                ||\mathbf{y}_{v}|| \approx ||F[\mathbf{x}_{v}]|| \; \forall v\in\Omega_{I}.
-            \end{equation*}
+    \item The norm $||\mathbf{y}_{v}||$ is approximately equal to $||F[\mathbf{x}_{v}]||.$
 \end{enumerate}
-
-Notice that, if the local windows $W_{v}, v\in\Omega_{I}$ are sufficiently large, then these two conditions are satisfied (to convince ourselves, it suffices to consider the extreme case of one single ``local'' window of size equal to the full volume). The question is how small can we make the local windows so that these conditions are reasonably satisfied. Please note that, in practice, we do not need these conditions to be satisfied everywhere, but we only need that the optimal $\mathbf{f}$ obtained under the given assumptions is reasonably close to the optimal $\mathbf{f}$ obtained without making the assumptions. From our experiments, as we will show below, we have found that rectangular local windows of radius $4$ voxels ($n=9\times 9\times 9 = 729$) work surprisingly well in practice.\\
+%            \begin{equation*}
+%                ||\mathbf{y}_{v}|| \approx ||F[\mathbf{x}_{v}]|| \; \forall v\in\Omega_{I}.
+%            \end{equation*}
+Notice that, if the local windows $W_{v}, v\in\Omega_{I}$ are sufficiently large, then these two conditions are satisfied (to convince ourselves, it suffices to consider the extreme case of one single ``local'' window of size equal to the full volume). The question is how small the local windows can be so that these conditions are reasonably satisfied. Please note that, in practice, we do not need these conditions to be satisfied everywhere, but we only need that the optimal $\mathbf{f}$ obtained under the given assumptions is reasonably close to the optimal $\mathbf{f}$ obtained without making the assumptions. From our experiments, as we will show below, we have found that rectangular local windows of radius $4$ voxels ($n=9\times 9\times 9 = 729$) work surprisingly well in practice.\\
 
 On the one hand, if $\mathbf{x}_{v}$ is approximately a random sample from $I$, then the number $\mathbf{k}_{v,\ell}$ of vector elements $i$ where $\mathbf{x}_{v,i} = \ell$, may be approximated by its expected value $n\mathbf{p}_{\ell}$, where the probability $\mathbf{p}_{\ell}$ of a voxel having intensity $\ell$ may be estimated by its empirical probability:
 \begin{equation}
@@ -134,7 +124,7 @@ By making the change of variables $\mathbf{h} = \mathbf{P}^{\frac{1}{2}}\mathbf{
     \frac{\mathbf{h}^{T}\mathbf{P}^{\frac{1}{2}}\mathbf{\bar{f}}\mathbf{\bar{f}}^{T}\mathbf{P}^{\frac{1}{2}}\mathbf{h}} {\left(\mathbf{h}^{T}\mathbf{h}\right)^{2}} =
     \frac{\mathbf{h}^{T}\mathbf{\bar{h}}\mathbf{\bar{h}}^{T}\mathbf{h}} {\left(\mathbf{h}^{T}\mathbf{h}\right)^{2}}
 \end{equation}
-where $\mathbf{\bar{h}} := \mathbf{P}^{\frac{1}{2}}\mathbf{\bar{f}}$. Since we are interested in finding the optimal $\mathbf{f}$ modulo affine transforms, we may without loss of generality maximize eq. \eqref{eq:ecc_neg_likelihood_vector_form_simplified} subject to $||\mathbf{h}|| = ||\mathbf{\bar{h}}||$, which yields solution $\mathbf{h} = \mathbf{\bar{h}}$, and by definition, $\mathbf{f} = \mathbf{P}^{-\frac{1}{2}}\mathbf{h} = \mathbf{\bar{f}}$. Given our assumptions, it may be unsurprising that this transfer function $\mathbf{\bar{f}}$ (defined by eq. \eqref{eq:average_of_isosets}) is exactly the same as the optimal transfer function used in the CR and the EM matching functionals. As shown by Roche {\it et al.} \citep{Roche1998, Roche2000} and more recently by Arce {\it et al.} \cite{Arce-santana2014}, the transfer function $\mathbf{\bar{f}}$ evaluated over image $I$ corresponds to the conditional expectation of image $J$ given image $I$, more precisely:
+where $\mathbf{\bar{h}} := \mathbf{P}^{\frac{1}{2}}\mathbf{\bar{f}}$. Since we are interested in finding the optimal $\mathbf{f}$ modulo affine transforms, we may without loss of generality maximize eq. \eqref{eq:ecc_neg_likelihood_vector_form_simplified} subject to $||\mathbf{h}|| = ||\mathbf{\bar{h}}||$, which yields solution $\mathbf{h} = \mathbf{\bar{h}}$, and by definition, $\mathbf{f} = \mathbf{P}^{-\frac{1}{2}}\mathbf{h} = \mathbf{\bar{f}}$. Given our assumptions, it may be unsurprising that this transfer function $\mathbf{\bar{f}}$ (defined by eq. \eqref{eq:average_of_isosets}) is exactly the same as the optimal transfer function used in the CR and the EM matching functionals. As shown by Roche {\it et al.} \cite{Roche1998, Roche2000} and more recently by Arce {\it et al.} \cite{Arce-santana2014}, the transfer function $\mathbf{\bar{f}}$ evaluated over image $I$ corresponds to the conditional expectation of image $J$ given image $I$, more precisely:
 \begin{equation*}
     F[I] = \mathbbm{E}[J | I]
 \end{equation*}
@@ -142,24 +132,21 @@ where the expectation is evaluated point-wise (voxel by voxel) with respect to t
 \begin{equation}\label{eq:ecc_meaning}
     ECC(I, J; \phi) = CC(\mathbbm{E}[J|I], J ; \phi).
 \end{equation}
-In the especial case that all local vectors $\mathbf{x}_{v}, \mathbf{y}_{v}$ are normalized, the $CC$ metric is a linear operator, and by linearity of the expectation operator, it follows that eq. \eqref{eq:ecc_meaning} is the conditional expectation of the cross correlation given $I$, from which we adopted the name ``Expected Cross Correlation''. To assess how reasonable our simplifying assumptions are, we compared the optimal transfer function, computed by directly maximizing eq. \eqref{eq:ecc_neg_likelihood_vector_form} w.r.t. $\mathbf{f}$ using BFGS \citep{GVK502988711}, and compared the result against the iso-set means $\mathbf{\bar{f}}$ (see fig. \ref{fig:comparison_optimal_transfers}). Figure \ref{fig:LLR_transfer_rmse} depicts the difference between $\mathbf{\bar{f}}$ and the optimal transfer function obtained using BFGS to maximize eq. \eqref{eq:ecc_neg_likelihood_vector_form} as a function of the window size. We can see that regardless of the relatively small window sizes, the optimal transfers are very similar, which allows us to approximate the optimal transfer according to eq. \eqref{eq:ecc_neg_likelihood_vector_form} (computationally very costly) with the iso-set means (fast and easy to compute). \\
+In the especial case that all local vectors $\mathbf{x}_{v}, \mathbf{y}_{v}$ are normalized, the $CC$ metric is a linear operator, and by linearity of the expectation operator, it follows that eq. \eqref{eq:ecc_meaning} is the conditional expectation of the cross correlation given $I$, from which we adopted the name ``Expected Cross Correlation''. To assess how reasonable our simplifying assumptions are, we compared the optimal transfer function, computed by directly maximizing eq. \eqref{eq:ecc_neg_likelihood_vector_form} w.r.t. $\mathbf{f}$ using BFGS \cite{GVK502988711}, and compared the result against the iso-set means $\mathbf{\bar{f}}$ (see fig. \ref{fig:comparison_optimal_transfers}). Figure \ref{fig:LLR_transfer_rmse} depicts the norm of the difference between $\mathbf{\bar{f}}$ and the optimal transfer function as a function of the window size. We can see that regardless of the relatively small window sizes, the optimal transfers are very similar, which allows us to approximate the optimal transfer function (computationally very costly) with the iso-set means (fast and easy to compute). \\
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
-    \subfloat[T2 as a function of T1]{\label{fig:t1lab_comparison}\includegraphics[width=1.0\linewidth]{./images/comparison_optimal_transfers_t1lab_3.png}}\\
-    \subfloat[T1 as a function of T2]{\label{fig:t2lab_comparison}\includegraphics[width=1.0\linewidth]{./images/comparison_optimal_transfers_t2lab_3.png}}\\
-    \caption{{\small Comparison of optimal transfer functions according to eq. \eqref{eq:ecc_neg_likelihood_vector_form} against the iso-set means. The window size was set to radius $4$ voxels ($9\times 9\times 9$). The optimal transfers according to eq. \eqref{eq:ecc_neg_likelihood_vector_form} were obtained using BFGS \citep{GVK502988711}. Starting from the iso-set means (left), the optimized transfer stays very close to it. Initializing all elements uniformly at random in [0,1] (center), the optimized transfer function may be far from the iso-set means, but after applying an affine transform normalizing them to $[0,1]$ (normalizing after changing the sign, in this case), the transfer functions are very similar (right).}}
-\label{fig:comparison_optimal_transfers}
+    \includegraphics[width=1.0\linewidth]{./images/comparison_optimal_transfers_t1lab_3.png}
+    \caption{{\small Comparison of optimal transfer functions maximizing \eqref{eq:ecc_neg_likelihood_vector_form} (using BFGS \cite{GVK502988711}) against the iso-set means $\mathbf{\bar{f}}$. The window size was set to radius $4$ voxels ($9\times 9\times 9$). Starting from $\mathbf{\bar{f}}$ (left), the optimized transfer stays very close to it. Initializing all elements uniformly at random in [0,1] (center), the optimized transfer function may be far from $\mathbf{\bar{f}}$, but after applying an affine transform normalizing them to $[0,1]$ (normalizing after changing the sign, in this case), the transfer functions are very similar (right). The same behaviour is observed when we compute T1 as a function of T2.}}
+\label{fig:comparison_optimal_transfers}\figcloser
 \end{figure}
-
-\begin{figure}[H]
+%\subfloat[T1 as a function of T2]{\label{fig:t2lab_comparison}\includegraphics[width=1.0\linewidth]{./images/comparison_optimal_transfers_t2lab_3.png}}\\
+\begin{figure}[t]
 \centering
     \includegraphics[width=1.0\linewidth]{./images/LLR_transfer_rmse.png}
-    \caption{{\small Difference between $\mathbf{\bar{f}}$ and the optimal transfer function maximizing eq. \eqref{eq:ecc_neg_likelihood_vector_form} (computed with BFGS) as a function of the window size (the total number voxels is $(2w+1)^{3}$ where $w$ is the ``window size''). As we increase the window size, the optimal transfer function approaches $\mathbf{\bar{f}}$, as expected (the exception here was $w=2$, which may happen in practice since iterative methods may fail to converge to the optimal solution).}}
-\label{fig:LLR_transfer_rmse}
+    \caption{{\small Difference between $\mathbf{\bar{f}}$ and the optimal transfer function maximizing eq. \eqref{eq:ecc_neg_likelihood_vector_form} (computed with BFGS) as a function of the window size $w$ (the total number voxels is $(2w+1)^{3}$). As we increase $w$, the deviation from $\mathbf{\bar{f}}$ decreases, as expected (the exception here was $w=2$: iterative methods may fail to find the optimal solution).}}
+\label{fig:LLR_transfer_rmse}\figcloser
 \end{figure}
-
-
 
 The effect of introducing the global non-linear transfer into the local linear model is illustrated in fig. \ref{fig:ecc_test_good}. This example is the same as fig. \ref{fig:llr_test}, the fixed image $I$ is the T1, the moving image $J$ is the T2, but instead of fitting the local linear models between $I$ and $J$ directly, we used $F[I]$ and $J$, where $F$ is defined by vector $\mathbf{\bar{f}}$. It can be observed that the non-linear local relationship was made significantly closer to linear by the use of the global transfer function.
 \begin{figure}[t]
@@ -170,12 +157,12 @@ The effect of introducing the global non-linear transfer into the local linear m
     \subfloat[]{\label{fig:FT1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/Ft1_aafo_t2_sample1.png}}
     \subfloat[]{\label{fig:FT1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/t2_aafo_Ft1_sample1.png}}\\
     \caption{{\small Local linear reconstruction between T2 intensities and F[T1], where F is given by $\mathbf{\bar{f}}$ (eq. \eqref{eq:average_of_isosets}). Center image (c) depicts the reconstruction error in false color. The selected windows are the same as in figure \ref{fig:llr_test}. The local relationship was made closer to affine by applying the global non-linear transfer F.}}
-\label{fig:ecc_test_good}
+\label{fig:ecc_test_good}\figcloser
 \end{figure}
 
 
 \subsection{Bidirectional transfer functions}
-A limitation of existing registration methods that are based on the estimation of a functional relationship between image modalities (such as CR and EM\cite{Roche1998, Roche2000, Arce-santana2014}) is that one of the image modalities must be chosen \emph{a priori} as the target modality (either map intensities from modality A to modality B or viceversa). This is an important decision and what choice is the best may not be obvious in general. To overcome this limitation, we estimate both transfer functions between $I$ and $J$. Instead of directly computing one single transformation $\phi:\Omega_{I} \rightarrow \Omega_{J}$, we aim to find two invertible transformations (\emph{diffeomorphisms}) $\phi_{I}:\Omega_{I}\rightarrow \Omega_{R}$ and $\phi_{J}:\Omega_{J}\rightarrow \Omega_{R}$ such that the images get aligned in a reference space $\Omega_{R}$ after warping them under $\phi_{I}^{-1}$ and $\phi_{J}^{-1}$ (Fig. \ref{fig:syn_overview}). This is exactly the same formulation as the SyN algorithm proposed by Avants {\it et al.} \cite{Avants2011}, and explained in section \ref{sec:non_linear_image_registration}, where the partial transforms $\phi_{I}, \phi_{J}$ are the middle-point diffeomorphisms of a diffeomorphic flow transforming the domains $\Omega_{I}, \Omega_{J}$ toward each other.\\
+A limitation of existing registration methods that are based on the estimation of a functional relationship between image modalities (such as CR and EM\cite{Roche1998, Roche2000, Arce-santana2014}) is that one of the image modalities must be chosen \emph{a priori} as the target modality (either map intensities from modality A to modality B or viceversa). This is an important decision and what choice is the best may not be obvious in general. To overcome this limitation, we estimate both transfer functions between $I$ and $J$. Instead of directly computing one single transformation $\phi:\Omega_{I} \rightarrow \Omega_{J}$, we aim to find two invertible transformations (\emph{diffeomorphisms}) $\phi_{I}:\Omega_{I}\rightarrow \Omega_{R}$ and $\phi_{J}:\Omega_{J}\rightarrow \Omega_{R}$ such that the images get aligned in a reference space $\Omega_{R}$ after warping them under $\phi_{I}^{-1}$ and $\phi_{J}^{-1}$. This is exactly the same formulation as the SyN algorithm proposed by Avants {\it et al.} \cite{Avants2011}, and explained in section \ref{sec:non_linear_image_registration}, where the partial transforms $\phi_{I}, \phi_{J}$ are the middle-point diffeomorphisms of a diffeomorphic flow transforming the domains $\Omega_{I}, \Omega_{J}$ toward each other.\\
 %To illustrate this, figure \ref{fig:ecc_test_bad} depicts the same example as fig. \ref{fig:ecc_test_good}, but instead of mapping intensities from T1 to T2, we map intensities from T2 to T1. Although the transfer function helps, the relationship is still far from affine.
 %\begin{figure}[t]
 %\centering
@@ -188,15 +175,15 @@ A limitation of existing registration methods that are based on the estimation o
 %\label{fig:ecc_test_bad}
 %\end{figure}
 
-\begin{figure}[t]
-\centering
-\fbox{\includegraphics[width=1.0\linewidth]{./images/syn_overview.png}}
-\caption{{\small The Greedy SyN algorithm registers two input images by computing two diffeomorphisms that map the input images towards a common reference domain. The final
-diffeomorphism is computed by composing the two partial diffeomorphisms.}}
-\label{fig:syn_overview}
-\end{figure}
+%\begin{figure}[t]
+%\centering
+%\fbox{\includegraphics[width=1.0\linewidth]{./images/syn_overview.png}}
+%\caption{{\small The Greedy SyN algorithm registers two input images by computing two diffeomorphisms that map the input images towards a common reference domain. The final
+%diffeomorphism is computed by composing the two partial diffeomorphisms.}}
+%\label{fig:syn_overview}\figcloser
+%\end{figure}
 
-Our model (eq. \eqref{eq:ecc_model}) may be symmetrized by introducing both transfer functions between image modalities and considering both transformations according to the SyN transformation model as follows. As before, consider a rectangular local window $W_{v}$ but this time centered at a voxel $v$ in the reference space $v\in\Omega_{R}$. Denote by
+As before, consider a rectangular local window $W_{v}$ but this time centered at a voxel $v$ in the reference space $v\in\Omega_{R}$. Denote by
 \begin{align*}
     \mathbf{x}_{v}' &= \left(I(\phi_{I}^{-1}(v_{1})), I(\phi_{I}^{-1}(v_{2})), ..., I(\phi_{I}^{-1}(v_{n}))\right)^{T}\\
     \mathbf{y}_{v}' &= \left(J(\phi_{J}^{-1}(v_{1})), J(\phi_{J}^{-1}(v_{2})), ..., J(\phi_{J}^{-1}(v_{n}))\right)^{T},
@@ -228,14 +215,14 @@ By assuming independence between the two sets of normally distributed random vec
 
 
 \iffalse
-\begin{figure}[t!]
+\begin{figure}[t]
     \subfloat[]{\label{fig:epicor_b0up_ecc.png}\includegraphics[width=1\linewidth]{./images/T1B0Result/epicor_b0up_ecc.png}}\\
     \subfloat[]{\label{fig:epicor_b0up_mi.png}\includegraphics[width=1\linewidth]{./images/T1B0Result/epicor_b0up_mi.png}}\\
     \caption{{\small Registration of B0(blip up) to T1.}}
-\label{fig:epicor_up_ecc}
+\label{fig:epicor_up_ecc}\figcloser
 \end{figure}
 
-\begin{figure}[t!]
+\begin{figure}[t]
 \centering
     \subfloat[]{\label{fig:b0_up_sagital_zoom}\includegraphics[width=0.5\linewidth]{./images/T1B0Result/b0_up_sagital_zoom.png}}
     \subfloat[]{\label{fig:affine_mi_t1b0up_sagital_zoom.png}\includegraphics[width=0.5\linewidth]{./images/T1B0Result/affine_mi_t1b0up_sagital_zoom.png}}\\
@@ -244,7 +231,7 @@ By assuming independence between the two sets of normally distributed random vec
     \subfloat[]{\label{fig:synecc_t1b0up_sagital_zoom}\includegraphics[width=0.5\linewidth]{./images/T1B0Result/synecc_t1b0up_sagital_zoom.png}}
     \subfloat[]{\label{fig:synmi_t1b0up_sagital_zoom}\includegraphics[width=0.5\linewidth]{./images/T1B0Result/synmi_t1b0up_sagital_zoom.png}}\\
     \caption{{\small Registration of T1 to B0(blip up).}}
-\label{fig:sagital_zoom_t1b0up}
+\label{fig:sagital_zoom_t1b0up}\figcloser
 \end{figure}
 
 
@@ -252,7 +239,7 @@ By assuming independence between the two sets of normally distributed random vec
     \subfloat[]{\label{fig:epicor_b0down_ecc.png}\includegraphics[width=1\linewidth]{./images/T1B0Result/epicor_b0down_ecc.png}}\\
     \subfloat[]{\label{fig:epicor_b0down_mi.png}\includegraphics[width=1\linewidth]{./images/T1B0Result/epicor_b0down_mi.png}}\\
     \caption{Registration of B0(blip up) to T1.}
-\label{fig:epicor_down_ecc}
+\label{fig:epicor_down_ecc}\figcloser
 \end{figure}
 
 \begin{figure}[t!]
@@ -264,7 +251,7 @@ By assuming independence between the two sets of normally distributed random vec
     \subfloat[]{\label{fig:synecc_t1b0_sagital_zoom}\includegraphics[width=0.5\linewidth]{./images/T1B0Result/synecc_t1b0_sagital_zoom.png}}
     \subfloat[]{\label{fig:synmi_t1b0_sagital_zoom}\includegraphics[width=0.5\linewidth]{./images/T1B0Result/synmi_t1b0_sagital_zoom.png}}\\
     \caption{Registration of T1 to B0(blip down).}
-\label{fig:sagital_zoom_t1b0down}
+\label{fig:sagital_zoom_t1b0down}\figcloser
 \end{figure}
 
 
@@ -272,7 +259,7 @@ By assuming independence between the two sets of normally distributed random vec
     \subfloat[]{\label{fig:jaccard_T1_B0}\includegraphics[width=1\linewidth]{./images/T1B0Result/jaccard_T1_B0.png}}\\
     \subfloat[]{\label{fig:jaccard_boxplots_T1_B0}\includegraphics[width=1\linewidth]{./images/T1B0Result/jaccard_boxplots_T1_B0.png}}\\
     \caption{Registration result of B0(blip down) to T1.}
-\label{fig:epicor_down_ecc}
+\label{fig:epicor_down_ecc}\figcloser
 \end{figure}
 
 \fi 
