@@ -24,8 +24,9 @@ mi_t1pd = np.loadtxt("jaccard_boxplot_synmi_t1pd.txt")
 mi_t2pd = np.loadtxt("jaccard_boxplot_synmi_t2pd.txt")
 
 ######T1-T1####
-t1t1_scores = [cc_t1t1, ecc_t1t1, em_t1t1, mi_t1t1]
-t1t1_names = ["CC", "ECC", "EM", "MI"]
+
+t1t1_scores = [ecc_t1t1, cc_t1t1, em_t1t1, mi_t1t1]
+t1t1_names = ["ECC", "CC", "EM", "MI"]
 fig, ax1 = plt.subplots()
 boxplot(t1t1_scores)
 ax1.set_axisbelow(True)
@@ -37,8 +38,8 @@ xtick_names = setp(ax1, xticklabels=t1t1_names)
 setp(xtick_names, rotation=45, fontsize=16)
 
 ######T2-T2####
-t2t2_scores = [cc_t2t2, ecc_t2t2, em_t2t2, mi_t2t2]
-t2t2_names = ["CC", "ECC", "EM", "MI"]
+t2t2_scores = [ecc_t2t2, cc_t2t2, em_t2t2, mi_t2t2]
+t2t2_names = ["ECC", "CC", "EM", "MI"]
 fig, ax1 = plt.subplots()
 boxplot(t2t2_scores)
 ax1.set_axisbelow(True)
@@ -50,8 +51,8 @@ xtick_names = setp(ax1, xticklabels=t2t2_names)
 setp(xtick_names, rotation=45, fontsize=16)
 
 ######PD-PD####
-pdpd_scores = [cc_pdpd, ecc_pdpd, em_pdpd, mi_pdpd]
-pdpd_names = ["CC", "ECC", "EM", "MI"]
+pdpd_scores = [ecc_pdpd, cc_pdpd, em_pdpd, mi_pdpd]
+pdpd_names = ["ECC", "CC", "EM", "MI"]
 fig, ax1 = plt.subplots()
 boxplot(pdpd_scores)
 ax1.set_axisbelow(True)
@@ -63,8 +64,8 @@ xtick_names = setp(ax1, xticklabels=pdpd_names)
 setp(xtick_names, rotation=45, fontsize=16)
 
 ######T1-T2####
-t1t2_scores = [cc_t1t1, cc_t1t2, ecc_t1t2, em_t1t2, mi_t1t2]
-t1t2_names = ["Baseline", "CC", "ECC", "EM", "MI"]
+t1t2_scores = [cc_t1t1, ecc_t1t2, cc_t1t2, em_t1t2, mi_t1t2]
+t1t2_names = ["Baseline", "ECC", "CC", "EM", "MI"]
 fig, ax1 = plt.subplots()
 boxplot(t1t2_scores)
 ax1.set_axisbelow(True)
@@ -76,8 +77,8 @@ xtick_names = setp(ax1, xticklabels=t1t2_names)
 setp(xtick_names, rotation=45, fontsize=16)
 
 ######T1-PD####
-t1pd_scores = [cc_t1t1, cc_t1pd, ecc_t1pd, em_t1pd, mi_t1pd]
-t1pd_names = ["Baseline", "CC", "ECC", "EM", "MI"]
+t1pd_scores = [cc_t1t1, ecc_t1pd, cc_t1pd, em_t1pd, mi_t1pd]
+t1pd_names = ["Baseline", "ECC", "CC", "EM", "MI"]
 fig, ax1 = plt.subplots()
 boxplot(t1pd_scores)
 ax1.set_axisbelow(True)
@@ -89,8 +90,8 @@ xtick_names = setp(ax1, xticklabels=t1pd_names)
 setp(xtick_names, rotation=45, fontsize=16)
 
 #####T2-PD####
-t2pd_scores = [cc_t1t1, cc_t2pd, ecc_t2pd, em_t2pd, mi_t2pd]
-t2pd_names = ["Baseline", "CC", "ECC", "EM", "MI"]
+t2pd_scores = [cc_t1t1, ecc_t2pd, cc_t2pd, em_t2pd, mi_t2pd]
+t2pd_names = ["Baseline", "ECC", "CC", "EM", "MI"]
 fig, ax1 = plt.subplots()
 boxplot(t2pd_scores)
 ax1.set_axisbelow(True)
@@ -106,8 +107,12 @@ scores = [[t1t1_scores, t1t2_scores, t1pd_scores], [None, t2t2_scores, t2pd_scor
 names = [[t1t1_names, t1t2_names, t1pd_names], [None, t2t2_names, t2pd_names], [None, None, pdpd_names]]
 mod_names = ["T1", "T2", "PD"]
 
-figure()
-idx = 0;
+figure(facecolor='white')
+idx = 0
+title_size = 48
+xticks_size = 32
+yticks_size = 24
+ylabel_size = 18
 for i in range(3):
     for j in range(3):
         idx += 1
@@ -116,11 +121,15 @@ for i in range(3):
         ax = subplot(3, 3, idx)
         boxplot(scores[i][j][-4:])
         ax.set_axisbelow(True)
-        ax.set_title(mod_names[i]+" - "+mod_names[j])
-        ax.set_ylabel('Mean Jaccard index')
+        ax.set_title(mod_names[i]+" - "+mod_names[j], fontsize=title_size)
+        if i == j:
+            ax.set_ylabel('Mean Jaccard index', fontsize=ylabel_size)
         ax.yaxis.grid(True, linestyle='-', which='major', color='lightgrey', alpha=0.5)
         ax.set_ylim(0.3, 0.8)
         xtick_names = setp(ax, xticklabels=names[i][j][-4:])
-        setp(xtick_names, fontsize=16)
-
-
+        for tick in ax.xaxis.get_major_ticks():
+            tick.label.set_fontsize(xticks_size)
+        for tick in ax.yaxis.get_major_ticks():
+            tick.label.set_fontsize(yticks_size)
+        setp(xtick_names, fontsize=xticks_size)
+tight_layout()

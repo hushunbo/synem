@@ -13,15 +13,15 @@ def compute_ranks(T):
             R[i, j] = rank
     return R
 
-#graph_title = 'Jaccard index of 31 anatomical regions averaged over 612 T1-T2 registrations'
-#data_fname = 'data_multi_seg.txt'
-#regions_fname = 'xlabels_multi_seg.txt'
-#series_fname = 'series_multi_seg.txt'
+graph_title = 'Jaccard index of 31 anatomical regions averaged over 612 T1-T2 registrations'
+data_fname = 'data_multi_seg.txt'
+regions_fname = 'xlabels_multi_seg.txt'
+series_fname = 'series_multi_seg.txt'
 
-graph_title = 'Jaccard index of 31 anatomical regions averaged over 306 T1-T1 registrations'
-data_fname = 'data_mono_seg.txt'
-regions_fname = 'xlabels_mono_seg.txt'
-series_fname = 'series_mono_seg.txt'
+#graph_title = 'Jaccard index of 31 anatomical regions averaged over 306 T1-T1 registrations'
+#data_fname = 'data_mono_seg.txt'
+#regions_fname = 'xlabels_mono_seg.txt'
+#series_fname = 'series_mono_seg.txt'
 
 #data_fname = 'data_multi_seg_NO_ECC.txt'
 #regions_fname = 'xlabels_multi_seg_NO_ECC.txt'
@@ -47,9 +47,9 @@ with open(series_fname) as input:
     series = input.readlines()
 
 markers = ['o','D','s','^']
-linestyles = ['--', '--', '--', '--']
+linestyles = ['-', '--', '--', '--']
 
-fig = plt.figure()
+fig = plt.figure(facecolor="white")
 ax = fig.add_subplot(111)
 for s in range(ncols):
     line, = ax.plot(range(1, nrows+1), data[:,s], linestyle=linestyles[s], marker=markers[s], linewidth=2)
