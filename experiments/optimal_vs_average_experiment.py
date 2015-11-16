@@ -174,13 +174,13 @@ means_t2t1, vars_t2t1 = get_mean_transfer(t2_lab, t1)
 fmean_t2lab = np.array(means_t2t1)
 fmean_t2lab_sqnorm = np.sum(fmean_t2lab**2)
 
-def value_and_gradient_t1lab(x, *args):
+def value_and_gradient_t1lab(x, radius):
     val, grad = ccr.centered_transfer_value_and_gradient(x, t1_lab, nlabels_t1, t2, radius)
     #val, grad = ccr.centered_transfer_value_and_gradient_slow(x, t1_lab, nlabels_t1, t2, radius)
     print("Energy:%f"%(val,))
     return -1*val, -1*np.array(grad)
 
-def value_and_gradient_t2lab(x, *args):
+def value_and_gradient_t2lab(x, radius):
     val, grad = ccr.centered_transfer_value_and_gradient(x, t2_lab, nlabels_t2, t1, radius)
     #val, grad = ccr.centered_transfer_value_and_gradient_slow(x, t2_lab, nlabels_t2, t1, radius)
     print("Energy:%f"%(val,))
@@ -207,7 +207,7 @@ def run_multiple_windows_t1lab(min_radius, max_radius):
                             'fun': lambda x: np.array([np.sum(x**2) - fmean_t1lab_sqnorm]),
                             'jac': lambda x: np.array(x) * 2.0})
             method='SLSQP'
-            opt_t1lab = minimize (value_and_gradient_t1lab, f0, method=method, jac=True, options={'disp': True})
+            opt_t1lab = minimize(value_and_gradient_t1lab, f0, method=method, jac=True, args=(radius,), options={'disp': True})
             fopt_t1lab = opt_t1lab.x
             np.save(ofname, fopt_t1lab)
 
@@ -244,7 +244,7 @@ def run_multiple_windows_t2lab(min_radius, max_radius):
         else:
             from scipy.optimize import minimize
             method='SLSQP'
-            opt_t2lab = minimize (value_and_gradient_t2lab, f0, method=method, jac=True, options={'disp': True})
+            opt_t2lab = minimize (value_and_gradient_t2lab, f0, method=method, jac=True, args=(radius,), options={'disp': True})
             fopt_t2lab = opt_t2lab.x
             np.save(ofname, fopt_t2lab)
 
@@ -479,4 +479,4 @@ def temp_run_interactive():
 
     
 if __name__ == '__main__':
-    
+    run_multiple_windows_t2lab(12,12)
