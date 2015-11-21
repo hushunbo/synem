@@ -1,0 +1,40 @@
+Dear Editor:
+This paper contains some material from our abstract [1] recently presented at
+ISMRM 2015 Anual Meeting, Toronto, CA. which obtained a "Magna cum laude" award.
+We have properly referenced our previous work in the present manuscript, and the
+main additions are summarized as follows:
+1. We propose the Expected Cross-Correlation (ECC) matching functional for multi-modal
+   brain image registration, including a theoretical derivation of ECC from an observation
+   model (ECC was not mentioned in [1]).
+2. We include quantitative results for all 6 combinations of mono- and multi-modal
+   registration considering T1, T2, and PD images (in [1], only one multi-modal
+   experiment was performed: T1-T2)
+3. We include an extra validation protocol using only real images (no synthetic data
+   required), for B0-T1 registration which allows us to evaluate our functional with
+   realistic low-resolution B0 and real susceptibility-induced geometric distortions
+   (in [1], only the approach based on semi-synthetic images was described).
+
+Supplementary material includes detailed numerical quantitative results and enlarged
+versions of some figures that may appear too small in the main document (to comply with
+the 10-page limitation for initial submissions).
+
+Reference:
+[1] O. Ocegueda, E. Garyfallidis, M. Descoteaux, and M. Rivera, 
+    “An algorithm and quantitative evaluation framework for registration of
+    multimodal brain MRI,” in Proc. 23rd. Intl. Soc. Mag. Reson. Med., p. 1, 2015.
+
+We thank you in advance for your time and effort processing our manuscript.
+With warm regards,
+O. Ocegueda, 
+E. Garyfallidis,
+M. Descoteaux,
+M. Rivera.
+
+
+This paper constitutes a major revision to our original manuscript with the same title submitted to Medical Image Analysis Journal. 
+Unfortunately we were not given the opportunity to answer to the reviewer's concerns. This revision addresses all major concerns, 
+some of which were misunderstandings. In particular, we would like to point out that we have included a stronger validation in the
+case of B0-T1 registration following the advice of one of the reviewers, and also emphasize that our validation methodology, which
+obtained a Magna Cum Laude award at ISMRM 2015 (document included as supplementary material) is not necessarily biased in favor of
+our proposed matching functional (we have explained so in the main body of the manuscript). Please let us know if you wish to have
+access to the original manuscript and/or previous reviews.

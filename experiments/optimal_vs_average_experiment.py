@@ -303,12 +303,11 @@ def temp_normalization_tests():
 ########################BEGIN########################
 # Check transfer functions with different window sizes
 ########################BEGIN########################
-def plot_deviance_from_mean_graphs():
+def plot_deviance_from_mean_graphs(max_size=11):
     opt_list_t1lab = {}
     diff_t1lab = {}
     opt_list_t2lab = {}
     diff_t2lab = {}
-    max_size = 10
     for s in range(2,max_size+1):
         #t1lab
         fname = 'fopt_t1lab_'+str(s)+'_mean.npy'
