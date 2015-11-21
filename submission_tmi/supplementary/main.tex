@@ -1,0 +1,124 @@
+%\documentclass[final,authoryear,1p]{elsarticle}
+%\documentclass[final,authoryear,5p,times,twocolumn]{elsarticle}
+%\documentclass[authoryear,preprint,review,9pt]{elsarticle}
+\documentclass[journal]{IEEEtran}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{relsize}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage[labelfont={small,bf}]{caption}
+\usepackage[font={small,bf}]{caption}
+\usepackage[numbers]{natbib}
+\renewcommand{\bibfont}{\footnotesize}
+\usepackage[margin=0.6in]{geometry}
+\newcommand{\closer}{\vspace{-0.0cm}}
+\newcommand{\figcloser}{\vspace{-0.4cm}}
+
+\begin{document}
+
+\title{\Large Symmetric Diffeomorphic Registration with \\ Expected Cross-Correlation for Multi-Modal Brain MRI\\ {\large Supplementary material}}
+\author{
+    \IEEEauthorblockN{{\bf Omar Ocegueda}}~\and~
+    \IEEEauthorblockN{{\bf Eleftherios Garyfallidis}}~\and~
+    \IEEEauthorblockN{{\bf Maxime Descoteaux}}~\and~
+    \IEEEauthorblockN{{\bf Mariano Rivera}}\\
+}
+
+\maketitle
+\section{Semi-synthetic image construction}
+Video ``$semi\_synthetic.mp4$'' illustrates the procedure to generate the semi-synthetic images from the Brainweb template and the real, annotated, T1 brain images. Note that, the more accurate the registration, the more realistic the constructed image is.\\
+
+\section{Detailed quantitative results}
+
+We first present the average Jaccard indices of tissue types: White Matter (WM), Gray Matter (GM) and Cerebrospinal Fluid (CSF) instead of localized anatomical areas. Although overlap of tissue types may not be a good indicator of registration performance in general \cite{Rohlfing2012} (overlap of localized anatomical regions is preferred), it still provides insights on what method is expected to perform better for registration-based segmentation, which may be used to define anatomical priors to improve tractography \cite{Smith2012, Girard2014}. Table \ref{tab:monomodal_results_segTri_fill} shows the results in the mono-modal case, and Table \ref{tab:multimodal_results_segTri_fill} shows the corresponding results in the multi-modal case (T1 - T2).
+\input{monomodal_results_segTri_fill}
+\input{multimodal_results_segTri_fill}
+\input{monomodal_results_seg}
+\input{multimodal_results_seg}
+
+\pagebreak
+\section{T1-$B_{0}$ co-registration. Qualitative results}
+Axial, sagital and coronal slices are depicted in Figs. \ref{fig:axial_examples}, \ref{fig:sagital_examples} and \ref{fig:coronal_examples}, respectively. Experimental results suggest that ECC outperforms point-wise functionals such as MI and EM for the same reason CC outperforms SSD in the mono-modal case: the local linear model associated with the CC metric explains spatial inhomogeneities introduced by the bias field, which cannot be handled by the simpler SSD metric \cite{Wang2014}, while in the multi-modal case, the joint PDF and the transfer function computed by MI and EM, respectively, are unable to capture the non-stationary relationship between both modalities. Therefore, with ECC, the global non-linear transfer functions and the local linear model complement each other.
+\begin{figure*}[h!]
+\centering
+    \subfloat[ECC]{\label{fig:1}\includegraphics[width=0.55\linewidth]{./images/upt1_ecc_axial.png}}\\
+    \subfloat[MI]{\label{fig:1}\includegraphics[width=0.55\linewidth]{./images/upt1_mi_axial.png}}\\
+    \subfloat[EM]{\label{fig:1}\includegraphics[width=0.55\linewidth]{./images/upt1_em_axial.png}}\\
+    \subfloat[CC]{\label{fig:1}\includegraphics[width=0.55\linewidth]{./images/upt1_cc_axial.png}}\\
+    \caption{Left: Warped $B_{0}$ images using SyN with each matching functional. Center: Warped $B_{0}$ (red channel) overlaid on top of the T1 (green channel) image. Level curves of the warped $B_{0}$ were overlaid on top of the T1 to visually assess local structure agreement. Right: T1 image. Visually, level curves obtained with ECC have a better correspondence with the structure of the T1.}
+\label{fig:axial_examples}\figcloser
+\end{figure*}
+
+\begin{figure*}[h!]
+\centering
+    \subfloat[ECC]{\label{fig:1}\includegraphics[width=0.8\linewidth]{./images/upt1_ecc_sagital.png}}\\
+    \subfloat[MI]{\label{fig:1}\includegraphics[width=0.8\linewidth]{./images/upt1_mi_sagital.png}}\\
+    \subfloat[EM]{\label{fig:1}\includegraphics[width=0.8\linewidth]{./images/upt1_em_sagital.png}}\\
+    \subfloat[CC]{\label{fig:1}\includegraphics[width=0.8\linewidth]{./images/upt1_cc_sagital.png}}\\
+    \caption{Left: Warped $B_{0}$ images using SyN with each matching functional. Center: Warped $B_{0}$ (red channel) overlaid on top of the T1 (green channel) image. Level curves of the warped $B_{0}$ were overlaid on top of the T1 to visually assess local structure agreement. Right: T1 image. Visually, level curves obtained with ECC have a better correspondence with the structure of the T1.}
+\label{fig:sagital_examples}\figcloser
+\end{figure*}
+
+\begin{figure*}[h!]
+\centering
+    \subfloat[ECC]{\label{fig:1}\includegraphics[width=0.8\linewidth]{./images/upt1_ecc_coronal.png}}\\
+    \subfloat[MI]{\label{fig:1}\includegraphics[width=0.8\linewidth]{./images/upt1_mi_coronal.png}}\\
+    \subfloat[EM]{\label{fig:1}\includegraphics[width=0.8\linewidth]{./images/upt1_em_coronal.png}}\\
+    \subfloat[CC]{\label{fig:1}\includegraphics[width=0.8\linewidth]{./images/upt1_cc_coronal.png}}\\
+    \caption{Left: Warped $B_{0}$ images using SyN with each matching functional. Center: Warped $B_{0}$ (red channel) overlaid on top of the T1 (green channel) image. Level curves of the warped $B_{0}$ were overlaid on top of the T1 to visually assess local structure agreement. Right: T1 image. Visually, level curves obtained with ECC have a better correspondence with the structure of the T1.}
+\label{fig:coronal_examples}\figcloser
+\end{figure*}
+
+\section{Enlarged figures}
+Figures \ref{fig:llr_test}, \ref{fig:ecc_test_good} and \ref{fig:all_pairs_boxplots} are enlarged versions of figures 2, 5, and 8, respectively, in the main document. 
+
+
+\begin{figure*}[t!]
+\centering
+    \subfloat[]{\label{fig:T1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/t1_aafo_t2_sample2.png}}
+    \subfloat[]{\label{fig:T1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/t2_aafo_t1_sample2.png}}
+    \subfloat[]{\label{fig:T1T2_affine_fit_map}\includegraphics[width=0.2\linewidth]{./images/residuals_input_arrows.png}}
+    \subfloat[]{\label{fig:T1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/t1_aafo_t2_sample1.png}}
+    \subfloat[]{\label{fig:T1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/t2_aafo_t1_sample1.png}}\\
+    \caption{{\small Local linear reconstruction between T1 and T2 images under perfect alignment (see Fig. \ref{fig:brainweb_t1_t2}). Center image (c) depicts the reconstruction error in false color. Two local windows were selected: Left (a, b): a local window with a close-to-linear relationship. Right (d, e): a local window with a far from linear relationship. The scatter plots depict the best affine fit of T1 intensities as a function of T2 (a, d), and the best fit of T2 as a function of T1 (b, e).}}
+\label{fig:llr_test}\figcloser
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+    \subfloat[]{\label{fig:FT1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/Ft1_aafo_t2_sample2.png}}
+    \subfloat[]{\label{fig:FT1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/t2_aafo_Ft1_sample2.png}}
+    \subfloat[]{\label{fig:FT1T2_affine_fit_map}\includegraphics[width=0.2\linewidth]{./images/residuals_t2_arrows.png}}
+    \subfloat[]{\label{fig:FT1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{./images/Ft1_aafo_t2_sample1.png}}
+    \subfloat[]{\label{fig:FT1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{./images/t2_aafo_Ft1_sample1.png}}\\
+    \caption{{\small Local linear reconstruction between T2 intensities and F[T1], where F is given by $\mathbf{\bar{f}}$ (eq. \eqref{eq:average_of_isosets}). Center image (c) depicts the reconstruction error in false color. The selected windows are the same as in Fig. \ref{fig:llr_test}. The local relationship was made closer to linear by applying the global non-linear transfer F.}}
+\label{fig:ecc_test_good}\figcloser
+\end{figure*}
+
+\begin{figure*}[t!]
+\centering
+    \includegraphics[width=0.75\linewidth]{./images/all_modality_pairs_boxplots.png}
+    \caption{{\small Distributions of average Jaccard indices for all pairs of available modalities (T1, T2 and PD). For each pair of registrations, we compute the average Jaccard index of all anatomical regions.}}
+\label{fig:all_pairs_boxplots}\figcloser
+\end{figure*}
+
+\section{Illustration of indirect validation}
+In Fig. \ref{fig:indirect_validation} we illustrate the indirect validation procedure for T1-$B_0$ registration. This indirect validation allows us to measure the registration accuracy using real diffusion data (low resolution and with real noise and susceptibility-induced geometric distortions).
+\begin{figure*}[t!]
+\centering
+    \includegraphics[width=0.75\linewidth]{./images/new_validation.png}
+    \caption{{\small Indirect validation protocol for $B_{0}$-T1 registration. We first registered the $B_{0}$ (moving) image towards each T1 (fixed) annotated image, obtaining diffeomorphisms $\phi_{i}$, $i=1,2,...,18$. Then, for every pair $\phi_{i}, \phi_{j}$, we computed the composition $\phi_{i,j}:=\phi_{i}\circ \phi_{j}^{-1}$ (which now maps two annotated T1 images). The resulting overlap score indirectly measures the (combined) accuracy of both transforms.}}
+\label{fig:indirect_validation}\figcloser
+\end{figure*}
+%\input{appendix}
+
+\bibliographystyle{ieeetr}
+\bibliography{references}
+
+\end{document}

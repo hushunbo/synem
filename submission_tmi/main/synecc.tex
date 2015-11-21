@@ -1,0 +1,74 @@
+%\documentclass[final,authoryear,1p]{elsarticle}
+%\documentclass[final,authoryear,5p,times,twocolumn]{elsarticle}
+%\documentclass[authoryear,preprint,review,9pt]{elsarticle}
+\documentclass[journal]{IEEEtran}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{relsize}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage[labelfont={small,bf}]{caption}
+\usepackage[font={small,bf}]{caption}
+\usepackage[numbers]{natbib}
+\renewcommand{\bibfont}{\footnotesize}
+\usepackage[margin=0.6in]{geometry}
+\newcommand{\closer}{\vspace{-0.0cm}}
+\newcommand{\figcloser}{\vspace{-0.4cm}}
+
+\begin{document}
+
+
+%\begin{frontmatter}
+
+\title{\huge Symmetric Diffeomorphic Registration with Expected Cross-Correlation for Multi-Modal Brain MRI}
+\author{
+    \IEEEauthorblockN{{\bf Omar Ocegueda}\IEEEauthorrefmark{1}}~\and~
+    \IEEEauthorblockN{{\bf Eleftherios Garyfallidis}\IEEEauthorrefmark{2}}~\and~
+    \IEEEauthorblockN{{\bf Maxime Descoteaux}\IEEEauthorrefmark{2}}~\and~
+    \IEEEauthorblockN{{\bf Mariano Rivera}\IEEEauthorrefmark{1}}\\
+    \IEEEauthorblockA{\IEEEauthorrefmark{1}Centro de Investigaci\'{o}n en Matem\'{a}ticas, Guanajuato, Gto, M\'{e}xico}\\
+    \IEEEauthorblockA{\IEEEauthorrefmark{2}Computer Science Department, Universit\'{e} de Sherbrooke, Sherbrooke, Qu\'{e}bec, Canada}
+}
+
+%\author{Omar Ocegueda, Eleftherios Garyfallidis, Maxime Descoteaux~and~Mariano Rivera}
+%\ead{jomaroceguedag@gmail.com}
+%\cortext[cor1]{Corresponding author}
+
+%\address[cimat]{, }
+%\address[scil]{}
+\maketitle
+%\vspace{-1.0cm}
+\input{abstract_new}
+\begin{IEEEkeywords}
+Multi-modal registration, Deformable registration, Diffeomorphic, Expectation maximization, Cross-correlation
+\end{IEEEkeywords}
+
+%\end{frontmatter}
+
+
+\input{introduction_new}
+\input{background_new}
+\input{methods_new}
+\input{experiments}
+\input{conclusion}
+\bibliographystyle{ieeetr}
+\vspace{-0.2cm}
+\bibliography{references}
+
+\end{document}
+
+
+\clearpage
+\section*{Vitae}
+\textbf{Omar Ocegueda} received the B.S. degree in Computer Science in 2004 from the University of Guanajuato, Mexico and the M.S. degree in Computer Science and Industrial Mathematics from the Center for Research in Mathematics (CIMAT), Guanajuato, Mexico in 2006. He is currently a PhD student at CIMAT working on computational methods for diffusion MRI processing. His main research interests include image processing, optimization, and machine learning.\\
+
+\textbf{Eleftherios Garyfallidis} received the B.Sc. degree in Computer Science from the Technological Institution of Athens, Athens, Greece, in 2003, and the M.Sc. degree in Brain and Mind Sciences from the University of Crete and the Foundation for Research and Technology Hellas (FORTH), Crete, Greece, in 2006. In 2012, he received  the Ph.D. degree from the University of Cambridge, Cambridge, United Kingdom. He is currently a Post-doctoral Fellow at the Shebrooke Connectivity Imaging Lab (SCIL), Computer Science department, the University of Sherbrooke, Sherbrooke, Canada.\\
+
+\textbf{Pr. Maxime Descoteaux} is the head of the Sherbrooke Connectivity Imaging Lab (SCIL) and the scientific director of the image analysis and visualization plateform (PAVI) of the Centre de Recherche CHUS. He currently supervises 12 MSc, PhD and post-doctorat students. He did a post-doctorat at NeuroSpin, France under the supervision of Cyril Poupon. He also obtained a PhD in Computer Science at INRIA Sophia Antipolis - Mediterranée, France, supervised by R. Deriche. Finally, He obtained his M.Sc under the supervision of K. Siddiqi in Computer Science at Center for Intelligent Machines, McGill University, where he also obtained my B.Sc., graduating from the joint honors Mathematics and Computer Science program.\\
+
+\textbf{Mariano Rivera} received the B.E. degree in electronics from the Durango Institute of Technology, Mexico, in 1989, the M.Sc. degree in electronics from the Chihuahua Institute of Technology, Mexico, in 1993, and the D.Sc. degree in optics from the Center for Research in Optics (CIO), Leon, Mexico, in 1997. Since 1997, he has been with the Computer Science Department, Center for Research in Mathematics (CIMAT), Guanajuato, Mexico. His current interests include computer vision, image processing, medical image analysis, machine learning, and optimization. His research is summarized in more than 80 papers in scientific journals and conference proceedings. Dr. Rivera is Fellow of the National Researcher System (SNI) of the Mexican Government. 

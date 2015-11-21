@@ -1,0 +1,83 @@
+\section{Background}
+
+We regard an image $I$ as a function that maps voxels of a rectangular grid \hbox{$\mathcal{L}$}, of dimensions $n_{x} \times n_{y} \times n_{z}$ cells, to a set $G$ of
+possible values called the ``dynamic range'' of $I$. The images we are interested in represent objects in physical space. This means that each point $(i,j,k)$ in the
+3-dimensional grid $\mathcal{L}$ is associated to a point $(x,y,z) \in \Omega \subset \mathbf{R}^{3}$. When the coordinates of a point
+\hbox{$(i,j,k)$} are not integers, the image can still be evaluated at $(i, j, k)$ by interpolation provided
+\hbox{$(i,j,k) \in \left[0, n_{x}-1\right] \times \left[0, n_{y}-1\right] \times \left[0, n_{z}-1\right]$}, we denote this ``extended'' dense domain by using the bar decorator:
+$\bar{\mathcal{L}}$.\\
+
+The function that maps voxel coordinates of a grid $\mathcal{L}$ to their corresponding coordinates in physical space is an invertible affine transformation. Whenever we talk about
+a grid $\mathcal{L}$ we implicitly assume that this $\mathcal{L}$ is associated to a specific grid-to-space affine transformation.
+Since our images represent objects in physical space, and these objects are not tied to any specific grid, the same object may be sampled over any grid $\mathcal{L}$. Since
+the grid-to-space transformation is invertible, we can, and will, unambiguously talk about images defined in physical space $\Omega \subset \mathbf{R}^{3}$.\\
+
+\subsection{Symmetric diffeomorphic registration}
+
+The goal of image registration is to compute a transformation $\phi: \Omega \rightarrow \Omega$ that brings a moving image $J:\Omega \rightarrow G$ into correspondence
+with a fixed image $I:\Omega \rightarrow G$. The transformation $\phi$ is chosen from a set $\Phi$ of feasible solutions having properties that are desirable depending on the
+application, such as smoothness and invertibility. Correspondence between $I$ and $J$ is defined to be reached when a dissimilarity metric between them is minimized.\\
+
+In non-linear image registration, the transformation $\phi$ is usually represented by a deformation field $\mathbf{u(\cdot)}$ that assigns a displacement vector
+to each point $x$ such that $\phi(x) = x + \mathbf{u}(x)$. The classical elastic model is one of the earliest formulation for non-linear image registration \citep{Bajcsy1982, Gee1999},
+and may be written as
+
+\begin{equation}\label{eq:elastic}
+    \mathbf{u}^{*} = \arg \min_{\mathbf{u}} \int_{\Omega} ||L \mathbf{u}(x)||^{2}dV + \Pi(I, J \circ \phi),
+\end{equation}
+where $L$ is a differential operator used to promote smoothness on $\mathbf{u}$ and $\Pi$ is the dissimilarity metric driving the registration. A limitation of this model, especially important for medical image registration is that the solution, although being smooth, is not guaranteed to be invertible, and the topology of the moving image is not guaranteed to be preserved after transforming it under $\phi$.\\
+
+To overcome the limitations of the elastic model, the large deformation proposed by \cite{Christensen2001} and further developed by \cite{Science2005} formulates the problem in terms of a trajectory of transformations \hbox{$\phi:\Omega_{I} \times [0, 1] \rightarrow \Omega_{J}$} that satisfies $\frac{d \phi(x, t)}{dt} = v(\phi(x, t), t)$ and $\phi(x, 0) = x$, where $v(\cdot, \cdot)$ is
+the velocity field associated to the curve $\phi$. Beg's Large Deformation Diffeomorphic Metric Mapping (LDDMM) \citep{Science2005} formulation of the registration problem is given by:
+\begin{equation}\label{eq:LDDMM}
+    v^{*} = \arg \min_{v:\dot{\phi} = v_{t}(\phi)} \int_{0}^{1} ||L v_{t}||^{2} dt + \Pi(I, J \circ \phi(\cdot, 1)),
+\end{equation}
+where $\dot{\phi} = \frac{d\phi}{dt}$, $v_{t} = v(\cdot, t), t\in [0, 1]$. The final diffeomorphisms can be obtained by integrating over time
+\begin{equation}\label{eq:velocity_integral}
+    \phi(x, 1) = \phi(x, 0) + \int_{0}^{1}v(\phi(x, t), t) dt.
+\end{equation}
+
+\cite{Dupuis1998} showed that by enforcing sufficient smoothness in $v$, through the differential operator $L$, it can be guaranteed that $\phi(\cdot, t), t \in [0, 1]$ are diffeomorphisms. This and other formulations also based on diffeomorphic flows ensure that images are smoothly transformed and their topology preserved: an important property for many medical applications. \cite{Avants2008, Avants2011} modified the standard LDDMM formulation to enforce symmetry in the sense that the registration result is the same regardless of which image we designate as $I$ and $J$. This property, although natural and desirable, is not ensured in standard computational methods solving the LDDMM problem. By splitting the trajectory $\phi$ into two trajectories with opposite direction $\phi_{1}(x, t) = \phi_{2}(y, 1-t)$, where $y = \phi(x, 1)$, with corresponding velocity fields $v_{1}, v_{2}$, the Symmetric formulation for Diffemorphic Image Registration \citep{Avants2008, Avants2011} can be written as:
+
+\begin{equation}\label{eq:syn_energy}
+    \begin{array}{lll}
+        v_{1}^{*}, v_{2}^{*} &=& \mathlarger{\arg \min \int_{t=0}^{0.5} ||L v_{1}(x, t)||^{2} + ||L v_{2}(x, t)||^{2} dt}\\
+        &+& \mathlarger{ \Pi(I \circ \phi_{1}(\cdot, 0.5), J(\phi_{2}(\cdot, 0.5)))}
+    \end{array}
+\end{equation}
+subject to
+\begin{equation}\label{eq:syn_energy_constraints}
+    \begin{array}{l}
+        \frac{d\phi_{i}(x, t)}{dt} = v_{i}(\phi(x,t),t)\\
+        \phi_{i}(\cdot, 0) = \mathbf{I},\, \phi_{i}^{-1}(\phi_{i}) = \mathbf{I},\, \phi_{i}(\phi_{i}^{-1}) = \mathbf{I},\, i=1,2,
+    \end{array}
+\end{equation}
+where $\mathbf{I}$ denotes the identity transformation. \cite{Avants2006} proposed a numerical algorithm, called \textit{Geodesic SyN} for solving \eqref{eq:syn_energy}, which deforms both images towards the midpoint of the trajectory. The main drawback of directly solving eq. \eqref{eq:syn_energy} is its computational cost, since it requires space and time discretization and it is necessary to integrate the velocity fields in eq. \eqref{eq:velocity_integral} to obtain the trajectories at each iteration. A more efficient optimization algorithm to approximately solve eq. \eqref{eq:syn_energy}, also proposed by \cite{Avants2008, Avants2011}, consists in computing the gradient of the metric only at the midpoint of the trajectory (as opposed to evaluating it for all time):
+\begin{equation}\label{eq:grad_metric}
+    \nabla_{\phi_{i}} \Pi(\tilde{I}, \tilde{J}) = \frac{\partial}{\partial \phi_{i}} \Pi \left( \tilde{I}, \tilde{J}\right),
+\end{equation}
+where $\tilde{I} = I \circ \phi_{1}^{-1}(\cdot, 0.5)$, $\tilde{J} = J \circ \phi_{2}^{-1}(\cdot, 0.5)$. The midpoint diffeomorphisms are then updated by composition with the gradient after smoothing with a Gaussian kernel $K_{\sigma}$ (as opposed to integrating along the full geodesic)
+
+\begin{equation}\label{eq:gsyn_update}
+    \phi_{i}(\cdot, 0.5) = \phi_{i}(\cdot, 0.5) - \left( \epsilon K_{\sigma} \ast \nabla_{\phi_{i}} \Pi(\tilde{I}, \tilde{J}) \right) \circ \phi_{i}(\cdot, 0.5),
+\end{equation}
+where $\ast$ denotes the convolution operator and $\epsilon$ is a small factor controlling the step size in the optimization process. Finally, the updated midpoint transformations (which, after composition with the gradient, are not ensured to be diffeomorphisms) are forced to be invertible by using an explicit vector field inversion algorithm \citep{Chen2008}. This algorithm, called \textit{Greedy SyN} (see Appendix \ref{ap:Algorithms}, alg. \ref{alg:Greedy_SyN}) has been adopted by the neuroimaging community as the \textit{de facto} state-of-the-art brain MRI registration algorithm due to its reliability and efficiency. It was the method used for evaluating ANTS \citep{Avants2011} in the large comparative studies developed by \cite{Klein2009, Klein2010} in which \textit{Greedy SyN} consistently ranked first.
+
+\subsection{Multi-modal image registration}
+
+Defining an adequate similarity metric is arguably the most important aspect of image registration, and has been the subject of significant amount of research \citep{Sotiras2013}, if the minimum of the metric does not coincide with what we understand by optimal image correspondence, then no matter what transformation or optimization algorithm we choose, we are unlikely to correctly align the images. For mono-modal image registration, the Sum of Squared Distances (SSD) is used as a starting point for studying new transformation methods due to its simplicity, while Normalized Cross-Correlation (CC) is known to perform well in a larger number of applications since it compares local neighborhoods (as opposed to single voxel values used by SSD), which allows us to implicitly compare beyond voxel-level features.\\
+
+Recently, \cite{Arce-santana2014} modeled the transfer function between the image modalities as
+\begin{equation}\label{eq:arce_model}
+    F[I(x)] = J(\phi(x)) + \eta(x), x\in \mathcal{L}
+\end{equation}
+where $F$ is the (unknown) transfer function between image modalities and $\eta(x), x\in \mathcal{L}$ are independent random variables with Gaussian distribution. Since the grid $\mathcal{L}$ is discrete, image $F[I(x)], x\in \mathcal{L}$ may be modeled as a discrete set of hidden random variables $Y(x) = F[I(x)]$ whose distribution parameters
+can be estimated using the Expectation Maximization (EM) algorithm \citep{Dempster1977}. In their work, \cite{Arce-santana2014} used a discretized elastic
+deformation model to test the behavior of their metric, which leads to the following energy minimization problem
+
+\begin{equation}\label{eq:arce_elastic}
+    \mathbf{u}^{*} = \arg \min_{\mathbf{u}} \sum_{x \in \mathcal{L}} \frac{1}{2 \sigma(x)^{2}} ( \bar{I}(x) - J(x + \mathbf{u}(x)))^{2} + \lambda \sum_{<x, y>} ||\mathbf{u}(x) - \mathbf{u}(y)||^{2},
+\end{equation}
+where $\bar{I}(x), \sigma(x), x\in \mathcal{L}$ are the estimated parameters (mean and standard deviation) of the hidden variable $F[I(x)]$ given the
+observed intensity $I(x)$ and $<x, y>$ denote neighboring pixels in $\mathcal{L}$. Even though the authors only evaluated their metric for 2D image registration and used
+the elastic model, this formulation can be extended, as we will show in the next section, to develop an efficient and accurate symmetric diffeomorphic non-linear registration algorithm for 3D multi-modal images by taking advantage of the ideas of Avants' \textit{Greedy SyN} \citep{Avants2008}, Vercauteren's \textit{Diffeomorphic Demons} \citep{Vercauteren2009} and Arce's \textit{EM transfer function} model \citep{Arce-santana2014}.
