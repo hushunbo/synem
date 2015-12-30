@@ -5,10 +5,10 @@ possible values called the ``dynamic range'' of $I$. The images we are intereste
 %Since our images represent objects in physical space, and these objects are not tied to any specific grid, the same object may be sampled over any grid $\mathcal{L}$.
 
 \vspace{-0.5cm}
-\subsection{Non-linear image registration}\label{sec:non_linear_image_registration}
+\subsection{\textcolor{red}{Non-rigid} image registration}\label{sec:non_linear_image_registration}
 The goal of image registration is to compute a transformation $\phi: \Omega_{I} \rightarrow \Omega_{J}$ that brings a moving image $J:\Omega_{J} \rightarrow G$ into correspondence
-with a fixed image $I:\Omega_{I} \rightarrow G$. Correspondence between $I$ and $J$ is defined to be reached when a matching functional measuring the dissimilarity between them is minimized. In non-linear image registration, the transformation $\phi$ is usually represented by a deformation field $\mathbf{u(\cdot)}$ that assigns a displacement vector
-to each point $x$ such that $\phi(x) = x + \mathbf{u}(x)$. The classical elastic model is one of the earliest formulation for non-linear image registration \cite{Bajcsy1982, Gee1999}, and may be written as
+with a fixed image $I:\Omega_{I} \rightarrow G$. Correspondence between $I$ and $J$ is defined to be reached when a matching functional measuring the dissimilarity between them is minimized. In \textcolor{red}{non-rigid} image registration, the transformation $\phi$ is usually represented by a deformation field $\mathbf{u(\cdot)}$ that assigns a displacement vector
+to each point $x$ such that $\phi(x) = x + \mathbf{u}(x)$. The classical elastic model is one of the earliest formulation for \textcolor{red}{non-rigid} image registration \cite{Bajcsy1982, Gee1999}, and may be written as
 \begin{equation}\label{eq:elastic}
     \mathbf{u}^{*} = \arg \min_{\mathbf{u}} \int_{\Omega} ||L \mathbf{u}(x)||^{2}dx + \Pi(I, J \circ \phi),
 \end{equation}
@@ -111,7 +111,7 @@ where
         \mathbbm{1}^{T}
     \end{array}\right].
 \end{equation}
-The LLR matching functional turns out to be very robust for mono-modal registration. However, in some multi-modal registration tasks, the local linear model is insufficient to describe the relationship between image modalities. To exemplify this, Fig. \ref{fig:llr_test} depicts an example of the residual error of local linear reconstructions between two aligned brain images (a T1 and a T2 image) from the Brainweb \cite{Cocosco1997} dataset\footnote{The Brainweb dataset was used by Wang and Pan \cite{Wang2014} in their evaluations.}. The center image in Fig. \ref{fig:llr_test} depicts the reconstruction error in false color. Although the local relationship between both images is close to linear almost everywhere, there are local regions where the intensity relationship is not close to linear regardless of what image is selected as predictor.\\
+The LLR matching functional turns out to be very robust for mono-modal registration. However, in some multi-modal registration tasks, the local linear model is insufficient to describe the \textcolor{red}{intensity correspondence} between image modalities. To exemplify this, Fig. \ref{fig:llr_test} depicts an example of the residual error of local linear reconstructions between two aligned brain images (a T1 and a T2 image) from the Brainweb \cite{Cocosco1997} dataset\footnote{The Brainweb dataset was used by Wang and Pan \cite{Wang2014} in their evaluations.}. The center image in Fig. \ref{fig:llr_test} depicts the reconstruction error in false color. Although the \textcolor{red}{ intensity correspondence is locally} close to linear almost everywhere, there are regions where the intensity relationship is not close to linear.\\
 
 %\begin{figure}[t!]
 %\centering
@@ -128,7 +128,7 @@ The LLR matching functional turns out to be very robust for mono-modal registrat
     \subfloat[]{\label{fig:T1T2_affine_fit_map}\includegraphics[width=0.2\linewidth]{images/residuals_input_arrows.png}}
     \subfloat[]{\label{fig:T1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{images/t1_aafo_t2_sample1_lt.png}}
     \subfloat[]{\label{fig:T1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{images/t2_aafo_t1_sample1_lt.png}}\\
-    \caption{{\small Local linear reconstruction between T1 and T2 images under perfect alignment. Center image (c) depicts the reconstruction error in false color. Two local windows were selected: Left (a, b): a local window with a close-to-linear relationship. Right (d, e): a local window with a far from linear relationship. The scatter plots depict the best affine fit of T1 intensities as a function of T2 (a, d), and the best fit of T2 as a function of T1 (b, e).}}
+    \caption{{\small Local linear reconstruction between T1 and T2 images under perfect alignment. Center image (c) depicts the reconstruction error in false color. Two local windows were selected: Left (a, b): a local window with a close-to-linear \textcolor{red}{intensity correspondence}. Right (d, e): a local window with a far from linear relationship. The scatter plots depict the best affine fit of T1 intensities as a function of T2 (a, d), and the best fit of T2 as a function of T1 (b, e).}}
 \label{fig:llr_test}\figcloser
 \end{figure}
 
