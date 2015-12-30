@@ -10,7 +10,7 @@ In our first experiment, we evaluate the performance of the four matching functi
 
 \begin{figure*}[t!]
 \centering
-\includegraphics[width=0.95\linewidth]{./images/mono_lines_seg.png}\\
+\includegraphics[width=0.95\linewidth]{images/mono_lines_seg.png}\\
 \caption{{\small Comparison of the registration accuracy of the Greedy SyN algorithm with ECC, CC, EM and MI metrics, in the mono-modal case. The performance of ECC and CC is practically the same. The Jaccard indices were averaged over 306 mono-modal registrations.}}
 \label{fig:mono_graph_seg}\figcloser
 \end{figure*}
@@ -18,7 +18,7 @@ In our first experiment, we evaluate the performance of the four matching functi
 \subsection{Multi-modal registration}\label{sec:multimodal_results}
 \begin{figure*}[t!]
 \centering
-\includegraphics[width=0.95\linewidth]{./images/multi_lines_seg.png}\\
+\includegraphics[width=0.95\linewidth]{images/multi_lines_seg.png}\\
 \caption{{\small Comparison of the registration accuracy of the Greedy SyN algorithm with ECC, CC, EM and MI metrics, in the multi-modal case. The performance of CC drops substantially with respect to the mono-modal case, while ECC is less affected. The Jaccard indices were averaged over 612 multimodal registrations.}}
 \label{fig:multi_seg}\figcloser
 \end{figure*}
@@ -30,7 +30,7 @@ The Brainweb template also provides a simulation of a proton density (PD) image 
 %Table \ref{tab:multimodal_results_seg} and
 %\begin{figure}[H]
 %\centering
-%    \includegraphics[width=\linewidth]{./images/semi_synthetic_image_creation.png}
+%    \includegraphics[width=\linewidth]{images/semi_synthetic_image_creation.png}
 %    \caption{{\small Semi-synthetic, manually annotated images for quantitative evaluation of multi-modal non-linear image registration algorithms.}}
 %\label{fig:semi_synthetic_image_creation}
 %\end{figure}
@@ -41,7 +41,7 @@ The Brainweb template also provides a simulation of a proton density (PD) image 
 
 \begin{figure}[t!]
 \centering
-    \includegraphics[width=\linewidth]{./images/all_modality_pairs_boxplots.png}
+    \includegraphics[width=\linewidth]{images/all_modality_pairs_boxplots.png}
     \caption{{\small Distributions of average Jaccard indices for all pairs of available modalities (T1, T2 and PD). For each pair of registrations, we computed the average Jaccard index of all anatomical regions.}}
 \label{fig:all_pairs_boxplots}\figcloser
 \end{figure}
@@ -50,8 +50,8 @@ The Brainweb template also provides a simulation of a proton density (PD) image 
 Quantitative results shown in previous section indicate that ECC and MI perform best for multi-modal registration. In Fig. \ref{fig:comparison_B0_T1_coregistration} we show a $B_{0}$-T1 registration result obtained using ECC and MI\footnote{See supplementary material for more qualitative results.}. We can see from the level curves that the result obtained with ECC matches better the local structure of the T1. Since a realistic T1-$B_{0}$ template is not available, the validation methodology described in previous section cannot be used to validate $B_{0}$-T1 registration. Instead, we performed an indirect quantitative validation as follows. We first registered the $B_{0}$ (moving) image towards each T1 (fixed) annotated image, obtaining diffeomorphisms $\phi_{i}$, $i=1,2,...,18$. Then, for every pair $\phi_{i}, \phi_{j}$, we computed the composition $\phi_{i,j}:=\phi_{i}\circ \phi_{j}^{-1}$ (which now maps two annotated T1 images). The resulting overlap score indirectly measures the (combined) accuracy of both transforms\footnote{See supplementary material for a diagram illustrating this indirect validation.}. This indirect validation allows us to measure the registration accuracy using real diffusion data (low resolution and with real susceptibility-induced geometric distortions). Quantitative results of the indirect validation are depicted in Fig. \ref{fig:indirect_validation_boxplots}. We can see that the average Jaccard index obtained with ECC is higher (and with lower variance) than using any of the other matching functionals, which also demonstrates the ECC robustness.
 %\begin{figure}[p]
 %\centering
-%    \subfloat[Example $B_{0}$-T1 registration result using SyN with %ECC.]{\label{fig:epicor_b0up_ecc}\includegraphics[width=1.0\linewidth]{./images/T1B0Result/epicor_b0up_ecc.png}}\\
-%    \subfloat[Example $B_{0}$-T1 registration result using SyN with MI.]{\label{fig:epicor_b0up_mi}\includegraphics[width=1.0\linewidth]{./images/T1B0Result/epicor_b0up_mi.png}}
+%    \subfloat[Example $B_{0}$-T1 registration result using SyN with %ECC.]{\label{fig:epicor_b0up_ecc}\includegraphics[width=1.0\linewidth]{images/T1B0Result/epicor_b0up_ecc.png}}\\
+%    \subfloat[Example $B_{0}$-T1 registration result using SyN with MI.]{\label{fig:epicor_b0up_mi}\includegraphics[width=1.0\linewidth]{images/T1B0Result/epicor_b0up_mi.png}}
 %    \caption{{\small Example of a $B_{0}$-T1 registration result using SyN with ECC and MI. Level curves of the warped $B_{0}$ were overlaid on top of the (undeformed) T1 to %visually assess local structure agreement. Visually, level curves obtained with ECC have a better correspondence with the structure of the T1. This visual assessment is confirmed %quantitatively, as shown in fig. \ref{fig:indirect_validation_boxplots}.}}
 %\label{fig:comparison_B0_T1_coregistration}
 %\end{figure}
@@ -59,21 +59,21 @@ Quantitative results shown in previous section indicate that ECC and MI perform 
 
 \begin{figure}[t!]
 \centering
-    \subfloat[]{\label{fig:epicor_b0up_ecc}\includegraphics[width=0.5\linewidth]{./images/T1B0Result/epicor_b0up_ecc_mi_slim_enhanced.png}}
-    \subfloat[]{\label{fig:indirect_validation_boxplots}\includegraphics[width=0.30\linewidth]{./images/T1B0Result/jaccard_boxplots_T1_B0_slim.png}}
+    \subfloat[]{\label{fig:epicor_b0up_ecc}\includegraphics[width=0.5\linewidth]{images/T1B0Result/epicor_b0up_ecc_mi_slim_enhanced.png}}
+    \subfloat[]{\label{fig:indirect_validation_boxplots}\includegraphics[width=0.30\linewidth]{images/T1B0Result/jaccard_boxplots_T1_B0_slim.png}}
     \caption{{\small $B_{0}$-T1 registration results. The brain was extracted using FSL's brain extraction tool \cite{Smith2012hbm}. (a) Example result using SyN with ECC (top) and MI (bottom). Warped $B_{0}$ images are depicted to the left, and overlaid $B_{0}$ (red channel) and T1 (green channel) images are depicted to the right. Level curves of the warped $B_{0}$ were overlaid on top of the T1 to visually assess local structure agreement. Visually, level curves obtained with ECC have a better correspondence with the structure of the T1. (b) Visual assessment from panel (a) is confirmed by the quantitative results using the indirect validation procedure.}}
 \label{fig:comparison_B0_T1_coregistration}\figcloser
 \end{figure}
 %\begin{figure}[H]
 %\centering
-%    \includegraphics[width=\linewidth]{./images/T1B0Result/jaccard_boxplots_T1_B0.png}
+%    \includegraphics[width=\linewidth]{images/T1B0Result/jaccard_boxplots_T1_B0.png}
 %    \caption{{\small $B_0$-T1 registration results using the indirect validation procedure (see text).}}
 %\label{fig:indirect_validation_boxplots}
 %\end{figure}
 
 %\begin{figure}[H]
 %\centering
-%    \includegraphics[width=\linewidth]{./images/new_validation.png}
+%    \includegraphics[width=\linewidth]{images/new_validation.png}
 %    \caption{{\small Indirect validation protocol for $B_{0}$-T1 registration.}}
 %\label{fig:indirect_validation}\figcloser
 %\end{figure}
