@@ -2,16 +2,16 @@
 \begin{table}[htbp]
   \centering
   {\small
-    \begin{tabular}{ccccc}
+    \begin{tabular}{cccccc}
     \toprule
-    \textbf{} & \textbf{EM} & \textbf{ECC} & \textbf{CC} & \multicolumn{1}{c}{\textbf{MI}} \\
+    \textbf{} & \textbf{ECC} & \textbf{CC} & \textbf{EM} & \textbf{MI} & \textbf{BFP}\\
     \midrule
-    \textbf{Background} & 0.994 & 0.995 & 0.995 & \textbf{0.996} \\
-    \textbf{CSF} & 0.335 & 0.349 & 0.359 & \textbf{0.370} \\
-    \textbf{Gray Matter} & 0.740 & \textbf{0.765} & 0.759 & 0.717 \\
-    \textbf{White Matter} & 0.703 & \textbf{0.739} & 0.728 & 0.654 \\
+    \textbf{Background} & 0.995 & 0.995 & 0.994 & \textbf{0.996} & 0.994\\
+    \textbf{CSF} & 0.349 & 0.359 &0.335 &  \textbf{0.370} & 0.341\\
+    \textbf{Gray Matter} & \textbf{0.765} & 0.759 & 0.740 & 0.717 & 0.739\\
+    \textbf{White Matter} & \textbf{0.739} & 0.728 & 0.703 & 0.654 & 0.702\\
     \bottomrule
     \end{tabular}%
-    \caption{{\small Comparison of the registration performance (measured by the Jaccard index over Background, CSF, GM and WM)of the Greedy SyN algorithm with EM, ECC, CC and MI metrics. The Jaccard indices were averaged over 306 monomodal registrations. Top performer for each region is highlighted.}}
+    \caption{{\small Registration accuracy in terms of tissue type overlap. The Jaccard indices were averaged over 306 mono-modal registrations (T1 - T1). Top performer for each tissue is highlighted.}}
   \label{tab:monomodal_results_segTri_fill}}%
 \end{table}%

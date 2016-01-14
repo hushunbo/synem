@@ -2,3 +2,4 @@ SyN-ECC
 SyN-CC
 SyN-EM
 SyN-MI
+SyN-BFP

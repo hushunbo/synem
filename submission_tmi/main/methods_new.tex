@@ -1,7 +1,7 @@
 %\footnote{See supplementary material for an enlarged version of this figure}
 \vspace{-0.5cm}
 \section{Methods}\label{sec:methods}
-A more detailed analysis of the local linear model reveals that it is closely related to the CC matching functional. Although the tendency of CC to fit a (global) linear model to the joint PDF is well known and has been previously pointed out by other authors (see for example Hermosillo {\it et al.} \cite{Hermosillo2004}), in this section we describe the underlying model from which the (local) CC functional is obtained, then we extend the model to account for multi-modal images, and finally we show an efficient way to incorporate the resulting matching functional into the SyN transformation model.
+A more detailed analysis of the local linear model reveals that it is closely related to the CC matching functional. Although the tendency of CC to fit a (global) linear model to the joint PDF is well known and has been previously pointed out by other authors (see for example Hermosillo {\it et al.} \cite{Hermosillo2004}, and Evangelidis {\it et al.} \cite{Evangelidis2008}), in this section we describe the underlying model from which the (local) CC functional is obtained, then we extend the model to account for multi-modal images, and finally we show an efficient way to incorporate the resulting matching functional into the SyN transformation model.
 
 \subsection{Relationship between LLR and CC}
 To establish the relationship between LLR and CC, consider the non-degenerate case first (the case that $\mathbf{y}_{\mathbf{v}}$ and $\mathbf{x}_{\mathbf{v}}$ are not ``constant'' vectors or in other words, they are not scalar multiples of $\mathbbm{1}$), we will discuss the degenerate cases later. \textcolor{red}{For any positive integer $k$ and any vector $\mathbf{z}\in \mathbbm{R}^{k}$, denote the centered vector $\mathbf{z}' = \mathbf{z} - \frac{\mathbbm{1}^{T}\mathbf{z}}{k}\mathbbm{1}_{k}$ with corresponding elements $z_{i}'=z_{i} - \frac{\mathbbm{1}^{T}\mathbf{z}}{k}, i=1,2,...,k$, and the normalized vector $\widehat{\mathbf{z}} = \frac{\mathbf{z}'}{||\mathbf{z}'||}$, where all entries of $\mathbbm{1}_{k}\in \mathbbm{R}^{k}$ are equal to $1$.} Note that we may assume, without loss of generality, that both vectors $\mathbf{x}_{\mathbf{v}}, \mathbf{y}_{\mathbf{v}}$ are \emph{centered} (i.e., their means are zero: $\frac{\mathbf{x}_{\mathbf{v}}^{T}\mathbbm{1}}{n} = \frac{\mathbf{y}_{\mathbf{v}}^{T}\mathbbm{1}}{n} = 0$) since the LLR evaluated at non-centered vectors equals the LLR evaluated at their corresponding centered vectors. Therefore, the projection matrix $\mathbf{Q}_{\mathbf{v}}$ in \eqref{eq:def_P_v} can be directly computed as
@@ -106,14 +106,13 @@ On the other hand, the average $\frac{a_{\mathbf{v},\ell}}{k_{\mathbf{v},\ell}}$
 \end{equation}
 where $G_{\ell} = \left\lbrace \mathbf{v}\in \Omega_{I}: I(\mathbf{v}) = \ell\right\rbrace$. From the above conditions it follows that $\mathbf{a}_{\mathbf{v}} \approx n \mathbf{P} \mathbf{\bar{f}}$.\\
 
-\textcolor{red}{By making the above approximations, it can be shown that the optimal transfer function is of the form $\mathbf{f^{*}} = \alpha_{0} \mathbf{\bar{f}} + \alpha\mathbbm{1}$, which implies that $\mathbf{\bar{f}}$ is optimal too, because:
+\textcolor{red}{By making the above approximations, it can be shown that the optimal transfer function is of the form $\mathbf{f^{*}} = \alpha_{0} \mathbf{\bar{f}} + \alpha\mathbbm{1}$, which implies that $\mathbf{\bar{f}}$ is optimal too, because the parameters $\boldsymbol{\beta}$ can be adjusted to obtain the same goodness of fit:
 \begin{displaymath}
     \left[\mathbf{f^{*}_{v}} \; \mathbbm{1}\right]\boldsymbol{\beta} = 
     \left[\left(\alpha_{0} \mathbf{\bar{f}} + \alpha_{1}\mathbbm{1}\right) \; \mathbbm{1}\right]\boldsymbol{\beta} =
     \left[\mathbf{\bar{f}} \; \mathbbm{1}\right]\boldsymbol{\tilde{\beta}},
 \end{displaymath}
-}
-where $\boldsymbol{\tilde{\beta}} = (\alpha_{0}\beta_{0}, \alpha_{1}\beta_{0} + \beta_{1})^{T}$. The transfer function $\mathbf{\bar{f}}$ (defined by \eqref{eq:average_of_isosets}) is exactly the same as the optimal transfer function used in the CR and the EM matching functionals. As shown by Roche {\it et al.} \cite{Roche1998, Roche2000} and more recently by Arce {\it et al.} \cite{Arce-santana2014}, the transfer function $\mathbf{\bar{f}}$ evaluated over image $I$ corresponds to the conditional expectation of image $J$ given image $I$, more precisely:
+}where $\boldsymbol{\tilde{\beta}} = (\alpha_{0}\beta_{0}, \alpha_{1}\beta_{0} + \beta_{1})^{T}$. The transfer function $\mathbf{\bar{f}}$ (defined by \eqref{eq:average_of_isosets}) is precisely the optimal transfer function used in the CR and the EM matching functionals. As shown by Roche {\it et al.} \cite{Roche1998, Roche2000} and more recently by Arce {\it et al.} \cite{Arce-santana2014}, the transfer function $\mathbf{\bar{f}}$ evaluated over image $I$ corresponds to the conditional expectation of image $J$ given image $I$, more precisely:
 \begin{equation*}
     F[I] = \mathbbm{E}[J | I]
 \end{equation*}
@@ -139,7 +138,7 @@ To assess how reasonable our simplifying assumption is, we compared the optimal 
 \label{fig:LLR_transfer_rmse}\figcloser
 \end{figure}
 In Fig. \ref{fig:ecc_test_good}, we illustrate the effect of introducing the global non-linear transfer into the local linear model\footnote{See supplementary material for an enlarged version of Fig. \ref{fig:ecc_test_good}.}. This example is the same as Fig. \ref{fig:llr_test}, the fixed image $I$ is the T1, the moving image $J$ is the T2, but instead of fitting the local linear models between $I$ and $J$ directly, we used $F[I]$ and $J$, where $F$ is defined by vector $\mathbf{\bar{f}}$. It can be observed that the non-linear local relationship was made significantly closer to linear by the use of the global transfer function.
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
     \subfloat[]{\label{fig:FT1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{images/Ft1_aafo_t2_sample2.png}}
     \subfloat[]{\label{fig:FT1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{images/t2_aafo_Ft1_sample2.png}}
@@ -148,7 +147,7 @@ In Fig. \ref{fig:ecc_test_good}, we illustrate the effect of introducing the glo
     \subfloat[]{\label{fig:FT1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{images/t2_aafo_Ft1_sample1.png}}\\
     \caption{{\small Local linear reconstruction between T2 intensities and F[T1], where F is given by $\mathbf{\bar{f}}$ \eqref{eq:average_of_isosets}. Center image (c) depicts the reconstruction error in false color. The selected windows are the same as in Fig. \ref{fig:llr_test}. The local relationship was made closer to linear by applying the global non-linear transfer F.}}
 \label{fig:ecc_test_good}\figcloser
-\end{figure}
+\end{figure*}
 
 
 \subsection{Bidirectional transfer functions}
@@ -178,7 +177,7 @@ As before, consider a rectangular local window $W_{\mathbf{v}}$ but this time ce
     \mathbf{x}_{\mathbf{v}} &= \left(I(\phi_{I}^{-1}(\mathbf{v}_{1})), I(\phi_{I}^{-1}(\mathbf{v}_{2})), ..., I(\phi_{I}^{-1}(\mathbf{v}_{n}))\right)^{T}\\
     \mathbf{y}_{\mathbf{v}} &= \left(J(\phi_{J}^{-1}(\mathbf{v}_{1})), J(\phi_{J}^{-1}(\mathbf{v}_{2})), ..., J(\phi_{J}^{-1}(\mathbf{v}_{n}))\right)^{T},
 \end{align*}
-the images $I, J$ evaluated at all voxels of the local window $\mathbf{v}_{i}\in W_{\mathbf{v}}, i=1, 2, .., n$. Note that this time, both vectors $\mathbf{x}_{\mathbf{v}}$ and $\mathbf{y}_{\mathbf{v}}$ are moving according to the (inverses of the) transforms $\phi_{I}$ and $\phi_{J}$. By introducing both transfer functions, $F_{I}$ and $F_{J}$ mapping intensities from $I$ to $J$ and from $J$ to $I$ respectively, our symmetric model may be written as follows:
+the images $I, J$ evaluated at all voxels of the local window $\mathbf{v}_{i}\in W_{\mathbf{v}}, i=1, 2, .., n$. Note that this time, both vectors $\mathbf{x}_{\mathbf{v}}$ and $\mathbf{y}_{\mathbf{v}}$ are moving according to the inverses of $\phi_{I}$ and $\phi_{J}$. By introducing both transfer functions, $F_{I}$ and $F_{J}$ mapping intensities from $I$ to $J$ and from $J$ to $I$ respectively, our symmetric model may be written as follows:
 \begin{equation}\label{eq:symmetric_ecc_model}
     \begin{array}{ccccc}
         \widehat{\mathbf{y_v}} = \left[F_{I}\left[\mathbf{x}_{\mathbf{v}}\right] \; \mathbbm{1}\right]\boldsymbol{\alpha} + \eta_{I}(\mathbf{v}) \; \forall \mathbf{v}\in\Omega_{R}\\

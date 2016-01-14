@@ -46,8 +46,8 @@ with open(regions_fname) as input:
 with open(series_fname) as input:
     series = input.readlines()
 
-markers = ['o','D','s','^']
-linestyles = ['-', '--', '--', '--']
+markers = ['o','D','s','^','H']
+linestyles = ['-', '--', '--', '--', '--']
 
 fig = plt.figure(facecolor="white")
 ax = fig.add_subplot(111)
@@ -60,5 +60,6 @@ plt.xlim(0.75, nrows+0.25)
 plt.grid()
 plt.ylim(0.12, 0.85)
 plt.tight_layout()
-plt.ylabel('Jaccard index', fontsize=24)
+plt.ylabel('Jaccard index', fontsize=48)
 plt.title(graph_title, fontsize=26)
+
