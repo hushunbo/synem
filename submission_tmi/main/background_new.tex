@@ -1,18 +1,18 @@
 \section{Background}
-\textcolor{red}{Throughout this paper, vectors $\mathbf{x}=(x_{1}, x_{2}, ..., x_{n}) \in \mathbbm{R}^{n}$ are written with bold style and scalars (including vector elements) are written with normal style. Vector elements are indicated using sub-indices. Whenever a vector $\mathbf{x_{v}}$ is associated with a particular voxel $\mathbf{v}$, its elements are written with normal face and its index is separated from $\mathbf{v}$ with a comma: $x_{\mathbf{v}, i}, i=1, 2, ..., n$}. We regard an image $I$ as a function that maps voxels of a rectangular grid \hbox{$\mathcal{L}$}, of dimensions $n_{x} \times n_{y} \times n_{z}$ cells, to a set $G$ of
+\textcolor{blue}{Throughout this paper, vectors $\mathbf{x}=(x_{1}, x_{2}, ..., x_{n}) \in \mathbbm{R}^{n}$ are written with bold style and scalars (including vector elements) are written with normal style. Vector elements are indicated using sub-indices. Whenever a vector $\mathbf{x_{v}}$ is associated with a particular voxel $\mathbf{v}$, its elements are written with normal face and its index is separated from $\mathbf{v}$ with a comma: $x_{\mathbf{v}, i}, i=1, 2, ..., n$}. We regard an image $I$ as a function that maps voxels of a rectangular grid \hbox{$\mathcal{L}$}, of dimensions $n_{x} \times n_{y} \times n_{z}$ cells, to a set $G$ of
 possible values called the ``dynamic range'' of $I$. The images we are interested in represent objects in physical space. This means that each point $\mathbf{i}=(i_{1},i_{2},i_{3})$ in the
 3-dimensional grid $\mathcal{L}$ is associated with a point $\mathbf{x}=(x_{1},x_{2},x_{3}) \in \Omega \subset \mathbbm{R}^{3}$. The function that maps voxel coordinates of a grid $\mathcal{L}$ to their corresponding coordinates in physical space is an invertible affine transformation. From now on, we implicitly assume that any grid $\mathcal{L}$ is associated with a specific grid-to-space affine transformation. Since the grid-to-space transformation is invertible, we will unambiguously talk about images defined in physical space $\Omega \subset \mathbbm{R}^{3}$.\\
 %Since our images represent objects in physical space, and these objects are not tied to any specific grid, the same object may be sampled over any grid $\mathcal{L}$.
 
 \vspace{-0.5cm}
-\subsection{\textcolor{red}{Non-rigid} image registration}\label{sec:non_linear_image_registration}
+\subsection{\textcolor{blue}{Non-rigid} image registration}\label{sec:non_linear_image_registration}
 The goal of image registration is to compute a transformation $\phi: \Omega_{I} \rightarrow \Omega_{J}$ that brings a moving image $J:\Omega_{J} \rightarrow G$ into correspondence
-with a fixed image $I:\Omega_{I} \rightarrow G$. Correspondence between $I$ and $J$ is defined to be reached when a matching functional measuring the dissimilarity between them is minimized. In \textcolor{red}{non-rigid} image registration, the transformation $\phi$ is usually represented by a deformation field $\mathbf{u(\cdot)}$ that assigns a displacement vector
-to each point $\mathbf{x}$ such that $\phi(\mathbf{x}) = \mathbf{x} + \mathbf{u}(\mathbf{x})$. The classical elastic model is one of the earliest formulation for \textcolor{red}{non-rigid} image registration \cite{Bajcsy1982, Gee1999}, and may be written as
+with a fixed image $I:\Omega_{I} \rightarrow G$. Correspondence between $I$ and $J$ is defined to be reached when a matching functional measuring the dissimilarity between them is minimized. In \textcolor{blue}{non-rigid} image registration, the transformation $\phi$ is usually represented by a deformation field $\mathbf{u(\cdot)}$ that assigns a displacement vector
+to each point $\mathbf{x}$ such that $\phi(\mathbf{x}) = \mathbf{x} + \mathbf{u}(\mathbf{x})$. The classical elastic model is one of the earliest formulation for \textcolor{blue}{non-rigid} image registration \cite{Bajcsy1982, Gee1999}, and may be written as
 \begin{equation}\label{eq:elastic}
     \mathbf{u}^{*} = \arg \min_{\mathbf{u}} \int_{\Omega} ||L \mathbf{u}(\mathbf{x})||^{2}\dif\mathbf{x} + \Pi(I, J \circ \phi),
 \end{equation}
-where $L$ is a differential operator used to promote smoothness on $\mathbf{u}$ and $\Pi$ is the dissimilarity metric driving the registration. A limitation of this model, especially important for medical image registration is that the solution, although being smooth, is not guaranteed to be invertible, and the topology of the moving image is not guaranteed to be preserved after transforming it under $\phi$.\\
+where $L$ is a differential operator used to promote smoothness on $\mathbf{u}$ and $\Pi$ is the dissimilarity metric driving the registration. A limitation of this model (especially important for medical image registration) is that the solution, although being smooth, is not guaranteed to be invertible, and the topology of the moving image is not guaranteed to be preserved after transforming it under $\phi$.\\
 
 %Beg's Large Deformation Diffeomorphic Metric Mapping (LDDMM) \cite{Science2005} formulation of the registration problem is given by:
 %\begin{equation}\label{eq:LDDMM}
@@ -27,7 +27,7 @@ To overcome the limitations of the elastic model, the large deformation model pr
 \begin{equation}\label{eq:syn_energy}
     \begin{array}{lll}
         v_{1}^{*}, v_{2}^{*} &=& \mathlarger{\arg \min \int_{t=0}^{0.5} ||L v_{1}(\mathbf{x}, t)||^{2} + ||L v_{2}(\mathbf{x}, t)||^{2} \dif t}\\
-        &+& \mathlarger{ \Pi(I \circ \phi_{1}(\cdot, 0.5), J(\phi_{2}(\cdot, 0.5)))}
+        &+& \mathlarger{ \Pi(I \circ \phi_{1}(\cdot, 0.5), J \circ \phi_{2}(\cdot, 0.5))}
     \end{array}
 \end{equation}
 subject to
@@ -113,7 +113,7 @@ where
         \mathbbm{1}^{T}
     \end{array}\right].
 \end{equation}
-The LLR matching functional turns out to be very robust for mono-modal registration. However, in some multi-modal registration tasks, the local linear model is insufficient to describe the \textcolor{red}{intensity correspondence} between image modalities. To exemplify this, Fig. \ref{fig:llr_test} depicts an example of the residual error of local linear reconstructions between two aligned brain images (a T1 and a T2 image) from the Brainweb \cite{Cocosco1997} dataset\footnote{The Brainweb dataset was used by Wang and Pan \cite{Wang2014} in their evaluations.}. The center image in Fig. \ref{fig:llr_test} depicts the reconstruction error in false color. Although the \textcolor{red}{ intensity correspondence is locally} close to linear almost everywhere, there are regions where the intensity relationship is not close to linear.\\
+The LLR matching functional turns out to be very robust for mono-modal registration. However, in some multi-modal registration tasks, the local linear model is insufficient to describe the \textcolor{blue}{intensity correspondence} between image modalities. To exemplify this, Fig. \ref{fig:llr_test} depicts an example of the residual error of local linear reconstructions between two aligned brain images (a T1 and a T2 image) from the Brainweb \cite{Cocosco1997} dataset\footnote{The Brainweb dataset was used by Wang and Pan \cite{Wang2014} in their evaluations.}. The center image in Fig. \ref{fig:llr_test} depicts the reconstruction error in false color. Although the \textcolor{blue}{ intensity correspondence is locally} close to linear almost everywhere, there are regions where the intensity relationship is not close to linear.\\
 
 %\begin{figure}[t!]
 %\centering
@@ -130,7 +130,7 @@ The LLR matching functional turns out to be very robust for mono-modal registrat
     \subfloat[]{\label{fig:T1T2_affine_fit_map}\includegraphics[width=0.2\linewidth]{images/residuals_input_arrows.png}}
     \subfloat[]{\label{fig:T1T2_affine_fit_scatter1}\includegraphics[width=0.2\linewidth]{images/t1_aafo_t2_sample1_lt.png}}
     \subfloat[]{\label{fig:T1T2_affine_fit_scatter2}\includegraphics[width=0.2\linewidth]{images/t2_aafo_t1_sample1_lt.png}}\\
-    \caption{{\small Local linear reconstruction between T1 and T2 images under perfect alignment. Center image (c) depicts the reconstruction error in false color. Two local windows were selected: Left (a, b): a local window with a close-to-linear \textcolor{red}{intensity correspondence}. Right (d, e): a local window with a far from linear relationship. The scatter plots depict the best affine fit of T1 intensities as a function of T2 (a, d), and the best fit of T2 as a function of T1 (b, e).}}
+    \caption{{\small Local linear reconstruction between T1 and T2 images under perfect alignment. Center image (c) depicts the reconstruction error in false color. Two local windows were selected: Left (a, b): a local window with a close-to-linear \textcolor{blue}{intensity correspondence}. Right (d, e): a local window with a far from linear relationship. The scatter plots depict the best affine fit of T1 intensities as a function of T2 (a, d), and the best fit of T2 as a function of T1 (b, e).}}
 \label{fig:llr_test}\figcloser
 \end{figure*}
 
