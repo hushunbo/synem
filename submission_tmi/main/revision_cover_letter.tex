@@ -1,0 +1,143 @@
+\documentclass[onecolumn]{IEEEtran}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage {bbm}
+\usepackage{relsize}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage{commath} 
+\usepackage[labelfont={small,bf}]{caption}
+\usepackage[font={small,bf}]{caption}
+\usepackage[numbers]{natbib}
+
+
+
+\begin{document}
+Dear Editor,\\\\
+This paper constitutes a major revision to our paper with the same title previously submitted to Transactions on Medical Imaging. We have included a point-by-point response to each of the issues raised by the reviewers, as requested.\\
+
+We thank the reviewers for their comprehensive review and their very constructive comments.  Reviewer 1 found the concept of the proposed technique very interesting, reviewer 2 pointed out the potential application of the proposed technique for image correction between EPI and non-EPI images, and reviewer 3 described it as solid, very readable, and informative.
+
+\textcolor{blue}{\section{Reviewer 1 comments}
+This paper presents a new similarity measure for multi-modal brain MRI registration by learning a nonlinear transfer function that maps one imaging modality to another imaging modality and uses a cross-correlation metric to assess their similarity.  While the concept is very interesting, there are a several major problems that need to be addressed before the paper is ready for publication:}
+
+\textcolor{blue}{
+1. Throughout the paper, the authors use the same terminology to refer to two different concepts.  As an example, the use of the term ``non-linear'' in the context of multimodal registration by the authors refers to both non-linear geometric distortions and non-linear relationships between intensities of different imaging modalities, which makes it very difficult to grasp the contribution of the authors' work clearly as to which non-linearity the authors' main contribution is to fix and makes the paper difficult to read.  The main contribution of the paper is not on non-linear deformation model (the one used in the paper is previously proposed) yet the first reference to linear/non-linear is to deformation models and not to the similarity metric, which is the main contribution of the paper.}\\
+
+We agree with the review. We use now rigid/non-rigid when referring to geometric transforms and linear/non-linear when referring to transfer functions.\\
+
+\textcolor{blue}{This is compounded by the statement made in the paper that ``multi-modal image registration has traditionally been constrained to linear methods... it is believed that there must exist a linear transformation that correctly brings them into correspondence'', which is simply not true as there is a wealth of literature on registration methods for multi-modal medical images dealing with nonlinear geometric deformation that the authors have not referenced. It is advised that the authors clear up such ambiguities and give proper context to the contribution of the paper with respect to the wealth of previous methods in this area.}\\
+
+Thanks to the reviewer for pointing out this overstated remark. Our intention was to point out that non-rigid geometric transforms are not as common as rigid geometric transforms in reported multi-modal registration methods. As an example reference, Guimond, Roche and Ayache textually state in \cite{Guimond2001}: {\it ``...two main trends: 1) registration of multimodal images using low degree transformations (rigid or affine); 2) registration of monomodal images using high-dimensional volumetric maps (elastic or fluid deformations). The first category mainly addresses the fusion of complementary information obtained from different imaging modalities. The second category’s predominant purpose is the evaluation of either the anatomical evolution process present in a particular subject or of anatomical variations between different subjects. These two trends have evolved separately mainly because the combined problem of identifying complex intensity correspondences along with a high-dimensional geometrical transformation defines a search space arduous to traverse.''}\\
+
+Please note that even the methods proposed by Orchard \cite{Orchard2008,Orchard2010} and Roche \cite{Roche1998} mentioned in the comments are constrained to rigid/affine transforms. We replaced the phrase {\it ``has traditionally been constrained to''} with {\it ``is often constrained to''}, to better express this remark.\\
+
+\textcolor{blue}{2. The main contribution of the paper, which is a similarity measure based on a nonlinear transfer of one modality to another modality, is not compared both theoretically and experimentally to the wealth of past work that have focused on similarity metrics using either linear and nonlinear transfers and mappings.  For example, the authors acknowledges Wang and Pan's work on local linear models, but do not acknowledge the multitude of similar works such as Orchard (2008) and Orchard and Mann (2010) where the transfer function are nonlinear functions. While this reviewer understands the authors are proposing a global, non-linear transfer, no evidence is given to show the strengths of this transfer compared to other nonlinear transfer function works.  This reviewer recommends the authors explain their work and its strengths and novelty in context of previous works both theoretically and experimentally.}\\
+
+We thank the reviewer for providing relevant additional references. We have now cited the suggested references. However, please note that Orchard (2008) and Orchard and Mann (2010) focus on rigid/affine transforms, while we are interested in (diffeomorphic) deformation fields. Also, their similarity measures are given in terms of the joint intensity scatter plot (JISP), not in terms of a transfer function. Our answer to Point 3 below is related to this point too.\\
+
+\textcolor{blue}{Also, the authors should visually illustrate an example nonlinear transfer function found based on a scatterplot of an example multimodal image pair to help the reader better understand the types of nonlinear transfer functions learned.}\\
+
+Figure 3 depicts examples of the estimated transfer functions.\\
+
+\textcolor{blue}{3. The experiments are limited in the methods it is compared against.  
+It is odd that the authors does not compare their similarity metric with other metrics based on transfer functions...}\\
+
+We agree with the reviewer that validation is very important in this kind of studies. We have included an additional method in our experiments. Please note that we performed 15,300 registrations in total (considering the T1, T2, PD and B0 modalities) comparing 5 similarity measures (CC, EM, MI, BFP and ECC), which is the largest comparative study of non-rigid multi-modal brain MRI registration we are aware of. Validation of this kind of methods is typically far more limited. Please also note that the EM metric proposed by Arce et al. \cite{Arce-santana2014} (which we compared against) is based on the estimation of a transfer function, which turns out to be the same transfer function as the one used with the Correlation Ratio (CR). In order to fairly compare against this metric, we implemented it within the framework of symmetric diffeomorphic registration, which is an important enhancement with respect to the original publication \cite{Arce-santana2014}, and was reported in our previous work \cite{ocegueda2015}.\\
+
+\textcolor{blue}{...such as correlation ratio, the works by Orchard and Orchard and Mann, enhanced correlation coefficient (Evangelidis, 2008), etc.  This reviewer recommends comparing with at least correlation ratio and one of the Orchard methods as a minimum to show the performance of the authors' work with related work.}\\
+
+The reviewer makes a good suggestion that a comparison with a classical approach based on transfer functions such as Correlation Ratio (CR) would be very relevant, since EM is relatively new. However, please note that even the authors of CR (A. Roche and N. Ayache \cite{Roche1998}) proposed a different transfer function estimation which considers a bi-functional polynomial dependence: Guimond, Roche, Ayache, 2001 \cite{Guimond2001}. Therefore, instead of comparing with CR, in the revised version we implemented precisely the technique proposed by its authors \cite{Guimond2001}. In order to fairly evaluate this method, we implemented the bi-functional polynomial (BFP) transfer in the framework of symmetric diffeomorphic registration, which means that, in addition to the deformation fields being inverse consistent, two bi-functional transfers are computed at each iteration (e.g., one bi-functional transfer mapping T1 to T2 and another transfer mapping T2 to T1), which is also an important enhancement with respect to the original work \cite{Guimond2001}.\\
+
+Please note that the work of Orchard \cite{Orchard2008} and Orchard and Mann \cite{Orchard2010} were designed for affine transforms. We decided not to implement Orchard's methods, since all experiments reported in \cite{Orchard2008} and \cite{Orchard2010} were constrained to affine transforms and, as far as we know, unlike the creators of CR, there are no extensions for deformation fields suggested by Orchard. In \cite{Orchard2010}, it is textually stated that “the method has computational complexity $O(k N M^3 D^3)$” where M is the number of transformation parameters, which is simply not feasible for non-parametric transforms as the diffeomorphisms considered in our work. Although some aspects of the extension to the non-parametric case may seem straight-forward, such extensions would be interesting contributions by themselves.\\
+
+Evangelidis et al. \cite{Evangelidis2008} proposed to maximize the correlation coefficient evaluated over the full image (or the full region of interest within the image) using a novel optimization strategy which results in a closed-form solution at each iteration. Although the correlation coefficient accounts for global brightness and contrast changes, it is not really a metric for multi-modal registration since it does not consider more complex intensity correspondences. Please note that, although Evangelidis et al. \cite{Evangelidis2008} mention a “photometric transform” in eq. 2 of \cite{Evangelidis2008}, they do not elaborate on the estimation of any transfer function. The main differences between Evangelidis et al. \cite{Evangelidis2008} and our work are that in \cite{Evangelidis2008}, the correlation coefficient is computed globally, instead of the squared correlation being computed locally in our work, and in \cite{Evangelidis2008} there is no transfer function involved, which is what accounts for multi-modal images in our work (in other words, the problem being addressed in \cite{Evangelidis2008} is mono-modal registration, not multi-modal). Also, Evangelidis et al. \cite{Evangelidis2008} consider only parametric transforms assuming a very small amount of parameters, while in our work, we compute deformation fields in 3D.\\
+
+
+\textcolor{blue}{
+\section{Reviewer 2 comments:}
+The submission presents work on the multi-modal registration problem and how, after applying a suitable intensity transfer function, the cross-correlation (CC) metric could work well (either for the entire field of view or locally). The paper is generally well written but there are a number of significant problems regarding the main premise and reasoning. These are broadly related to what appear to be rather non-rigorous shifts of focus between analysis at a local and a global scale. In general, given the main methodological conclusions, the core work could have been presented with an exposition much shorter than the rather long one given in the submission.}\\
+
+\textcolor{blue}{A substantial amount of methodological development is carried out that starts with a description of an approach that finds linear regression models for the transfer of intensities from one modality to the other in a local window. After a number of manipulations, and some rather non-trivial assumptions, what started out as a local model ends with the conclusion that the optimal transfer function is a) global and b) is in fact determined by the conditional probability of one image's intensity given the other.}\\
+
+We thank the reviewer for his/her very thorough review. Regarding point a), this might be a misunderstanding, please note that the transfer function is global by hypothesis (not a conclusion). Regarding point b), the optimal transfer function is in general very hard to compute, what we observed experimentally is that the conditional expectation of one image’s intensity given the other is very similar to the optimal transfer (numerically computed) to register T1 and T2 images (using the Brainweb template).\\
+
+The main reasoning is, in summary, that after applying the global transfer function, we don’t expect the resulting images to be equal, even if they are perfectly aligned. This is because in general a transfer function will be insufficient to explain the intensity correspondences between both modalities. Instead of attempting to improve the transfer function to make the images more similar in such a way that the SSD metric works well (which is the typical approach \cite{Roche1998,Guimond2001,Arce-santana2014}), we use the CC metric instead of SSD so that it is insensitive to “simple” local variations, where  “simple” is in this case a linear model. The main idea is simply to use the CC metric to account for inaccuracies in the transfer function (in the multimodal case) the same way the CC metric is used to add robustness to local brightness and contrast variations (in the mono-modal case), see for example Evangelidis, 2008 \cite{Evangelidis2008} for further discussion on the mono-modal case. Note that with this approach we are indirectly tackling the problem of non-stationary intensity correspondences.\\
+
+\textcolor{blue}{This is very intuitive if we view the intensities in two multi modal images as random variables (I and J, say). In the absence of any other prior evidence, using the expectation of I conditioned on J as a transfer function is really the best we can do without further prior knowledge. This can clearly be framed in Bayesian terms as was probably done in the references that reached the same conclusion [13, 15, 16].}\\
+
+We agree with the reviewer that some related results are very intuitive. However, please note that the conditional expectation of one intensity given the other ($E[J|I]$) is optimal in the least-squares sense by minimizing the residuals pointwise (minimizing the SSD criterion, as shown for example by Roche et al. \cite{Roche1998}), but it is in general not true if the criterion we are trying to minimize is the sum of local residual vectors under the local linear model (eq. (15), or equivalently maximizing eq. (17)). Directly computing the optimal transfer function by maximizing eq. (17) is very demanding computationally in contrast to simply use the intuitive $E[J|I]$, which is very fast and easy to compute. That’s why we considered it was important to clarify under what conditions we can use $E[J|I]$ as an approximation to the optimal transfer according to eq. (17).\\
+
+\textcolor{blue}{In summary, the message in a nutshell seems to be that if you want to do well on multi modal registration - with the SyN registration scheme in particular- then use a transfer function based on global conditional probability. This can be defined in both directions and can also be viewed as a form of histogram normalisation.}\\
+
+The reviewer makes a very concise and accurate summary of our proposal, the important missing point is that CC should be used instead of the usual SSD criterion. We have shortened the exposition by removing some algebraic details which should not be hard to derive by the reader.\\
+
+\textcolor{blue}{Regarding one of the main assumptions, the assertion in III.B that the 'set of intensities contained in each local vector $x_v$ and $y_v$ are approximately random samples' from the images intensities undermines much of what precedes it and is also poorly defined. No mention of what type of distribution is used to represent these multivariate data points. In general, for example, it would be very surprising if the vectorised patches of an image followed a multivariate distribution in which components were IID. For example, if they are IID with a uniform distribution, then the image structure information is entirely ignored and what is being modeled is an image of noise.}\\
+
+We thank the reviewer for pointing out this important mistake. This condition was badly written and caused confusion, we meant the set of intensity pairs $S_{\mathbf{v}}=\left\lbrace \left(x_{\mathbf{v}, i}, y_{\mathbf{v}, i}\right): 1\leq i \leq n\right\rbrace$ being samples from the full set of intensity pairs $S=\left\lbrace \left(I(\mathbf{v}), J(\phi(\mathbf{v}))\right): \mathbf{v}\in \Omega_{I}\right\rbrace$. We also found that the second condition was not necessary and we have removed it in the revised version.\\
+
+\textcolor{blue}{While the paper does not really stand as a rigorous methods development contribution, the work however could be redirected as a good way to carry out distortion correction between EPI and non-EPI MR imaging which would be of interest to a more applications focused publication. This is probably the strongest motivation for such an approach and is a challenge facing many neuroimaging practitioners at the moment.}\\
+
+We thank the reviewer for his/her encouraging words. A good metric for multi-modal registration is the key building block for EPI correction using a non-EPI reference. However, there are still many issues that need to be addressed before the proposed multi-modal registration framework can be used for EPI correction, the two most important being 1) simultaneous motion correction and 2) Jacobian modulation.\\
+
+Our first step towards our ultimate goal was precisely to explore different metrics for multi-modal non-rigid registration, which is the main component of any registration-based EPI/non-EPI correction algorithm. This exploration resulted in the present work, in which we report that ECC turned out to be very robust after a very extensive comparative study which required over a year of computation time, which was only feasible with the use of a computer cluster. If we included all the necessary details to perform EPI/non-EPI correction in the present manuscript, it would be too much material for a single publication. We still believe the presented material can be of interest to the community. A work in progress in our group uses the results presented in this work as starting point for the EPI/non-EPI correction. We added a discussion on this topic in the revised manuscript.\\
+
+\textcolor{blue}{Specific points:\\
+Section I.D refers to relationships between the modalities that are non-linear and local but all the methodology development refers to the local relationships as *linear*. Yes, in the motivating picture (Fig 2) there are a small handful of areas where a linear does not fit so well (Perhaps due to fractional volume effects at boundaries). This however is not addressed in the subsequent methods development; the ultimate transfer function is a global look up.}\\
+
+Figure 5 shows an example where a global transfer can simultaneously correct non-linear correspondences at several local regions. The global transfer approximately corrects these non-linear correspondences (not perfectly, of course), while the local linear regression models attempt to explain the remaining local residuals.\\
+
+\textcolor{blue}{Section II.A gives a lengthy description of image registration that leads up to the SyN method. This is not really necessary, the bulk of the work described to generate a transfer function for use with CC can be applied to drive any registration scheme.
+More seriously, the metric generation method is described as 'symmetric' but there is nothing inherent in its derivation that makes it so. The issue of symmetry is only really pertinent here due to the inclusion of the transfer function / similarity metric in what is a symmetric registration scheme.}
+
+The reviewer makes a good observation that the specific deformation model is a secondary aspect of our work. However, please note that the symmetry of SyN is an important feature we exploited by using two transfer functions instead of one. At each iteration, two steps are performed independently deforming the input images towards the reference space (not summing or averaging the steps, which would result from using an asymmetric deformation model). Each of the two steps is computed using a different transfer function either mapping intensities from the static image to the moving or the moving to the static. Additionally, we selected SyN to evaluate the performance of the multi-modal metrics under comparison with a well known state-of-the-art deformation model.\\
+
+In the revised section, we have shortened the discussion on the SyN algorithm.\\
+
+\textcolor{blue}{The assertion in Section III.C that registration methods based on estimating a functional relationship between modalities necessitate an asymmetric choice of target is highly debatable. Indeed, the work that is subsequently presented evidently shows that it is relatively straightforward to adapt the transfer function / similarity metric chosen for use in a symmetric registration - i.e. without making a symmetry breaking choice of a target image.}
+
+True, all multimodal metrics can be “symmetrized” the same way we did with our proposed similarity measure, however most multimodal metrics were not reported this way. We have rephrased our assertion not to present this as a limitation of any similarity measure.\\
+
+\textcolor{blue}{In III.A, there is no need for the justification of assuming that centering the data is a reasonable thing to do. This is geometrically obvious, centering the data is equivalent to translation, this preserves residuals and, since linear regression is a least squares method, the parameters before and after centering will just differ by a shift.}\\
+
+We have removed this justification to make the exposition shorter.\\
+
+\textcolor{blue}{It is not clear what is meant by 'making $y_v$ darker' in section III.A because there is no mention of any transfer function at this stage to affect intensities. Perhaps the similarity metric favours lower values of $y_v$ and this affects the optimisation, but that is something different. Additionally, the 'degenerate' case of $x_v$ with constant components will favour lower *variance* in $y$, not lower values.}\\
+
+Agreed, this assertion is in general not true. The intention was to emphasize that there’s nothing inherently multi-modal in the local linear reconstruction model because they do not use any transfer function. A way to decrease the variance is to reduce the intensities towards zero (thus making the image “dark”), but that’s true, this is not the only way. We have corrected this in the revised version.\\
+
+\textcolor{blue}{Notation: In general, vectors should be bold but *components* should not be bold. For example $\mathbf{a}_v$ is fine but $\mathbf{a}_{v,l}$ should really just be $a_{v,l}$.}\\
+
+We have change the notation, as suggested.\\
+
+\textcolor{blue}{The vector $\mathbf{f}$ in the equation that re-writes the dot product of Eqn 15 (the one that starts $F[x_v]^T y_v ...$) is dependent on the voxel $v$. So it should really have a subscript to indicate this dependence, i.e. $f_v$ or similar. This is basically the result of the look-up result for the patch at $v$.}
+
+The equation is correct, vector $\mathbf{f}$ does not dependent on voxel $\mathbf{v}$. This equation rewrites the dot product from $n$-dimensional vectors (where $n$ is the number of voxels in each local window) to $m$-dimensional vectors (where $m$ is the number of different intensities in the global transfer function). Here we try to explain more carefully:\\
+
+By hypothesis, each element of $\mathbf{x_v}$ can take any of $m$ different values (the number of different intensities in the static image), some values in $\mathbf{x_v}$ may appear more than once, and some of the $m$ intensities may appear zero times in $\mathbf{x_v}$. After applying $F$ to each element of $\mathbf{x_v}$ we obtain vector $\mathbf{f_v} = F[\mathbf{x_v}]$. Instead of writing the dot product of $\mathbf{f_v}$ with another $n$-dimensional vector, say $\mathbf{z}$, as $\mathbf{z}^{T}\mathbf{f_v} = z_1 f_{\mathbf{v},1} + z_2 f_{\mathbf{v},2} + \hdots + z_n f_{\mathbf{v},n}$, we can “cluster” the elements of $\mathbf{x_v}$ according to their intensity and focus on their corresponding values in vector $\mathbf{z}$. Start by taking all indices $i$ such that $x_{\mathbf{v},i}=1$, then sum all elements of $\mathbf{z}$ whose indices are those $i$ and call this sum $a_1$. Now take all indices $i$ such that $x_{\mathbf{v}, i}=2$, sum all elements of $\mathbf{z}$ whose indices are these new $i$ and call this sum $a_2$. Repeat for all $m$ possible intensities (some $a_k$ may be zero because intensity $k$ may appear zero times in $\mathbf{x_v}$). Then the dot product $\mathbf{z}^{T}\mathbf{f_v}$ can now be written as $\mathbf{a_v}^T \mathbf{f}$ where $\mathbf{a_v}$ and $\mathbf{f}$ are $m$-dimensional, and $\mathbf{f}$ does not depend on voxel $\mathbf{v}$ because it is the global transfer function.\\
+
+The referenced equation was removed to reduce the exposition, as suggested.\\
+
+\textcolor{blue}{Following on from this, the $f$ variables in Eqn 20 are of two different types, on the left they are local and on the right they are global - this distinction is not made clear.}\\
+
+The equation is correct. Both are global. This confusion originated from the previous comment.\\
+
+\textcolor{blue}{Equation 22 is really an approximation but is presented as an equality.}\\
+
+Good observation, we corrected this in the revised version.\\
+
+\textcolor{blue}{
+\section{Reviewer 3 comments}
+This is a solid and very readable paper. A few weaknesses: The classification of the distance measures is incomplete (level-set and gradient based methods are missing; I suggest to include those, especially in the evaluation part). The idea of trandfer functon is not new and more advanced relations such as the integration of an additional scalar field s have been proposed in the literature (minimization of SSD(s*I,J)+lambda*TV(s)).  However, the paper is informative and the prersente ideas sufficiently new.}\\
+
+We thank the reviewer for the encouraging words. After reviewing the literature, we could not find any level-set-based diffeomorphic multi-modal registration method. We acknowledge that the idea of a transfer function is not new. Please note that work of Wang and Pan \cite{Wang2014} (referenced in our work) is an example of the mentioned scalar multiplicative field (which models the bias field in MRI).\\
+
+
+
+
+\bibliographystyle{ieeetr}
+\vspace{-0.2cm}
+\bibliography{references}
+
+
+\end{document}
